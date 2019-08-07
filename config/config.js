@@ -64,15 +64,16 @@ export default {
     // 代理以访问 /server/api 开头的所有路由
     '/server/api/': {
       // 代理的目标地址
-      target: 'http://localhost:8080',
+      target: 'http://192.168.101.7:8080',
       // 开启跨域访问
       changeOrigin: true,
       // 发送请求的时候，去掉server
       pathRewrite: { '^/server': '' },
     },
     '/report': {
-      target: 'http://localhost:8080',
+      target: 'http://192.168.101.7:8080',
       changeOrigin: true,
+      pathRewrite: { '^/report': '' },
     },
   },
   ignoreMomentLocale: true,

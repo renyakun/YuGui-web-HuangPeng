@@ -3,36 +3,11 @@ import { Card } from 'antd';
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
-import { black } from '_ansi-colors@3.2.4@ansi-colors';
-
-
-
-
-const namespace = "userseting";
-
-// @connect((state) => {
-//     return {
-//         data: state[namespace].notifyinfo
-//     }
-// }, (dispatch) => {
-//     return {
-//         init: () => {
-//             dispatch({
-//                 type: namespace + "/fetch",
-//             });
-//         }
-//     }
-// })
 
 @connect(({ userseting: { notifyinfo }, loading }) => ({
     notifyinfo,
     loading: loading.effects['userseting/fetchUserNotifyInfo'],
 }))
-
-
-
-
-
 
 class Mytask extends PureComponent {
     constructor(props) {

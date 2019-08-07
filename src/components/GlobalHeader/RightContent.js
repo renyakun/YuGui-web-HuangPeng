@@ -1,13 +1,11 @@
-import { Avatar, Dropdown, Icon, Menu, Spin, Tag,Button } from 'antd';
+import { Avatar, Button, Dropdown, Icon, Menu, Tag } from 'antd';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import HeaderSearch from '../HeaderSearch';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
-import { black } from '_ansi-colors@3.2.4@ansi-colors';
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -71,21 +69,6 @@ export default class GlobalHeaderRight extends PureComponent {
     return (
       <div className={className}>     
         <Link to={{pathname: '/searchreport/searchreportlist'}}><Button type="link" icon="search" style={{color:'rgba(0,0,0)'}}>查询</Button></Link>
-        {/* <HeaderSearch
-          className={`${styles.action} ${styles.search}`}
-          placeholder={formatMessage({ id: 'component.globalHeader.search' })}
-          dataSource={[
-            formatMessage({ id: 'component.globalHeader.search.example1' }),
-            formatMessage({ id: 'component.globalHeader.search.example2' }),
-            formatMessage({ id: 'component.globalHeader.search.example3' }),
-          ]}
-          onSearch={value => {
-            console.log('input', value); // eslint-disable-line
-          }}
-          onPressEnter={value => {
-            console.log('enter', value); // eslint-disable-line
-          }}
-        /> */}
         <NoticeIcon
           className={styles.action}
           count={currentUser.notifyCount}
@@ -136,9 +119,8 @@ export default class GlobalHeaderRight extends PureComponent {
             </span>
           </Dropdown>
         ) : (
-            <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
-          )}
-        {/* <SelectLang className={styles.action} /> */}
+             <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
+           )} 
       </div>
     );
   }

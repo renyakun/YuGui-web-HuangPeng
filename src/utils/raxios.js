@@ -1,6 +1,6 @@
 import raxios from 'axios';
 import { message } from 'antd';
-//import store from '../index';
+//import store from '../global';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -44,26 +44,26 @@ raxios.interceptors.request.use(
   err => Promise.reject(err)
 );
 
-// raxios.interceptors.response.use(
-//   res => {
-//     // 全局检查登录态
-//     const { dispatch } = store;
-//     const { data } = res;
-//     if (data.status === -1) {
-//       dispatch({ type: 'login/logout' });
-//     }
-//     return data;
-//   },
-//   error => {
-//     if (error.response) {
-//       const code = error.response.status;
-//       if (codeMessage[code]) {
-//         message.error(codeMessage[code]);
-//       }
-//     } else {
-//       message.error('网络异常');
-//     }
-//     return null;
-//   }
-// );
-// export default raxios;
+raxios.interceptors.response.use(
+  res => {
+    // 全局检查登录态
+    const { dispatch } = store;
+    const { data } = res;
+    if (data.status === -1) {
+      dispatch({ type: 'login/logout' });
+    }
+    return data;
+  },
+  error => {
+    if (error.response) {
+      const code = error.response.status;
+      if (codeMessage[code]) {
+        message.error(codeMessage[code]);
+      }
+    } else {
+      message.error('网络异常');
+    }
+    return null;
+  }
+);
+export default raxios;
