@@ -35,13 +35,7 @@ const selectAfter = (
 );
 const plainOptions = ['解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
 
-// const days = new Date();   // 程序计时的月从0开始取值后+1   
-// const month = days.getMonth() + 1;
-// const timer = "timer:" + days.getFullYear() + "-" + month + "-"
-//     + days.getDate() + " " + days.getHours() + ":"
-//     + days.getMinutes() + ":" + days.getSeconds();
 
-// console.log(timer);
 
 @connect(({ valvereport, loading }) => ({
     valvereport,
@@ -161,16 +155,16 @@ class BasicForm extends PureComponent {
                         </FormItem>
                         <FormItem {...formItemLayout} label={"安全阀类型"}>
                             {getFieldDecorator('valveType', {
-                                initialValue: '弹簧式',
+                                initialValue: '1',
                                 rules: [
                                     { required: true, message: '请输入安全阀类型', },
                                 ],
                             })(
                                 <Select style={{ width: '100%' }} onChange={handleChange}>
-                                    <Option value="弹簧直载式">弹簧直载式</Option>
-                                    <Option value="先导式">先导式</Option>
-                                    <Option value="净重式">净重式</Option>
-                                    <Option value="杠杆式">杠杆式</Option>
+                                    <Option value="1">弹簧直载式</Option>
+                                    <Option value="2">先导式</Option>
+                                    <Option value="3">净重式</Option>
+                                    <Option value="4">杠杆式</Option>
                                 </Select>
                             )}
                         </FormItem>
