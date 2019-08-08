@@ -1,25 +1,19 @@
-// import request from '@/utils/request';
-// import { stringify } from 'qs';
-
-// export async function queryResource(params) {
-//     return request(`/tk/task?${stringify(params)}`);
-//   }
-
-import raxios from '../utils/raxios';
+import request from '@/utils/request';
+import { stringify } from 'qs';
 
 export async function getUserInfo() {
-    return raxios.get(`/getuser`);
+    return request(`/report/getuser`);
 }
 
 export async function getUserNotifyInfo() {
-  return raxios.get(`/getUserNotifyInfo`);
+  return request(`/report/getUserNotifyInfo`);
 }
-
 
 export async function getWaitCheckList() {
-  return raxios.get(`/getWaitCheckList`);
+  return request(`/report/getWaitCheckList`);
 }
 
-export async function getWaitApproveList() {
-  return raxios.get(`/getWaitApproveList`);
+export async function  getWaitApproveList() {
+  return request(`/report/getWaitApproveList`);
 }
+

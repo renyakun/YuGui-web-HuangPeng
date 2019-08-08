@@ -30,6 +30,53 @@ export default {
                 }
             }
       },
+        *fetchUserNotifyInfo(_, { call, put }) {
+            const res = yield call(getUserNotifyInfo);
+            if (res) {
+                if (res.ok) {
+                    const notifyinfo = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { notifyinfo },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+       
+        *fetchWaitCheckList(_, { call, put }) {
+            const res = yield call(getWaitCheckList);
+            if (res) {
+                if (res.ok) {
+                    const waitchecklist = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { waitchecklist },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+
+
+        *fetchWaitApproveList(_, { call, put }) {
+            const res = yield call(getWaitApproveList);
+            if (res) {
+                if (res.ok) {
+                    const waitapprovelist = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { waitapprovelist },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
     },
     reducers: {
         saveList(state, action) {

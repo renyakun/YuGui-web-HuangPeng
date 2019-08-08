@@ -15,10 +15,11 @@ export default [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user'],
+    authority: ['admin', 'user','super', 'partner', 'app'], 
     routes: [
-
-      { path: '/', redirect: '/workplatform/mytask' },//index
+      { path: '/', redirect: '/house/newpage',},//index
+      //{ path: '/', authority: ['admin', 'user'],},
+      
       //templent
       {
         path: '/templent',
@@ -32,21 +33,23 @@ export default [
         path: '/house',
         name: 'house',
         icon: 'home',
-        //hideInMenu: 'true',
         routes: [
           {
             path: '/house/resource',
             name: 'resource',
+            hideInMenu: 'true',
             component: './haoke/house/Resource',
           },
           {
             path: '/house/addResource',
             name: 'addResource',
+            hideInMenu: 'true',
             component: './haoke/house/AddResource',
           },
           {
             path: '/house/analysis',
             name: 'analysis',
+            hideInMenu: 'true',
             component: './haoke/house/NewAnalysis',
           },
           {
@@ -128,30 +131,30 @@ export default [
 
       //System
       {
-        path:'/system',
-        name:'system',
-        icon:'radar-chart',
-        hideInMenu: 'true',
-        routes:[
+        path: '/system',
+        name: 'system',
+        icon: 'radar-chart',
+        //hideInMenu: 'true',
+        routes: [
           {
-            path:'/system/info',
-            name:'info',
-            component:'./system/info',
+            path: '/system/info',
+            name: 'info',
+            component: './system/info',
           },
         ]
       },
 
       //SearchReport
       {
-        path:'/searchreport',
-        name:'searchreport',
-        icon:'radar-chart',
+        path: '/searchreport',
+        name: 'searchreport',
+        icon: 'radar-chart',
         hideInMenu: 'true',
-        routes:[
+        routes: [
           {
-            path:'/searchreport/searchreportlist',
-            name:'searchreportlist',
-            component:'./searchreport/searchreportlist',
+            path: '/searchreport/searchreportlist',
+            name: 'searchreportlist',
+            component: './searchreport/searchreportlist',
           }
         ]
       },
@@ -339,7 +342,7 @@ export default [
           {
             path: '/exception/trigger',
             name: 'trigger',
-           // hideInMenu: true,
+            // hideInMenu: true,
             component: './Exception/TriggerException',
           },
         ],

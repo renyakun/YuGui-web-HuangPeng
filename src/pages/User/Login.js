@@ -1,5 +1,5 @@
 import Login from '@/components/Login';
-import { Alert } from 'antd';
+import { Alert, Card } from 'antd';
 import { connect } from 'dva';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'umi/locale';
@@ -13,9 +13,14 @@ const { UserName, Password, Submit, EmpCode } = Login;
   login,
   submitting: loading.effects['login/login'],
 }))
-export default class LoginPage extends Component {
+class LoginPage extends Component {
+  state = {
+    type: 'account',
+  };
+
+
   handleSubmit = (err, values) => {
-    // const { type } = this.state;
+    //const { type } = this.state;
     if (!err) {
       this.props.dispatch({
         type: 'login/login',
@@ -33,21 +38,30 @@ export default class LoginPage extends Component {
 
   render() {
     const { login, submitting } = this.props;
+    const { type } = this.state;
+
     return (
       <div className={styles.main}>
-        <Login onSubmit={this.handleSubmit}>
+        <Login onSubmit={this.handleSubmit}
+          defaultActiveKey={type}
+          ref={form => { this.loginForm = form; }}
+        >
           {login.status === 'error' &&
             login.type === 'account' &&
             !login.submitting &&
             this.renderMessage(login.errMsg)}
           <UserName name="user" placeholder="请输入账号" />
-          <Password name="pwd" placeholder="请输入密码" />
+          <Password name="pwd" placeholder="请输入密码"
+            onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)} />
           <Submit loading={submitting}><FormattedMessage id="app.login.login" /></Submit>
+
         </Login>
       </div>
     );
   }
 }
+
+export default LoginPage;
 
 
 

@@ -25,6 +25,7 @@ export default {
           errMsg = (response && response.errMsg) || '网络错误...';
           status = 'error';
         }
+        console.log(fromLogin);
         yield put({
           type: 'changeLoginStatus',
           payload: {
@@ -38,35 +39,43 @@ export default {
         if (!window.location.href.includes('/user/login')) {
           yield put(routerRedux.push('/user/login'));
         }
+        console.log(window.location.href);
       } else if (response.ok) {
+        console.log(response.ok);
         const { errMsg, data } = response;
         const res = {
           errMsg,
           type: 'account',
           status: 'ok',
-          currentAuthority: 'partner',
+          currentAuthority: 'admin',
         };
-        
+        console.log(response.data.el);
+        console.log("RES:",res);
+        console.log("RES.currentAuthority:",res.currentAuthority);
+        //roles[userLevel]
         if (data) {
           const { userLevel, userName, enable } = data;
           res.account = userName;
-          res.enable = enable;
-          res.currentAuthority = roles[userLevel];
-     
+          res.userLevel = userLevel;
+          res.currentAuthority = roles[enable];
         }
-   
+        console.log("res:",res.currentAuthority);
+        reloadAuthorized();
         yield put({
           type: 'changeLoginStatus',
           payload: res,
         });
-
+        console.log(res.currentAuthority);
+        console.log(fromLogin);
         if (fromLogin) {
           reloadAuthorized();
           yield put(
-            routerRedux.push({
-              pathname: '/workplatform/mytask', // here
+            routerRedux.replace({
+              pathname: '/house/newpage', // here
               state: { fromLogin },
-            })
+            }),
+            console.log(routerRedux),
+            console.log(fromLogin)
           );
         }
       }
@@ -80,7 +89,8 @@ export default {
         type: 'check',
         fromLogin: true,
         response,
-      });
+      },
+      );
     },
     *checkLogin(_, { put, call }) {
       const response = yield call(checkLogin);

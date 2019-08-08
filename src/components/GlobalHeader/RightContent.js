@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, Icon, Menu, Tag } from 'antd';
+import { Avatar, Button, Dropdown, Icon, Menu, Tag,Spin} from 'antd';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
@@ -6,6 +6,7 @@ import Link from 'umi/link';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
+
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -69,7 +70,7 @@ export default class GlobalHeaderRight extends PureComponent {
     return (
       <div className={className}>     
         <Link to={{pathname: '/searchreport/searchreportlist'}}><Button type="link" icon="search" style={{color:'rgba(0,0,0)'}}>查询</Button></Link>
-        <NoticeIcon
+        {/* <NoticeIcon
           className={styles.action}
           count={currentUser.notifyCount}
           onItemClick={(item, tabProps) => {
@@ -105,22 +106,23 @@ export default class GlobalHeaderRight extends PureComponent {
             emptyText={formatMessage({ id: 'component.globalHeader.event.empty' })}
             emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
           />
-        </NoticeIcon>
-        {currentUser.name ? (
+        </NoticeIcon> */}
+        {/* {currentUser.name ? ( */}
           <Dropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
-              <Avatar
+              {/* <Avatar
                 size="small"
                 className={styles.avatar}
                 src={currentUser.avatar}
                 alt="avatar"
-              />
+              /> */}
+              <Icon type="user" style={{ fontSize:'20px'}} />
               <span className={styles.name}>{currentUser.name}</span>
             </span>
           </Dropdown>
-        ) : (
-             <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
-           )} 
+        {/* // ) : (
+        //      <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
+        //    )}  */}
       </div>
     );
   }
