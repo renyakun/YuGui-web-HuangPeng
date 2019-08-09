@@ -1,6 +1,6 @@
 import raxios from 'axios';
 import { message } from 'antd';
-//import store from '../global';
+import store from '../global';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',

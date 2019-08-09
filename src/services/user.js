@@ -2,7 +2,7 @@ import { stringify } from "qs";
 import request from '@/utils/request';
 
 export async function logout() {
-  return request('/report/logout');
+  return request('/report/user/logout');
 }
 
 export async function login(params) {
@@ -13,7 +13,7 @@ export async function login(params) {
 }
 
 export async function checkLogin() {
-  return request('/report/logout', {
+  return request('/report/user/logout', {
     timeout: 5000,
   });
 }

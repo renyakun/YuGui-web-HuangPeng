@@ -16,7 +16,8 @@ export default {
      * @param call 执行异步函数调用接口
      * @param put 发出一个 Action，类似于 dispatch 将服务端返回的数据传递给上面的state
      * @returns {IterableIterator<*>}
-     */* fetch({ payload }, { call, put }) {
+     */
+    *fetch({ payload }, { call, put }) {
       // 访问之前可以做一些操作
       const response = yield call(queryUser1, payload);
       // 拿到数据之后可以做一些操作
@@ -27,14 +28,6 @@ export default {
         payload: response
       });
     }
-
-    // * fetch2({ payload }, { call, put }) {
-    //   const response = yield call(queryCurrent);
-    //   yield put({
-    //     type: "saveCurrentUser",
-    //     payload: response
-    //   });
-    // }
   },
 
   reducers: {

@@ -13,48 +13,64 @@ const newReportLabels = {
 };
 
 const reportColumns = Object.keys(newReportLabels).map(key => {
-   // console.log(key+":"+newReportLabels[key])
     if (key === 'actions') {
         return {
             title: newReportLabels[key],
             render: ({ reportNo }) => (
                 // <AuthController auth={{ id: 61 }}></AuthController>
-                <Link to={{pathname: '/workplatform/detailwaitApprove'}}>审核报告</Link>
-                
+                <Link to={{ pathname: '/workplatform/waitapprovelist/approvedetail', report: `${reportNo}` }}>
+                    审批报告
+              </Link>
             ),
         };
     }
     return {
         key,
         dataIndex: key,
-        title: newReportLabels[key],   
+        title: newReportLabels[key],
     };
 });
 
+@connect(({  userseting: { waitapprovelist, }, loading }) => ({
+    waitapprovelist,
+    listLoading: loading.effects['userseting/fetchWaitApproveList'],
+}))
 
 class WaitApprveList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            waitapprveList:[{
-                reportNo:1234,
-                realName:"smonua",
-                createTime:"2019-10-12,10:20:34"
-            }]
+            // waitapprveList: [{
+            //     reportNo: 1234,
+            //     realName: "smonua",
+            //     createTime: "2019-10-12,10:20:34"
+            // }]
         }
     }
+
+    componentDidMount() {
+        this.fetchWaitApproveList();
+    }
+    fetchWaitApproveList() {
+        this.props.dispatch({
+            type: 'userseting/fetchWaitApproveList',
+        });
+    }
+
     render() {
+        const { waitapprovelist, listLoading } = this.props;
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="待审核报告列表">
 
-                <Table
-                        dataSource={this.state.waitapprveList}
+                    <Table
+                        dataSource={waitapprovelist}
                         columns={reportColumns}
                         pagination={false}
+                        loading={listLoading}
                         rowKey="reportNo"
                     />
-                </Card> 
+                </Card>
             </PageHeaderWrapper>
         )
     }

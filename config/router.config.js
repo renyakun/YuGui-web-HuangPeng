@@ -17,7 +17,7 @@ export default [
     Routes: ['src/pages/Authorized'],
     authority: ['admin', 'user','super', 'partner', 'app'], 
     routes: [
-      { path: '/', redirect: '/house/newpage',},//index
+      { path: '/', redirect: '/workplatform/mytask',},//index
       //{ path: '/', authority: ['admin', 'user'],},
       
       //templent
@@ -104,26 +104,31 @@ export default [
           {
             path: '/reportmanager/createreport/basicform',
             name: 'basicform',
+            icon: 'radar-chart',
             component: './reportmanager/createreport/basicform',
           },
           {
             path: '/reportmanager/myreportlist/newlist',
             name: 'newlist',
+            icon: 'radar-chart',
             component: './reportmanager/myreportlist/newlist',
           },
           {
             path: '/reportmanager/myreportlist/checkedlist',
             name: 'checkedlist',
+            icon: 'radar-chart',
             component: './reportmanager/myreportlist/checkedlist',
           },
           {
             path: '/reportmanager/myreportlist/approvelist',
             name: 'approvelist',
+            icon: 'radar-chart',
             component: './reportmanager/myreportlist/approvelist',
           },
           {
             path: '/reportmanager/myreportlist/filelist',
             name: 'filelist',
+            icon: 'radar-chart',
             component: './reportmanager/myreportlist/filelist',
           },
         ],
@@ -226,7 +231,7 @@ export default [
           {
             path: '/form/advanced-form',
             name: 'advancedform',
-            authority: ['admin'],
+            //authority: ['admin'],
             component: './Forms/AdvancedForm',
           },
         ],
@@ -297,7 +302,7 @@ export default [
           {
             path: '/profile/advanced',
             name: 'advanced',
-            authority: ['admin'],
+            //authority: ['admin'],
             component: './Profile/AdvancedProfile',
           },
         ],

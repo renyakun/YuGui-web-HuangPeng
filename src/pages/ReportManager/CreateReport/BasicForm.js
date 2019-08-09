@@ -39,7 +39,7 @@ const plainOptions = ['解体、清洗、校验', '研磨阀芯', '研磨阀座'
 
 @connect(({ valvereport, loading }) => ({
     valvereport,
-    loading: loading.effects['valvereport/queryResource'],
+    loading: loading.effects['valvereport/createValveReport'],
 }))
 
 @Form.create()
@@ -52,7 +52,7 @@ class BasicForm extends PureComponent {
             if (!err) {
                 console.log(values);
                 this.props.dispatch({
-                    type: 'valvereport/queryResource',
+                    type: 'valvereport/createValveReport',
                     payload: values,
                 });
             }

@@ -19,17 +19,18 @@ class Mytask extends PureComponent {
         this.getNotifyUser();
     }
     getNotifyUser() {
-        this.props.dispatch({
+        const { dispatch } = this.props;
+        dispatch({
             type: 'userseting/fetchUserNotifyInfo',
         });
     }
 
     render() {
         const { loading, notifyinfo } = this.props;
-
-        return (
+        console.log("notifyinof:", notifyinfo)
+        return (//
             <PageHeaderWrapper>
-                <Card bordered={false} title="待办任务" loading={loading} >
+                <Card bordered={false} title="待办任务"  loading={loading}>
                     <Link to={{ pathname: '/workplatform/waitcheckList' }}>
                         待审核报告:{notifyinfo['checkNum']}份
                     </Link>

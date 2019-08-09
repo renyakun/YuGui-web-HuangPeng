@@ -20,7 +20,7 @@ import Exception403 from '../pages/Exception/403';
 
 const { Content } = Layout;
 
-// Conversion router to menu.
+// Conversion router to menu. 将路由器转换为菜单
 function formatter(data, parentAuthority, parentName) {
   return data
     .map(item => {
@@ -40,7 +40,7 @@ function formatter(data, parentAuthority, parentName) {
         };
         if (item.routes) {
           const children = formatter(item.routes, item.authority, locale);
-          // Reduce memory usage
+          // Reduce memory usage 减少内存使用
           result.children = children;
         }
         delete result.routes;
@@ -97,7 +97,7 @@ class BasicLayout extends React.PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'user/fetchCurrent',
+      type: 'login/login',
     });
     dispatch({
       type: 'setting/getSetting',
@@ -117,7 +117,7 @@ class BasicLayout extends React.PureComponent {
     });
   }
 
-  componentDidUpdate(preProps) {
+  componentDidUpdate(preProps) { //移动端
     // After changing to phone mode,
     // if collapsed is true, you need to click twice to display
     this.breadcrumbNameMap = this.getBreadcrumbNameMap();
@@ -178,13 +178,13 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return '御圭·特种设备检测系统';
     }
     const message = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${message} - Ant Design Pro`;
+    return `御圭·特种设备检测系统-${message} `;
   };
 
   getLayoutStyle = () => {
@@ -229,6 +229,7 @@ class BasicLayout extends React.PureComponent {
       navTheme,
       layout: PropsLayout,
       children,
+      account,
       location: { pathname },
     } = this.props;
     const { isMobile, menuData } = this.state;
@@ -283,14 +284,18 @@ class BasicLayout extends React.PureComponent {
             )}
           </ContainerQuery>
         </DocumentTitle>
-        {this.renderSettingDrawer()}
+        {/* {this.renderSettingDrawer()} */}
       </React.Fragment>
     );
   }
 }
 
-export default connect(({ global, setting }) => ({
+export default connect(({ global, setting , login}) => ({
   collapsed: global.collapsed,
   layout: setting.layout,
+  status: login.status,
+  currentAuthority: login.currentAuthority,
+  enable: login.enable,
+  account: login.account,
   ...setting,
 }))(BasicLayout);

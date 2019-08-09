@@ -1,5 +1,6 @@
 // 必须引入
 import React, { PureComponent } from "react";
+import { Card } from 'antd';
 //面包屑
 import PageHeaderWrapper from "@/components/PageHeaderWrapper";
 // 引入阿里dva框架，不然不能和服务端交互,必须引入
@@ -33,21 +34,21 @@ class NewPage extends PureComponent {
       // newPage命名空间，fetch是该文件中的方法，对应src/models/newPage.js，因为newPage的namespace的值newPage
       type: "newPage/fetch",
       // 参数，一般采用json格式
-      payload: { a: "1", b: "2" }
+      payload: { a: "2", b: "1" }
     });
   }
 
   render() {
     // 这里也采用了解构赋值
-    let { data } = this.props;
-    return (
+    let {  loading, data } = this.props;
+    return (//loading={loading}
       <PageHeaderWrapper>
-        <div>
+         <Card bordered={false} title="新测试"  >
           姓名：{data.userName}<br/>
           学号：{data.studentNo}<br/>
           年龄：{data.age}<br/>
           性别：{data.sex}<br/>
-        </div>
+        </Card>
       </PageHeaderWrapper>
     );
   }
