@@ -2,7 +2,7 @@ import request from '@/utils/request';
 import { stringify } from 'qs';
 
 export async function creatValveReport(params) {
-  return request(`/createValve`, {
+  return request(`/report/createValve`, {
     method: "POST",
     body: {
       ...params,
@@ -10,4 +10,9 @@ export async function creatValveReport(params) {
     },
   });
 }
+
+export async function getDetailValve(params) {
+  return request(`/report/getReportDetail?${stringify(params)}`);
+}
+
 

@@ -18,7 +18,7 @@ const reportColumns = Object.keys(newReportLabels).map(key => {
           title: newReportLabels[key],
           render: ({ reportNo }) => (
             //<AuthController auth={{ id: 61 }}>
-              <Link to={{ pathname: '/workplatform/waitchecklist/checkdetail', report: `${reportNo}` }}>
+              <Link to={{ pathname: '/workplatform/detailwaitCheck', report: `${reportNo}` }}>
                 审核报告
               </Link>
             //</AuthController>
@@ -40,14 +40,7 @@ const reportColumns = Object.keys(newReportLabels).map(key => {
 class WaitCheckList extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {
-            // waitchecklist: [{
-            //     key: '1',
-            //     reportNo: 1234,
-            //     realName: "smonua",
-            //     createTime: "2019-10-12,10:20:34"
-            // }]
-        }
+        this.state = { }
     }
 
 

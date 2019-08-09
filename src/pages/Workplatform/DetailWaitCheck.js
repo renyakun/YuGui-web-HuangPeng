@@ -1,5 +1,4 @@
 import { reportListLabels } from '@/common/labels';
-import { reportList } from '@/common/data';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { BackTop, Button, Card, Input, message, Popover, Radio, Steps } from 'antd';
@@ -9,7 +8,6 @@ import React, { Fragment, PureComponent } from 'react';
 const { Description } = DescriptionList;
 const { Step } = Steps;
 const RadioGroup = Radio.Group;
-
 const reportListKeys = Object.keys(reportListLabels);
 
 @connect(({ valvereport: { valveinfo, }, loading }) => ({
@@ -29,7 +27,6 @@ class ReportDetail extends PureComponent {
             reason: '',
         }
     }
-
     componentDidMount() {
         this.getReportDetailInfo();
     }
@@ -63,12 +60,6 @@ class ReportDetail extends PureComponent {
 
     }
 
-    onChange = (e) => {
-        this.setState({
-            agree: e.target.value,
-        });
-    }
-
     async handleCommit() {
         const { agree, reason, reportNo } = this.state;
 
@@ -93,6 +84,12 @@ class ReportDetail extends PureComponent {
     }
 
 
+    onChange = (e) => {
+        this.setState({
+            agree: e.target.value,
+        });
+    }
+
     render() {
         const {
             welcome,
@@ -109,7 +106,7 @@ class ReportDetail extends PureComponent {
         const popoverContent = (
             <div style={{ width: 160 }}>
                 耗时：2小时25分钟
-        </div>
+          </div>
         );
 
         const customDot = (dot, { status }) =>
@@ -129,9 +126,7 @@ class ReportDetail extends PureComponent {
                     <Fragment>
                         创建人:{historyInfo["realName"]}
                     </Fragment>
-                    <div>
-                        {historyInfo["createTime"]}
-                    </div>
+                    <div>{historyInfo["createTime"]}</div>
                 </div>
             );
         }
@@ -145,24 +140,19 @@ class ReportDetail extends PureComponent {
         }
 
 
-
-
-
-
-
         return (
             <PageHeaderWrapper>
-                <Card bordered={false} title="基础信息" >
-                    <DescriptionList>
+                <Card bordered={false} title="基础信息" loading={loading}>
+                    <DescriptionList style={{ marginBottom: 24 }}>
                         {reportListKeys.map((item, i) => (
                             <Description key={item} term={reportListLabels[item]}>
-                                {reportListLabels[item] == "维护检修情况说明" ? reportList[item] + "" : reportList[item]}
+                                {reportListLabels[item] == "维护检修情况说明" ? reportInfo[item] + "" : reportInfo[item]}
                             </Description>
                         ))}
                     </DescriptionList>
                 </Card>
 
-                <Card bordered={false} title="流程进度" style={{ marginTop: 24 }}>
+                <Card title="流程进度" style={{ marginTop: 24 }} bordered={false}>
                     <Steps direction='horizontal' progressDot={customDot} current={flag}>
                         <Step title="新建报告" description={desc1} />
                         <Step title="审核报告" description={desc2} />
@@ -194,7 +184,7 @@ class ReportDetail extends PureComponent {
                                 size="large"
                                 type="primary"
                                 onClick={this.handleCommit.bind(this)}
-                            //loading={loading}
+                                loading={loading}
                             >
                                 提交
                    </Button>
@@ -208,10 +198,10 @@ class ReportDetail extends PureComponent {
 
                         <div style={{ display: agree ? 'none' : 'block' }}>
                             审核不通过
-                        </div>
+            </div>
                         <div style={{ display: agree ? 'block' : 'none' }}>
                             审核通过
-                        </div>
+            </div>
                     </Card>
                 </div>
                 <BackTop />

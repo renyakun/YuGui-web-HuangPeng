@@ -40,11 +40,6 @@ class WaitApprveList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            // waitapprveList: [{
-            //     reportNo: 1234,
-            //     realName: "smonua",
-            //     createTime: "2019-10-12,10:20:34"
-            // }]
         }
     }
 

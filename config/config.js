@@ -73,7 +73,7 @@ export default {
     '/report': {
       target: 'http://192.168.101.7:8080',
       changeOrigin: true,
-      pathRewrite: { '^/report': '' },
+      //pathRewrite: { '^/report': '' },
     },
   },
   ignoreMomentLocale: true,

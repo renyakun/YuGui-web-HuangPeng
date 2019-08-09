@@ -1,20 +1,20 @@
 import request from '@/utils/request';
 import { stringify } from 'qs';
 
-
+///
 export async function getUserInfo() {
-    return request(`/getuser`);
+    return request(`/report/user/getuser`);
 }
 
 export async function getUserNotifyInfo() {
-  return request(`/getUserNotifyInfo`);
+  return request(`/report/getUserNotifyInfo`);
 }
 
 export async function getWaitCheckList() {
-  return request(`/getWaitCheckList`);
+  return request(`/report/getWaitCheckList`);
 }
 
 export async function getWaitApproveList() {
-  return request(`/getWaitApproveList`);
+  return request(`/report/getWaitApproveList`);
 }
 
