@@ -68,16 +68,19 @@ export default [
           {
             path: '/workplatform/mytask',
             name: 'mytask',
+            icon: 'radar-chart',
             component: './Workplatform/MyTask',
           },
           {
             path: '/workplatform/waitcheckList',
             name: 'waitcheckList',
+            icon: 'radar-chart',
             component: './Workplatform/WaitCheckList',
           },
           {
             path: '/workplatform/waitapprveList',
             name: 'waitapprveList',
+            icon: 'radar-chart',
             component: './Workplatform/WaitApprveList',
           },
           {
@@ -144,6 +147,7 @@ export default [
           {
             path: '/system/info',
             name: 'info',
+            icon: 'radar-chart',
             component: './system/info',
           },
         ]
