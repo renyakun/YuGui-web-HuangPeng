@@ -1,9 +1,8 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'dva';
-import Link from 'umi/link';
-import { Card, Row, Col, Table, Icon ,Divider, Tag } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-//import AuthController from '@/components/Bdp/AuthController';
+import { Card, Table } from 'antd';
+import { connect } from 'dva';
+import React, { PureComponent } from 'react';
+import Link from 'umi/link';
 
 const newReportLabels = {
     reportNo: '报告编号',
@@ -17,11 +16,9 @@ const reportColumns = Object.keys(newReportLabels).map(key => {
         return {
           title: newReportLabels[key],
           render: ({ reportNo }) => (
-            //<AuthController auth={{ id: 61 }}>
               <Link to={{ pathname: '/workplatform/detailwaitCheck', report: `${reportNo}` }}>
                 审核报告
               </Link>
-            //</AuthController>
           ),
         };
     }

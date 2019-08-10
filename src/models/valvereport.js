@@ -7,7 +7,8 @@ import {
     getCheckUserList,
     getApproveUserList,
     getCheckedReportList,
-    getApproveReportList
+    getApproveReportList,
+    getFileReportList
 } from '@/services/valverserver';
 
 export default {
@@ -27,13 +28,14 @@ export default {
     effects: {
         *createValveReport({ payload }, { call, put }) {
             const res = yield call(creatValveReport, payload);
+            console.log("res:", res)
             if (res) {
                 if (res.ok) {
                     const reportno = res.data;
                     console.log("report:", reportno)
                     yield put(
                         routerRedux.push({
-                            pathname: '/report/detail',//
+                            pathname: '/reportmanager/myreportlist/newlist',//提交审核,选择报告审核人员
                             state: { reportno },
                         })
                     );
@@ -136,6 +138,21 @@ export default {
                     yield put({
                         type: 'saveList',
                         payload: { approvedreportlist },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *fetchApproveFilelist(_, { call, put }) {
+            const res = yield call(getFileReportList);
+            if (res) {
+                if (res.ok) {
+                    const approvedfilelist = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { approvedfilelist },
                     });
                 } else {
                     message.error(res.errMsg);

@@ -1,4 +1,4 @@
-import { Button, Dropdown, Icon, Menu, Tag ,Spin} from 'antd';
+import { Button, Dropdown, Icon, Menu, Tag, Spin,ConfigProvider} from 'antd';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
@@ -39,9 +39,7 @@ export default class GlobalHeaderRight extends PureComponent {
         {account ? (
           <Dropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
-              {/* <Icon type="user" style={{ fontSize: '20px' }} /> */}
-              <span className={styles.name}>{account}</span>
-              <Icon type="caret-down" style={{ fontSize: '20px' }} />
+              <Button type="link" icon="caret-down" className={styles.name}>{account}</Button>
             </span>
           </Dropdown>
         ) : (

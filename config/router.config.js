@@ -25,6 +25,7 @@ export default [
         path: '/templent',
         name: 'templent',
         icon: 'snippets',
+        hideInMenu: 'true',
         component: './templent',
       },
 
@@ -33,6 +34,7 @@ export default [
         path: '/house',
         name: 'house',
         icon: 'home',
+        hideInMenu: 'true',
         routes: [
           {
             path: '/house/resource',
@@ -48,8 +50,7 @@ export default [
           },
           {
             path: '/house/analysis',
-            name: 'analysis',
-            hideInMenu: 'true',
+            name: 'analysis', 
             component: './haoke/house/NewAnalysis',
           },
           {
@@ -134,6 +135,27 @@ export default [
             icon: 'radar-chart',
             component: './reportmanager/myreportlist/filelist',
           },
+          {
+            path: '/reportmanager/handlereport/reportdetail',
+            name: 'reportdetail',
+            icon: 'radar-chart',
+            hideInMenu: 'true',
+            component: './reportmanager/handlereport/reportdetail',
+          },
+          {
+            path: '/reportmanager/handlereport/reportcheck',
+            name: 'reportcheck',
+            icon: 'radar-chart',
+            hideInMenu: 'true',
+            component: './reportmanager/handlereport/reportcheck',
+          },
+          {
+            path: '/reportmanager/handlereport/reportapprove',
+            name: 'reportapprove',
+            icon: 'radar-chart',
+            hideInMenu: 'true',
+            component: './reportmanager/handlereport/reportapprove',
+          },
         ],
       },
 
@@ -142,7 +164,7 @@ export default [
         path: '/system',
         name: 'system',
         icon: 'radar-chart',
-        //hideInMenu: 'true',
+        hideInMenu: 'true',
         routes: [
           {
             path: '/system/info',
@@ -250,7 +272,6 @@ export default [
           {
             path: '/list/table-list',
             name: 'searchtable',
-            //hideInMenu: 'true',
             component: './List/TableList',
           },
           {

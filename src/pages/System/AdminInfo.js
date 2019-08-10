@@ -33,6 +33,7 @@ class AdminInfo extends PureComponent {
 
     render() {
         const { info, loading } = this.props;
+        console.log("info:",info);
         return (
             <Card bordered={false} title="基本信息" loading={loading}>
                 <DescriptionList>

@@ -1,52 +1,55 @@
 import { reportListLabels } from '@/common/labels';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import {checkResult} from '@/services/valverserver';
-import { BackTop, Button, Card, Input, message, Popover, Radio, Steps } from 'antd';
+import { addNotifyApproveUser } from '@/services/valverserver';
+import { Button, Card, message, Popover, Select, Steps } from 'antd';
 import { connect } from 'dva';
 import React, { Fragment, PureComponent } from 'react';
+import styles from './styles.less';
 
 const { Description } = DescriptionList;
 const { Step } = Steps;
-const RadioGroup = Radio.Group;
+const SelectOption = Select.Option;
 const reportListKeys = Object.keys(reportListLabels);
 
-@connect(({ valvereport: { valveinfo, }, loading }) => ({
+@connect(({ valvereport: { valveinfo, approveuserlist }, loading }) => ({
     valveinfo,
+    approveuserlist,
     loading: loading.effects['valvereport/getValveReportInfo'],
-}))
+  }))
 
 
-class DetailWaitCheck extends PureComponent {
+class ReportCheck extends PureComponent {
+
     constructor(props) {
         super(props);
         this.state = {
             welcome: true,
+            approveuser: '',
             realname: '',
             reportNo: '',
-            agree: true,
-            reason: '',
         }
     }
     componentDidMount() {
         this.getReportDetailInfo();
+        this.fetchApproveUserList();
     }
-
+    
 
     getReportDetailInfo() {
         const { location, dispatch } = this.props;
-        const { report } = location;
+        const {  report } = location; 
         let reportno
-        if (report) {
-            sessionStorage.setItem('detailreportno', report);
-            reportno = report
-        } else {
-            reportno = sessionStorage.getItem('detailreportno');
+        if(report){
+           sessionStorage.setItem('detailreportno',report); 
+           reportno = report
+        }else {
+           reportno = sessionStorage.getItem('detailreportno');
         }
         this.setState({
-            reportNo: reportno,
-        });
-
+                reportNo: reportno,
+          });
+          
         dispatch({
             type: 'valvereport/getValveReportInfo',
             payload: reportno,
@@ -54,26 +57,36 @@ class DetailWaitCheck extends PureComponent {
 
     }
 
-    handleInput(e) {
-        this.setState({
-            reason: e.target.value,
-        });
 
+    fetchApproveUserList() {
+        this.props.dispatch({
+            type: 'valvereport/fetchApproveUserList',
+        });
     }
 
-    async handleCommit() {
-        const { agree, reason, reportNo } = this.state;
-        console.log('reason:', reason);
-        let flag = 2
-        if (!agree) {
-            flag = 3
-        }
 
-        const res = await checkResult({ reportNo, reason, flag });
-        console.log('res:', res);
+    handleSelect(value) {
+        const id = value;
+        if (id) {
+
+            const user = this.props.approveuserlist.find(item => item.userName === id);
+            this.setState({
+                approveuser: id,
+                realname: user.realName,
+            });
+        }
+    }
+
+
+    async handleCommit() {
+        const { approveuser, reportNo } = this.state;
+        let userName = approveuser
+
+        const res = await addNotifyApproveUser({ userName, reportNo });
+
         if (res) {
             if (res.ok) {
-                message.success('审核通过');
+                message.success('已将报告向审批人员提交');
                 this.setState({
                     welcome: false,
                 });
@@ -84,20 +97,14 @@ class DetailWaitCheck extends PureComponent {
     }
 
 
-    onChange = (e) => {
-        this.setState({
-            agree: e.target.value,
-        });
-    }
-
     render() {
         const {
             welcome,
+            approveuser,
             realname,
-            agree,
         } = this.state;
-        const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
-        console.log("welcome:", welcome)
+        const { valveinfo: { reportInfo, historyInfo, }, approveuserlist, loading } = this.props;
+        console.log("approveuserlist:", approveuserlist)
         let flag = 0;
         if (historyInfo) {
             const { modifyFlag } = historyInfo
@@ -106,7 +113,7 @@ class DetailWaitCheck extends PureComponent {
         const popoverContent = (
             <div style={{ width: 160 }}>
                 耗时：2小时25分钟
-          </div>
+	  </div>
         );
 
         const customDot = (dot, { status }) =>
@@ -134,15 +141,15 @@ class DetailWaitCheck extends PureComponent {
             desc2 = (
                 <div >
                     <Fragment>
+                        审核人:{historyInfo["checkRealName"]}
                     </Fragment>
+                    <div>{historyInfo["checkTime"]}</div>
                 </div>
             );
         }
-
-
         return (
             <PageHeaderWrapper>
-                <Card bordered={false} title="基础信息" loading={loading}>
+                <Card title="基础信息" loading={loading}>
                     <DescriptionList style={{ marginBottom: 24 }}>
                         {reportListKeys.map((item, i) => (
                             <Description key={item} term={reportListLabels[item]}>
@@ -162,24 +169,17 @@ class DetailWaitCheck extends PureComponent {
                 </Card>
 
                 <div style={{ display: welcome ? 'block' : 'none' }}>
-                    <Card title="提交审核" style={{ marginTop: 24 }} bordered={false}>
-                        <div style={{ marginBottom: 24 }}>
-                            <RadioGroup onChange={this.onChange} value={this.state.agree}>
-                                <Radio value={true}>审核通过</Radio>
-                                <Radio value={false}>审核不通过</Radio>
-                            </RadioGroup>
-                        </div>
-
-                        <div style={{ display: agree ? 'none' : 'block' }}>
-                            <Input
-                                size="large"
-                                placeholder="请输入不通过理由"
-                                onChange={this.handleInput.bind(this)}
-                            />
-
-                        </div>
-
-                        <div style={{ marginTop: 24 }}>
+                    <Card title="提交审批" style={{ marginTop: 24 }} bordered={false}>
+                        <div className={styles.inputs}>
+                            选择审批人：
+               <Select
+                                className={styles.input}
+                                placeholder="请选择报告审批人员"
+                                onChange={this.handleSelect.bind(this)}
+                                allowClear
+                            >
+                                {approveuserlist.map(item => <SelectOption key={item.userName}>{item.realName}</SelectOption>)}
+                            </Select>
                             <Button
                                 size="large"
                                 type="primary"
@@ -187,27 +187,22 @@ class DetailWaitCheck extends PureComponent {
                                 loading={loading}
                             >
                                 提交
-                   </Button>
-
+            </Button>
                         </div>
 
                     </Card>
                 </div>
                 <div style={{ display: welcome ? 'none' : 'block' }}>
-                    <Card title="审核结果" style={{ marginTop: 24 }} bordered={false}>
+                    <Card title="已经提交审核" style={{ marginTop: 24 }} bordered={false}>
+                        <div className={styles.inputs}>
+                            审核人:{realname}
+                        </div>
 
-                        <div style={{ display: agree ? 'none' : 'block' }}>
-                            审核不通过
-            </div>
-                        <div style={{ display: agree ? 'block' : 'none' }}>
-                            审核通过
-            </div>
                     </Card>
                 </div>
-                <BackTop />
             </PageHeaderWrapper>
-        )
+        );
     }
 }
 
-export default DetailWaitCheck;
+export default ReportCheck;

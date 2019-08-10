@@ -2,6 +2,8 @@ import { fileLabels } from '@/common/labels';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { Card, Table, BackTop } from 'antd';
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import Link from 'umi/link';
 
 
 const fileColumns = Object.keys(fileLabels).map(key => {
@@ -9,9 +11,9 @@ const fileColumns = Object.keys(fileLabels).map(key => {
         return {
             title: fileLabels[key],
             render: ({ reportNo }) => (
-                <a>
-                    报告打印
-              </a>
+                <Link to={{ pathname: '/', report: `${reportNo}` }}>
+                    打印报告
+              </Link>
             ),
         };
     }
@@ -22,33 +24,38 @@ const fileColumns = Object.keys(fileLabels).map(key => {
     };
 });
 
+
+@connect(({  valvereport: { approvedfilelist }, loading }) => ({
+    approvedfilelist,
+    listLoading: loading.effects['valvereport/fetchApproveFilelist'],
+}))
+
 class Filelist extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            filelist: [{
-                reportNo: 2134124,
-                createRealName: 'smonua',
-                createTime: '2019-10-12,10:20:34',
-                checkRealName: 'smonua',
-                checkTime: '2019-10-12,10:20:34',
-                approveRealName: 'smonua',
-                approveTime: '2019-10-12,10:20:34',
-                fileRealName: 'smonua',
-                fileTime: '2019-10-12,10:20:34',
-            }]
         }
     }
 
+    componentDidMount() {
+        this.fetchFilelist();
+    }
+    fetchFilelist() {
+        this.props.dispatch({
+            type: 'valvereport/fetchApproveFilelist',
+        }); 
+    }
+
     render() {
+        const { approvedfilelist, listLoading } = this.props;
         return (
             <PageHeaderWrapper>
-                <Card bordered={false} title="我的归档报告">
+                <Card bordered={false} title="我的归档报告" loading={listLoading}>
                     <Table
-                        dataSource={this.state.filelist}
+                        dataSource={approvedfilelist}
                         columns={fileColumns}
                         pagination={false}
-                        //loading={listLoading}
+                        loading={listLoading}
                         rowKey="reportNo"
                     />
                 </Card>

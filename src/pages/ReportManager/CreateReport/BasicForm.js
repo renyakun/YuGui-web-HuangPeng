@@ -50,7 +50,7 @@ class BasicForm extends PureComponent {
         const { dispatch, form } = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log(values);
+                console.log("values:",values);
                 this.props.dispatch({
                     type: 'valvereport/createValveReport',
                     payload: values,
@@ -170,7 +170,7 @@ class BasicForm extends PureComponent {
                         </FormItem>
                         <FormItem {...formItemLayout} label={"安全阀型号"}>
                             {getFieldDecorator('valveModel', {
-                                initialValue: 'A4K8-16C',
+                                initialValue: '1',
                                 rules: [
                                     { required: true, message: '请输入安全阀型号' },
                                 ],
@@ -188,9 +188,9 @@ class BasicForm extends PureComponent {
                                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
                                 >
-                                    <Option value="A4K8-16C">A4K8-16C</Option>
-                                    <Option value="A5H4-13C">A5H4-13C</Option>
-                                    <Option value="A8E3-16CC">A8E3-16C</Option>
+                                    <Option value="1">A4K8-16C</Option>
+                                    <Option value="2">A5H4-13C</Option>
+                                    <Option value="3">A8E3-16C</Option>
                                 </Select>
                             )}
                         </FormItem>
@@ -203,16 +203,16 @@ class BasicForm extends PureComponent {
                         </FormItem>
                         <FormItem {...formItemLayout} label={"工作介质"}>
                             {getFieldDecorator('workMedium', {
-                                initialValue: '水',
+                                initialValue: '1',
                                 rules: [
                                     { required: true, message: '请输入工作介质', },
                                 ],
                             })(
                                 <Select style={{ width: '60%' }} onChange={handleChange}>
-                                    <Option value="空气">空气</Option>
-                                    <Option value="水">水</Option>
-                                    <Option value="蒸汽">蒸汽</Option>
-                                    <Option value="液压油">液压油</Option>
+                                    <Option value="1">空气</Option>
+                                    <Option value="2">水</Option>
+                                    <Option value="3">蒸汽</Option>
+                                    <Option value="4">液压油</Option>
                                 </Select>
 
                             )}
@@ -240,17 +240,17 @@ class BasicForm extends PureComponent {
                         </FormItem>
                         <FormItem {...formItemLayout} label={"校验介质"}>
                             {getFieldDecorator('checkMedium', {
-                                initialValue: '水',
+                                initialValue: '1',
                                 rules: [
                                     { required: true, message: '请输入校验介质', },
                                 ],
                             })(
                                 <Select style={{ width: '60%' }} onChange={handleChange}>
-                                    <Option value="压缩空气">压缩空气</Option>
-                                    <Option value="氮气">氮气</Option>
-                                    <Option value="蒸汽">蒸汽</Option>
-                                    <Option value="水">水</Option>
-                                    <Option value="液压油">液压油</Option>
+                                    <Option value="1">压缩空气</Option>
+                                    <Option value="2">氮气</Option>
+                                    <Option value="3">蒸汽</Option>
+                                    <Option value="4">水</Option>
+                                    <Option value="5">液压油</Option>
                                 </Select>
                             )}
                         </FormItem>
@@ -270,14 +270,14 @@ class BasicForm extends PureComponent {
                         </FormItem>
                         <FormItem {...formItemLayout} label={"校验结果"}>
                             {getFieldDecorator('checkResult', {
-                                initialValue: '合格',
+                                initialValue: '1',
                                 rules: [
                                     { required: true, message: '请输入校验结果', },
                                 ],
                             })(
                                 <Select style={{ width: '100%' }}>
-                                    <Option value="合格">合格</Option>
-                                    <Option value="不合格">不合格</Option>
+                                    <Option value="1">合格</Option>
+                                    <Option value="2">不合格</Option>
                                 </Select>
                             )}
                         </FormItem>

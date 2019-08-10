@@ -22,10 +22,17 @@ export const reportListLabels = {
 };
 
 export const userInfoLabels = {
-    user_name: '用户姓名',
+    userName: '用户姓名',
     phone: '电话',
     email: '邮箱',
-    user_level: '职位',
+    userLevel: '职位',
+};
+
+export const newListLabels = {
+    reportNo: '报告编号',
+    createName: '创建人',
+    createTime: '创建时间',
+    actions: '操作',
 };
 
 export const checkedReportLabels = {

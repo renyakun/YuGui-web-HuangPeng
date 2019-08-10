@@ -2,6 +2,8 @@ import { checkedReportLabels } from '@/common/labels';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { Card, Table, BackTop } from 'antd';
 import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import Link from 'umi/link';
 
 
 const checkedColumns = Object.keys(checkedReportLabels).map(key => {
@@ -9,9 +11,9 @@ const checkedColumns = Object.keys(checkedReportLabels).map(key => {
         return {
             title: checkedReportLabels[key],
             render: ({ reportNo }) => (
-                <a>
+                <Link to={{ pathname: '/reportmanager/handlereport/reportcheck', report: `${reportNo}` }}>
                     提交审批
-              </a>
+                </Link>
             ),
         };
     }
@@ -22,29 +24,38 @@ const checkedColumns = Object.keys(checkedReportLabels).map(key => {
     };
 });
 
+
+@connect(({  valvereport: { checkedreportlist }, loading }) => ({
+    checkedreportlist,
+    listLoading: loading.effects['valvereport/fetchCheckReportList'],
+}))
+
 class CheckedList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            checkedreportlist: [{
-                reportNo: 2134124,
-                createRealName: 'smonua',
-                createTime: '2019-10-12,10:20:34',
-                checkRealName: 'smonua',
-                checkTime: '2019-10-12,10:20:34',
-            }]
         }
     }
 
+    componentDidMount() {
+        this.fetchNewList();
+    }
+    fetchNewList() {
+        this.props.dispatch({
+            type: 'valvereport/fetchCheckReportList',
+        });
+    }
+
     render() {
+        const { checkedreportlist, listLoading } = this.props;
         return (
             <PageHeaderWrapper>
-                <Card bordered={false} title="我的审核报告">
+                <Card bordered={false} title="我的审核报告" loading={listLoading}>
                     <Table
-                        dataSource={this.state.checkedreportlist}
+                        dataSource={checkedreportlist}
                         columns={checkedColumns}
                         pagination={false}
-                        //loading={listLoading}
+                        loading={listLoading}
                         rowKey="reportNo"
                     />
                 </Card>

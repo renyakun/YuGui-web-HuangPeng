@@ -1,9 +1,8 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'dva';
-import Link from 'umi/link';
-import { Card, Row, Col, Table, Icon, Divider, Tag } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-// import AuthController from '@/components/Bdp/AuthController';
+import { Card, Table } from 'antd';
+import { connect } from 'dva';
+import React, { PureComponent } from 'react';
+import Link from 'umi/link';
 
 const newReportLabels = {
     reportNo: '报告编号',
@@ -17,8 +16,7 @@ const reportColumns = Object.keys(newReportLabels).map(key => {
         return {
             title: newReportLabels[key],
             render: ({ reportNo }) => (
-                // <AuthController auth={{ id: 61 }}></AuthController>
-                <Link to={{ pathname: '/workplatform/waitapprovelist/approvedetail', report: `${reportNo}` }}>
+                <Link to={{ pathname: '/workplatform/detailwaitApprove', report: `${reportNo}` }}>
                     审批报告
               </Link>
             ),
@@ -31,7 +29,7 @@ const reportColumns = Object.keys(newReportLabels).map(key => {
     };
 });
 
-@connect(({  userseting: { waitapprovelist, }, loading }) => ({
+@connect(({ userseting: { waitapprovelist, }, loading }) => ({
     waitapprovelist,
     listLoading: loading.effects['userseting/fetchWaitApproveList'],
 }))
@@ -56,7 +54,7 @@ class WaitApprveList extends PureComponent {
         const { waitapprovelist, listLoading } = this.props;
         return (
             <PageHeaderWrapper>
-                <Card bordered={false} title="待审核报告列表">
+                <Card bordered={false} title="待审核报告列表" loading={listLoading}>
 
                     <Table
                         dataSource={waitapprovelist}

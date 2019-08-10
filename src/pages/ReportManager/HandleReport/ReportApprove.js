@@ -1,47 +1,45 @@
 import { reportListLabels } from '@/common/labels';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import {checkResult} from '@/services/valverserver';
-import { BackTop, Button, Card, Input, message, Popover, Radio, Steps } from 'antd';
+import { addFileReport } from '@/services/valverserver';
+import { Button, Card, message, Popover, Select, Steps } from 'antd';
 import { connect } from 'dva';
 import React, { Fragment, PureComponent } from 'react';
+import styles from './styles.less';
 
 const { Description } = DescriptionList;
 const { Step } = Steps;
-const RadioGroup = Radio.Group;
+const SelectOption = Select.Option;
 const reportListKeys = Object.keys(reportListLabels);
 
-@connect(({ valvereport: { valveinfo, }, loading }) => ({
+@connect(({ valvereport: { valveinfo }, loading }) => ({
     valveinfo,
     loading: loading.effects['valvereport/getValveReportInfo'],
 }))
 
 
-class DetailWaitCheck extends PureComponent {
+class ReportDetail extends PureComponent {
+
     constructor(props) {
         super(props);
         this.state = {
             welcome: true,
-            realname: '',
             reportNo: '',
-            agree: true,
-            reason: '',
         }
     }
     componentDidMount() {
         this.getReportDetailInfo();
     }
 
-
     getReportDetailInfo() {
         const { location, dispatch } = this.props;
         const { report } = location;
         let reportno
         if (report) {
-            sessionStorage.setItem('detailreportno', report);
+            sessionStorage.setItem('approvereportno', report);
             reportno = report
         } else {
-            reportno = sessionStorage.getItem('detailreportno');
+            reportno = sessionStorage.getItem('approvereportno');
         }
         this.setState({
             reportNo: reportno,
@@ -54,26 +52,15 @@ class DetailWaitCheck extends PureComponent {
 
     }
 
-    handleInput(e) {
-        this.setState({
-            reason: e.target.value,
-        });
-
-    }
 
     async handleCommit() {
-        const { agree, reason, reportNo } = this.state;
-        console.log('reason:', reason);
-        let flag = 2
-        if (!agree) {
-            flag = 3
-        }
+        const { reportNo } = this.state;
 
-        const res = await checkResult({ reportNo, reason, flag });
-        console.log('res:', res);
+        const res = await addFileReport({ reportNo });
+
         if (res) {
             if (res.ok) {
-                message.success('审核通过');
+                message.success('归档成功');
                 this.setState({
                     welcome: false,
                 });
@@ -84,20 +71,11 @@ class DetailWaitCheck extends PureComponent {
     }
 
 
-    onChange = (e) => {
-        this.setState({
-            agree: e.target.value,
-        });
-    }
-
     render() {
         const {
             welcome,
-            realname,
-            agree,
         } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
-        console.log("welcome:", welcome)
         let flag = 0;
         if (historyInfo) {
             const { modifyFlag } = historyInfo
@@ -106,7 +84,7 @@ class DetailWaitCheck extends PureComponent {
         const popoverContent = (
             <div style={{ width: 160 }}>
                 耗时：2小时25分钟
-          </div>
+            </div>
         );
 
         const customDot = (dot, { status }) =>
@@ -120,6 +98,7 @@ class DetailWaitCheck extends PureComponent {
 
         let desc1 = null
         let desc2 = null
+        let desc3 = null
         if (flag >= 0) {
             desc1 = (
                 <div >
@@ -130,19 +109,32 @@ class DetailWaitCheck extends PureComponent {
                 </div>
             );
         }
-        if (flag >= 1) {
+        if (flag >= 2) {
             desc2 = (
                 <div >
                     <Fragment>
+                        审核人:{historyInfo["checkRealName"]}
                     </Fragment>
+                    <div>{historyInfo["checkTime"]}</div>
                 </div>
             );
         }
 
+        if (flag >= 4) {
+            desc3 = (
+                <div >
+                    <Fragment>
+                        审批人:{historyInfo["approveRealName"]}
+                    </Fragment>
+                    <div>{historyInfo["approveTime"]}</div>
+                </div>
+            );
+        }
 
+        flag = flag - 2
         return (
             <PageHeaderWrapper>
-                <Card bordered={false} title="基础信息" loading={loading}>
+                <Card title="基础信息" loading={loading}>
                     <DescriptionList style={{ marginBottom: 24 }}>
                         {reportListKeys.map((item, i) => (
                             <Description key={item} term={reportListLabels[item]}>
@@ -156,58 +148,33 @@ class DetailWaitCheck extends PureComponent {
                     <Steps direction='horizontal' progressDot={customDot} current={flag}>
                         <Step title="新建报告" description={desc1} />
                         <Step title="审核报告" description={desc2} />
-                        <Step title="审批报告" />
+                        <Step title="审批报告" description={desc3} />
                         <Step title="归档报告" />
                     </Steps>
                 </Card>
 
                 <div style={{ display: welcome ? 'block' : 'none' }}>
-                    <Card title="提交审核" style={{ marginTop: 24 }} bordered={false}>
-                        <div style={{ marginBottom: 24 }}>
-                            <RadioGroup onChange={this.onChange} value={this.state.agree}>
-                                <Radio value={true}>审核通过</Radio>
-                                <Radio value={false}>审核不通过</Radio>
-                            </RadioGroup>
-                        </div>
-
-                        <div style={{ display: agree ? 'none' : 'block' }}>
-                            <Input
-                                size="large"
-                                placeholder="请输入不通过理由"
-                                onChange={this.handleInput.bind(this)}
-                            />
-
-                        </div>
-
-                        <div style={{ marginTop: 24 }}>
-                            <Button
-                                size="large"
-                                type="primary"
-                                onClick={this.handleCommit.bind(this)}
-                                loading={loading}
-                            >
-                                提交
-                   </Button>
-
-                        </div>
+                    <Card title="提交归档" style={{ marginTop: 24 }} bordered={false}>
+                        <Button
+                            size="large"
+                            type="primary"
+                            onClick={this.handleCommit.bind(this)}
+                            loading={loading}
+                        >
+                            提交
+                        </Button>
 
                     </Card>
                 </div>
                 <div style={{ display: welcome ? 'none' : 'block' }}>
-                    <Card title="审核结果" style={{ marginTop: 24 }} bordered={false}>
-
-                        <div style={{ display: agree ? 'none' : 'block' }}>
-                            审核不通过
-            </div>
-                        <div style={{ display: agree ? 'block' : 'none' }}>
-                            审核通过
-            </div>
+                    <Card title="已经提交归档" style={{ marginTop: 24 }} bordered={false}>
+                        <div className={styles.inputs}>
+                        </div>
                     </Card>
                 </div>
-                <BackTop />
             </PageHeaderWrapper>
-        )
+        );
     }
 }
 
-export default DetailWaitCheck;
+export default ReportDetail;
