@@ -134,7 +134,7 @@ class ReportDetail extends PureComponent {
         flag = flag - 2
         return (
             <PageHeaderWrapper>
-                <Card title="基础信息" loading={loading}>
+                <Card title="报告详情" loading={loading}>
                     <DescriptionList style={{ marginBottom: 24 }}>
                         {reportListKeys.map((item, i) => (
                             <Description key={item} term={reportListLabels[item]}>

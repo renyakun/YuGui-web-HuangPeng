@@ -11,7 +11,7 @@ const fileColumns = Object.keys(fileLabels).map(key => {
         return {
             title: fileLabels[key],
             render: ({ reportNo }) => (
-                <Link to={{ pathname: '/', report: `${reportNo}` }}>
+                <Link to={{ pathname: '/reportmanager/handlereport/reportview', report: `${reportNo}` }}>
                     打印报告
               </Link>
             ),
@@ -25,7 +25,7 @@ const fileColumns = Object.keys(fileLabels).map(key => {
 });
 
 
-@connect(({  valvereport: { approvedfilelist }, loading }) => ({
+@connect(({ valvereport: { approvedfilelist }, loading }) => ({
     approvedfilelist,
     listLoading: loading.effects['valvereport/fetchApproveFilelist'],
 }))
@@ -43,7 +43,7 @@ class Filelist extends PureComponent {
     fetchFilelist() {
         this.props.dispatch({
             type: 'valvereport/fetchApproveFilelist',
-        }); 
+        });
     }
 
     render() {

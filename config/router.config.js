@@ -156,6 +156,27 @@ export default [
             hideInMenu: 'true',
             component: './reportmanager/handlereport/reportapprove',
           },
+          {
+            path: '/reportmanager/handlereport/reportview',
+            name: 'reportview',
+            icon: 'radar-chart',
+            hideInMenu: 'true',
+            component: './reportmanager/handlereport/reportview',
+          },
+          {
+            path: '/reportmanager/handlereport/report',
+            name: 'report',
+            icon: 'radar-chart',
+            hideInMenu: 'true',
+            component: './reportmanager/handlereport/report',
+          },
+          {
+            path: '/reportmanager/handlereport/reportprint',
+            name: 'reportprint',
+            icon: 'radar-chart',
+            //hideInMenu: 'true',
+            component: './reportmanager/handlereport/reportprint',
+          }
         ],
       },
 

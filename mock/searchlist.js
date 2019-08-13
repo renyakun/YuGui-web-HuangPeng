@@ -13,7 +13,7 @@ import { parse } from 'url';
 
 const days = new Date();   // 程序计时的月从0开始取值后+1   
 const month = days.getMonth() + 1;
-const timer = "timer:" + days.getFullYear() + "-" + month + "-"
+const timer = days.getFullYear() + "-" + month + "-"
     + days.getDate() + " " + days.getHours() + ":"
     + days.getMinutes() + ":" + days.getSeconds();
 
@@ -26,24 +26,11 @@ for (let i = 0; i < 46; i += 1) {
     tableListDataSource.push({
         key: i,
         //disabled: i % 6 === 0,
-        href: 'https://ant.design',
-        avatar: [
-            'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
-            'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
-        ][i % 2],
         reportNo: `A${i}${i + 1}${i + 2}`,
         realName: Math.floor(Math.random() * 10) % 4,
         status: Math.floor(Math.random() * 10) % 4,
         //updatedAt: new Date(`2019-08-${Math.floor(i / 2) + 1}`),
         updatedAt: timer,
-
-        name: `TradeCode ${i}`,
-        title: `一个任务名称 ${i}`,
-        owner: '曲丽丽',
-        desc: '这是一段描述',
-        callNo: Math.floor(Math.random() * 1000),
-        createdAt: new Date(`2019-07-${Math.floor(i / 2) + 1}`),
-        progress: Math.ceil(Math.random() * 100),
     });
 }
 
@@ -57,15 +44,6 @@ function getRule(req, res, u) {
 
     let dataSource = tableListDataSource;
 
-    if (params.sorter) {
-        const s = params.sorter.split('_');
-        dataSource = dataSource.sort((prev, next) => {
-            if (s[1] === 'descend') {
-                return next[s[0]] - prev[s[0]];
-            }
-            return prev[s[0]] - next[s[0]];
-        });
-    }
     if (params.realName) {
         const realName = params.realName.split(',');
         let filterDataSource = [];
@@ -90,10 +68,6 @@ function getRule(req, res, u) {
             );
         });
         dataSource = filterDataSource;
-    }
-
-    if (params.name) {
-        dataSource = dataSource.filter(data => data.name.indexOf(params.name) > -1);
     }
 
     let pageSize = 10;
