@@ -2,13 +2,15 @@ import { routerRedux } from 'dva/router';
 import { message } from 'antd';
 import {
     creatValveReport,
+    getcreateReportNumber,
+    getcompanyInfo,
     getDetailValve,
     getNewReportList,
     getCheckUserList,
     getApproveUserList,
     getCheckedReportList,
     getApproveReportList,
-    getFileReportList
+    getFileReportList,
 } from '@/services/valverserver';
 
 export default {
@@ -28,17 +30,47 @@ export default {
     effects: {
         *createValveReport({ payload }, { call, put }) {
             const res = yield call(creatValveReport, payload);
-            console.log("res:", res)
             if (res) {
                 if (res.ok) {
                     const reportno = res.data;
-                    console.log("report:", reportno)
+                    //console.log("report:", reportno)
                     yield put(
                         routerRedux.push({
-                            pathname: '/reportmanager/myreportlist/newlist',//提交审核,选择报告审核人员
+                            pathname: '/report/myreportList/newlist',//提交审核,选择报告审核人员
                             state: { reportno },
                         })
                     );
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *getReportNumber(_, { call, put }) {
+            const res = yield call(getcreateReportNumber);
+            if (res) {
+                if (res.ok) {
+                    const ReportNumber = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { ReportNumber },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *fetchcompanyInfo({ payload }, { call, put }) {
+            const res = yield call(getcompanyInfo,payload);
+            if (res) {
+                if (res.ok) {
+                    const companyList = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { companyList },
+                    });
+                    localStorage.setItem('companyDataList', JSON.stringify(companyList));
                 } else {
                     message.error(res.errMsg);
                 }
@@ -54,8 +86,6 @@ export default {
             if (res) {
                 if (res.ok) {
                     const valveinfo = res.data;
-
-                    console.log("valveinfo:", valveinfo)
                     yield put({
                         type: 'saveList',
                         payload: { valveinfo },
@@ -65,7 +95,6 @@ export default {
                 }
             }
         },
-
 
         *fetchNewReportList(_, { call, put }) {
             const res = yield call(getNewReportList);
@@ -97,7 +126,6 @@ export default {
             }
         },
 
-
         *fetchCheckUserList(_, { call, put }) {
             const res = yield call(getCheckUserList);
             if (res) {
@@ -112,8 +140,6 @@ export default {
                 }
             }
         },
-
-
 
         *fetchApproveUserList(_, { call, put }) {
             const res = yield call(getApproveUserList);

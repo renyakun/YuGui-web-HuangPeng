@@ -1,9 +1,8 @@
 import React from 'react';
 
-export default function Report(props) {
-    //console.log(props);
+export default function ReportInfo(props) {
   return (
-    <>
+    <div>
       <p>
         <span>文件编号：GTXJ-B-F01-B/0</span>
         &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
@@ -79,8 +78,8 @@ export default function Report(props) {
           <tr>
             <td td colSpan={4}>
               <p>维护检修情况说明：</p>
-              <p>&emsp;□外观检查、解体、清洗、校验；&emsp;&emsp;□更换弹簧；</p>
-              <p>&emsp;□研磨阀芯；&emsp;&emsp;□更换阀芯；</p>
+              <p>{props.checkExplain}</p>
+              <br />
             </td>
           </tr>
           <tr>
@@ -108,6 +107,37 @@ export default function Report(props) {
           </tr>
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
+
+
+
+
+// import React from 'react';
+// import { Card, Descriptions } from 'antd';
+
+// const DescriptionsItem = Descriptions.Item;
+
+// function ReportInfo(props) {
+
+//   return (
+//     <Card bordered={false} >
+//       <div className="tableheader" >
+//         <p>
+//           <span>文件编号：GTXJ-B-F01-B/0</span>
+//           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+//          <span>报告编号：{props.reportNo}</span>
+//         </p>
+//         <h2>
+//           <center>广西壮族自治区特种设备检验研究院安全阀校验报告</center>
+//         </h2>
+//       </div>
+
+
+//     </Card>
+//   )
+// }
+
+
+// export default ReportInfo;

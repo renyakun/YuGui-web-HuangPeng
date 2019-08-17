@@ -74,4 +74,12 @@ export async function getFileReportList() {
   return request(`/report/getFileReportList`);
 }
 
+export async function getcreateReportNumber() {
+  return request(`/report/createReportNumber`);
+}
 
+export async function getcompanyInfo(params) {
+  return request(`/report/companyInfo?${stringify(params)}`);
+}
+
+ 

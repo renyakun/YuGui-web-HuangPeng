@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'dva';
+import { connect} from 'dva';
 import Link from 'umi/link';
 import { BackTop, Button, Card } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import Report from './Report';
+import ReportInfo from './ReportInfo';
+
 
 @connect(({ valvereport: { valveinfo }, loading }) => ({
     valveinfo,
@@ -12,8 +13,8 @@ import Report from './Report';
 class ReportView extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {};
         this.ref = React.createRef();
+        this.state = {};
     }
 
     componentDidMount() {
@@ -49,8 +50,8 @@ class ReportView extends PureComponent {
             <PageHeaderWrapper>
                 <div style={{ textAlign: 'center', marginBottom: 20 }}>
                     <Link
-                        to={{ pathname: '/reportmanager/handlereport/reportprint', report: `${reportNo}` }}
-                        target="_blank"
+                        to={{ pathname: '/report/handlereport/reportprint', report: `${reportNo}` }}
+                        //target="_blank"
                         style={{ marginRight: 10 }}
                     >
                         <Button>打印</Button>
@@ -80,8 +81,8 @@ class ReportView extends PureComponent {
                     </Button>
                 </div>
                 <div ref={this.ref}>
-                    <Card>
-                        <Report {...reportInfo} />
+                    <Card bordered={false}>
+                        <ReportInfo {...reportInfo} />
                     </Card>
                 </div>
                 <BackTop />
@@ -89,5 +90,4 @@ class ReportView extends PureComponent {
         )
     }
 }
-
 export default ReportView;

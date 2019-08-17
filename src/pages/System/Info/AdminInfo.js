@@ -1,10 +1,9 @@
-import React, { PureComponent } from 'react';
 import { userInfoLabels } from '@/common/labels';
 //import { info } from '@/common/data';
 import DescriptionList from '@/components/DescriptionList';
+import { Card } from 'antd';
 import { connect } from 'dva';
-import Link from 'umi/link';
-import { Card, BackTop } from 'antd';
+import React, { PureComponent } from 'react';
 
 
 const userInfoKeys = Object.keys(userInfoLabels);
@@ -33,9 +32,8 @@ class AdminInfo extends PureComponent {
 
     render() {
         const { info, loading } = this.props;
-        console.log("info:",info);
         return (
-            <Card bordered={false} title="基本信息" loading={loading}>
+            <Card bordered={false} loading={loading}>
                 <DescriptionList>
                     {userInfoKeys.map((item, i) => (
                         <Description key={item} term={userInfoLabels[item]}>{info[item]}</Description>

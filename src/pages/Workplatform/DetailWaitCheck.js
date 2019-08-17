@@ -64,9 +64,10 @@ class DetailWaitCheck extends PureComponent {
     async handleCommit() {
         const { agree, reason, reportNo } = this.state;
         console.log('reason:', reason);
+        console.log('agree:', agree);
         let flag = 2
         if (!agree) {
-            flag = 3
+            flag = 12
         }
 
         const res = await checkResult({ reportNo, reason, flag });

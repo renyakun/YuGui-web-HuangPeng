@@ -26,7 +26,7 @@ export default [
         name: 'templent',
         icon: 'snippets',
         hideInMenu: 'true',
-        component: './templent',
+        component: './Templent',
       },
 
       //house
@@ -34,29 +34,22 @@ export default [
         path: '/house',
         name: 'house',
         icon: 'home',
-        hideInMenu: 'true',
+        //hideInMenu: 'true',
         routes: [
           {
             path: '/house/resource',
             name: 'resource',
-            hideInMenu: 'true',
             component: './haoke/house/Resource',
           },
           {
             path: '/house/addResource',
             name: 'addResource',
-            hideInMenu: 'true',
             component: './haoke/house/AddResource',
           },
           {
             path: '/house/analysis',
             name: 'analysis', 
             component: './haoke/house/NewAnalysis',
-          },
-          {
-            path: '/house/newpage',
-            name: 'newpage',
-            component: './haoke/house/NewPage',
           },
         ],
       },
@@ -101,82 +94,75 @@ export default [
 
       //ReportManager
       {
-        path: '/reportmanager',
-        name: 'reportmanager',
+        path: '/report',
+        name: 'report',
         icon: 'radar-chart',
         routes: [
           {
-            path: '/reportmanager/createreport/basicform',
+            path: '/report/createreport/basicform',
             name: 'basicform',
             icon: 'radar-chart',
-            component: './reportmanager/createreport/basicform',
+            component: './ReportManager/CreateReport/BasicForm',
           },
           {
-            path: '/reportmanager/myreportlist/newlist',
+            path: '/report/myreportList/newlist',
             name: 'newlist',
             icon: 'radar-chart',
-            component: './reportmanager/myreportlist/newlist',
+            component: './ReportManager/MyReportList/NewList',
           },
           {
-            path: '/reportmanager/myreportlist/checkedlist',
+            path: '/report/myreportList/checkedlist',
             name: 'checkedlist',
             icon: 'radar-chart',
-            component: './reportmanager/myreportlist/checkedlist',
+            component: './ReportManager/MyReportList/CheckedList',
           },
           {
-            path: '/reportmanager/myreportlist/approvelist',
+            path: '/report/myreportList/approvelist',
             name: 'approvelist',
             icon: 'radar-chart',
-            component: './reportmanager/myreportlist/approvelist',
+            component: './ReportManager/MyReportList/ApproveList',
           },
           {
-            path: '/reportmanager/myreportlist/filelist',
+            path: '/report/myreportList/filelist',
             name: 'filelist',
             icon: 'radar-chart',
-            component: './reportmanager/myreportlist/filelist',
+            component: './ReportManager/MyReportList/FileList',
           },
           {
-            path: '/reportmanager/handlereport/reportdetail',
+            path: '/report/handlereport/reportdetail',
             name: 'reportdetail',
             icon: 'radar-chart',
             hideInMenu: 'true',
-            component: './reportmanager/handlereport/reportdetail',
+            component: './ReportManager/HandleReport/ReportDetail',
           },
           {
-            path: '/reportmanager/handlereport/reportcheck',
+            path: '/report/handlereport/reportcheck',
             name: 'reportcheck',
             icon: 'radar-chart',
             hideInMenu: 'true',
-            component: './reportmanager/handlereport/reportcheck',
+            component: './ReportManager/HandleReport/ReportCheck',
           },
           {
-            path: '/reportmanager/handlereport/reportapprove',
+            path: '/report/handlereport/reportapprove',
             name: 'reportapprove',
             icon: 'radar-chart',
             hideInMenu: 'true',
-            component: './reportmanager/handlereport/reportapprove',
+            component: './ReportManager/HandleReport/ReportApprove',
           },
           {
-            path: '/reportmanager/handlereport/reportview',
+            path: '/report/handlereport/reportview',
             name: 'reportview',
             icon: 'radar-chart',
             hideInMenu: 'true',
-            component: './reportmanager/handlereport/reportview',
+            component: './ReportManager/HandleReport/ReportView',
           },
           {
-            path: '/reportmanager/handlereport/report',
-            name: 'report',
-            icon: 'radar-chart',
-            hideInMenu: 'true',
-            component: './reportmanager/handlereport/report',
-          },
-          {
-            path: '/reportmanager/handlereport/reportprint',
+            path: '/report/handlereport/reportprint',
             name: 'reportprint',
             icon: 'radar-chart',
-            //hideInMenu: 'true',
-            component: './reportmanager/handlereport/reportprint',
-          }
+            hideInMenu: 'true',
+            component: './ReportManager/HandleReport/ReportPrint',
+          },
         ],
       },
 
@@ -191,7 +177,25 @@ export default [
             path: '/system/info',
             name: 'info',
             icon: 'radar-chart',
-            component: './system/info',
+            component: './System/Info/Info',
+            routes: [
+              {
+                path: '/system/info',
+                redirect: '/system/info/admininfo',
+              },
+              {
+                path: '/system/info/admininfo',
+                component: './System/Info/AdminInfo',
+              },
+              {
+                path: '/system/info/security',
+                component: './System/Info/Security',
+              },
+              {
+                path: '/system/info/addadmin',
+                component: './System/Info/AddAdmin',
+              },
+            ],
           },
         ]
       },
@@ -206,7 +210,7 @@ export default [
           {
             path: '/searchreport/searchreportlist',
             name: 'searchreportlist',
-            component: './searchreport/searchreportlist',
+            component: './SearchReport/SearchReportList',
           }
         ]
       },

@@ -121,7 +121,7 @@ class Security extends PureComponent {
 
 
         return (
-            <Card bordered={false} title="安全设置">
+            <Card bordered={false}>
                 <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
                     <FormItem {...formItemLayout} label="管理员姓名:" >
                         {getFieldDecorator('real_name', {

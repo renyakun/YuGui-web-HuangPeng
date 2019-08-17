@@ -10,7 +10,7 @@ const reportColumns = Object.keys(newReportLabels).map(key => {
         return {
             title: newReportLabels[key],
             render: ({ reportNo }) => (
-                <Link to={{ pathname: '/reportmanager/handlereport/reportapprove', report: `${reportNo}` }}>
+                <Link to={{ pathname: '/report/handlereport/reportapprove', report: `${reportNo}` }}>
                     报告归档
               </Link>
             ),

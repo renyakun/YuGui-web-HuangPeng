@@ -1,30 +1,24 @@
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { BackTop, Button, Card, Checkbox, Form, Icon, Input, Select } from 'antd';
+import { BackTop, Button, Card, Checkbox, Form, Icon, Input, Select, AutoComplete } from 'antd';
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'umi/locale';
-
-function handleChange(value) {
-    console.log(`selected ${value}`);
-}
-
-function onBlur() {
-    console.log('blur');
-}
-
-function onFocus() {
-    console.log('focus');
-}
-
-function onSearch(val) {
-    console.log('search:', val);
-}
 
 const { Option } = Select;
 const { Search } = Input;
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const CheckboxGroup = Checkbox.Group;
+
+
+function IndexofByKeyValue(arraytosearch, key, valuetosearch) {
+    for (var i = 0; i < arraytosearch.length; i++) {
+        if (arraytosearch[i][key] == valuetosearch) {
+            return arraytosearch[i];
+        }
+    }
+    return null;
+}
 
 const selectAfter = (
     <Select defaultValue="Mpa" style={{ width: 80 }}>
@@ -34,23 +28,104 @@ const selectAfter = (
     </Select>
 );
 const plainOptions = ['解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
+const companyDataList=JSON.parse(localStorage.getItem('companyDataList') || '[]');
+//console.log(companyDataList);
+
+this.setState({ companyData: companyDataList });
 
 
-
-@connect(({ valvereport, loading }) => ({
+@connect(({ valvereport, valvereport: { ReportNumber, companyList }, loading }) => ({
     valvereport,
-    loading: loading.effects['valvereport/createValveReport'],
+    ReportNumber,
+    companyList,
+    loading: loading.models.valvereport,
 }))
+
+
 
 @Form.create()
 class BasicForm extends PureComponent {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            reportNo: '',
+            dataSource: [],
+            companyData: [],
+            companyDataSource: [],
+            companyAddress: '',
+            companyContacts: '',
+            companyId: '',
+            telephone: '',
+        }
+    };
+    
+
+
+    handleSearch = (value) => {
+        let arr = new Array();
+        if (value.length > 0) {
+            this.state.companyData.map(v => {
+                if (v.companyUse.indexOf(value) != -1) {
+                    arr.push(v.companyUse);
+                }
+            })
+            this.setState({
+                companyDataSource: arr
+            });
+        }
+    };
+
+    handleSelect = (value) => {
+        let val = IndexofByKeyValue(this.state.companyData, "companyUse", value);
+        this.setState({
+            companyAddress: val.companyAddress,
+            companyContacts: val.companyContacts,
+            companyId: val.companyId,
+            telephone: val.telephone,
+        });
+    };
+
+    handlefilter = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
+
+    handleChange = values => {
+    //handleBlur = values => {
+        console.log(values);
+        const { dispatch } = this.props;
+        const params = {
+            companyUse: values,
+        }
+        dispatch({
+            type: 'valvereport/fetchcompanyInfo',
+            payload: params,
+        })
+    }
+
+    componentDidMount() {
+        this.getReportNumber();
+        this.fetchcompanyInfo();
+    }
+
+    fetchcompanyInfo() {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'valvereport/fetchcompanyInfo',
+        });
+    }
+
+    getReportNumber() {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'valvereport/getReportNumber',
+        });
+    }
 
     handleSubmit = e => {
         e.preventDefault();
         const { dispatch, form } = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log("values:",values);
+                console.log("values:", values);
                 this.props.dispatch({
                     type: 'valvereport/createValveReport',
                     payload: values,
@@ -59,18 +134,16 @@ class BasicForm extends PureComponent {
         })
     }
 
-    constructor(props) {
-        super(props);
-        this.state = {
 
-        }
-    };
 
     render() {
-        const { submitting } = this.props;
+
+        const { submitting, ReportNumber, companyList } = this.props;
+        this.setState({ companyData: companyList });
         const {
-            form: { getFieldDecorator, getFieldValue },
+            form: { getFieldDecorator },
         } = this.props;
+        const { dataSource } = this.state;
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
@@ -89,16 +162,19 @@ class BasicForm extends PureComponent {
             },
         };
 
+
+
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="报告基本信息">
                     <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
                         <FormItem {...formItemLayout} label="报告编号:" >
                             {getFieldDecorator('reportNo', {
+                                initialValue: ReportNumber,
                                 rules: [
                                     { required: true, message: '请输入报告编号' }
                                 ]
-                            })(<Input placeholder='' style={{ width: '100%' }} />)}
+                            })(<Input style={{ width: '100%' }} readOnly />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="使用单位:" >
                             <InputGroup compact>
@@ -107,11 +183,25 @@ class BasicForm extends PureComponent {
                                         { required: true, message: "请输入使用单位" }
                                     ]
                                 })
-                                    (<Input placeholder='请输入单位名称' />)}
+                                    (
+                                        <AutoComplete
+                                            style={{ width: '100%' }}
+                                            defaultActiveFirstOption
+                                            dataSource={this.state.companyDataSource}
+                                            onSelect={this.handleSelect}
+                                            onSearch={this.handleSearch}
+                                            filterOption={this.handlefilter}
+                                            onChange={this.handleChange}
+                                            //onBlur={this.handleBlur}
+                                            placeholder="搜索使用单位"
+                                            {...this.props}
+                                        />
+                                    )}
                             </InputGroup>
                         </FormItem>
                         <FormItem {...formItemLayout} label="单位地址:" >
                             {getFieldDecorator('companyAddress', {
+                                initialValue: this.state.companyAddress,
                                 rules: [
                                     { required: true, message: '请输入单位地址' }
                                 ]
@@ -119,11 +209,13 @@ class BasicForm extends PureComponent {
                                 <Input
                                     prefix={<Icon type="environment" theme="twoTone" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     style={{ width: '100%' }}
+                                    readOnly
                                 />
                             )}
                         </FormItem>
                         <FormItem {...formItemLayout} label={"联系人"}>
                             {getFieldDecorator('companyContacts', {
+                                initialValue: this.state.companyContacts,
                                 rules: [
                                     { required: true, message: '请输入联系人姓名' },
                                     { pattern: new RegExp('^[\u4E00-\u9FA5]{2,4}$'), message: '请输入(2~4)中文' }
@@ -132,6 +224,7 @@ class BasicForm extends PureComponent {
                         </FormItem>
                         <FormItem {...formItemLayout} label={"联系电话"}>
                             {getFieldDecorator('telephone', {
+                                initialValue: this.state.telephone,
                                 rules: [
                                     { required: true, message: '请输入联系电话' },
                                     { pattern: new RegExp('^[1][3-8][0-9]{9}$'), message: '联系电话输入有误' },
@@ -160,7 +253,7 @@ class BasicForm extends PureComponent {
                                     { required: true, message: '请输入安全阀类型', },
                                 ],
                             })(
-                                <Select style={{ width: '100%' }} onChange={handleChange}>
+                                <Select style={{ width: '100%' }}>
                                     <Option value="1">弹簧直载式</Option>
                                     <Option value="2">先导式</Option>
                                     <Option value="3">净重式</Option>
@@ -180,10 +273,6 @@ class BasicForm extends PureComponent {
                                     style={{ width: '100%' }}
                                     placeholder="Select"
                                     optionFilterProp="children"
-                                    onChange={handleChange}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onSearch={onSearch}
                                     filterOption={(input, option) =>
                                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
@@ -208,7 +297,7 @@ class BasicForm extends PureComponent {
                                     { required: true, message: '请输入工作介质', },
                                 ],
                             })(
-                                <Select style={{ width: '60%' }} onChange={handleChange}>
+                                <Select style={{ width: '60%' }}>
                                     <Option value="1">空气</Option>
                                     <Option value="2">水</Option>
                                     <Option value="3">蒸汽</Option>
@@ -245,7 +334,7 @@ class BasicForm extends PureComponent {
                                     { required: true, message: '请输入校验介质', },
                                 ],
                             })(
-                                <Select style={{ width: '60%' }} onChange={handleChange}>
+                                <Select style={{ width: '60%' }}>
                                     <Option value="1">压缩空气</Option>
                                     <Option value="2">氮气</Option>
                                     <Option value="3">蒸汽</Option>

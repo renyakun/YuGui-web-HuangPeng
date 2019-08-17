@@ -12,7 +12,7 @@ const reportColumns = Object.keys(newListLabels).map(key => {
             title: newListLabels[key],
             render: ({ reportNo }) => (
                 <div>
-                    <Link to={{ pathname: '/reportmanager/handlereport/reportdetail', report: `${reportNo}` }}>
+                    <Link to={{ pathname: '/report/handlereport/reportdetail', report: `${reportNo}` }}>
                         提交审核
                     </Link>
                     {/* <Divider type="vertical" />

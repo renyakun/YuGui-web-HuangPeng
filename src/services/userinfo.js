@@ -1,7 +1,6 @@
 import request from '@/utils/request';
 import { stringify } from 'qs';
 
-///
 export async function getUserInfo() {
     return request(`/report/user/getuser`);
 }

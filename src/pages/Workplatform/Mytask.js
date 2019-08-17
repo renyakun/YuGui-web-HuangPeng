@@ -27,8 +27,7 @@ class Mytask extends PureComponent {
 
     render() {
         const { loading, notifyinfo } = this.props;
-        console.log("notifyinof:", notifyinfo)
-        return (//
+        return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="待办任务"  loading={loading}>
                     <Link to={{ pathname: '/workplatform/waitcheckList' }}>

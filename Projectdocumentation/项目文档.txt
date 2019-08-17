@@ -1,9 +1,0 @@
-searchlist
-报告编号   reportno
-状态 status
-报告时间  reporttime
-报告处理人 reportrealname
-操作 actions
-
-
-项目测试接口文档

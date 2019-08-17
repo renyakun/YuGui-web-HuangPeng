@@ -69,8 +69,8 @@ class DetailWaitApproveReport extends PureComponent {
         console.log('reason', reason);
         console.log('agree', agree);
         let flag = 4
-        if (agree) {
-            flag = 4
+        if (!agree) {
+            flag = 14
         }
 
         const res = await approveResult({ reportNo, reason, flag });

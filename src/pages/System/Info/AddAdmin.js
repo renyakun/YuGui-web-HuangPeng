@@ -56,7 +56,7 @@ class AddAdmin extends PureComponent {
         };
 
         return (
-            <Card bordered={false} title="创建管理员">
+            <Card bordered={false}>
                 <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
                     <FormItem {...formItemLayout} label="用户名:" >
                         {getFieldDecorator('user_name', {

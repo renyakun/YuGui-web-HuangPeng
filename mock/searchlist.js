@@ -29,8 +29,8 @@ for (let i = 0; i < 46; i += 1) {
         reportNo: `A${i}${i + 1}${i + 2}`,
         realName: Math.floor(Math.random() * 10) % 4,
         status: Math.floor(Math.random() * 10) % 4,
-        //updatedAt: new Date(`2019-08-${Math.floor(i / 2) + 1}`),
-        updatedAt: timer,
+        updatedAt: new Date(`2019-08-${Math.floor(i / 2) + 1}`),
+        //updatedAt: timer,
     });
 }
 

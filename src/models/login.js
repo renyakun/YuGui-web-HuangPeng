@@ -20,7 +20,6 @@ export default {
       if (!response || !response.ok) {
         let errMsg; // checkLogin跳转到登录页后不需要展示错误信息
         let status;
-        console.log("rsp:", response);
         if (fromLogin) {
           errMsg = (response && response.errMsg) || '网络错误...';
           status = 'error';
@@ -72,7 +71,6 @@ export default {
     *login({ payload }, { call, put }) {
       const { ...params } = payload;
       const response = yield call(login, params);
-      console.log("rsp:", response)
       yield put({
         type: 'check',
         fromLogin: true,

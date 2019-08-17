@@ -11,7 +11,7 @@ const checkedColumns = Object.keys(checkedReportLabels).map(key => {
         return {
             title: checkedReportLabels[key],
             render: ({ reportNo }) => (
-                <Link to={{ pathname: '/reportmanager/handlereport/reportcheck', report: `${reportNo}` }}>
+                <Link to={{ pathname: '/report/handlereport/reportcheck', report: `${reportNo}` }}>
                     提交审批
                 </Link>
             ),

@@ -1,21 +1,13 @@
-import React from 'react';
+import { Button } from 'antd';
 import { connect } from 'dva';
-import qs from 'qs';
-import Report from './Report';
+import React from 'react';
+import ReportInfo from './ReportInfo';
 
 @connect(({ valvereport: { valveinfo }, loading }) => ({
     valveinfo,
     loading: loading.effects['valvereport/getValveReportInfo'],
 }))
-export default class ReportPrint extends React.Component {
-    //   componentDidMount() {
-    //     const { location } = this.props;
-    //     const { reportNo } = qs.parse(location.search, { ignoreQueryPrefix: true });
-    //     this.props.dispatch({
-    //       type: 'valvereport/getValveReportInfo',
-    //       payload: reportNo,
-    //     });
-    //   }
+ class ReportPrint extends React.Component {
 
     componentDidMount() {
         this.getReportDetailInfo();
@@ -42,17 +34,14 @@ export default class ReportPrint extends React.Component {
 
     }
     render() {
-        // const { location, valveinfo } = this.props;
-        // const valvereport = {
-        //     ...valveinfo.valvereport,
-        //     reportNo: qs.parse(location.search, { ignoreQueryPrefix: true }).reportNo,
-        // };
         const { valveinfo: { reportInfo } } = this.props;
         return (
-            <>
-                <button onClick={() => window.print()}>打印</button>
-                <Report {...reportInfo} />
-            </>
+            <div style={{ textAlign: 'center'}}>
+                <Button onClick={() => window.print()} style={{ marginBottom: 10 }}>打印</Button>
+                <ReportInfo {...reportInfo} />
+            </div>
         );
     }
 }
+
+export default ReportPrint;

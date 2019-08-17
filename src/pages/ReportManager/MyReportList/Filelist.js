@@ -11,12 +11,12 @@ const fileColumns = Object.keys(fileLabels).map(key => {
         return {
             title: fileLabels[key],
             render: ({ reportNo }) => (
-                <Link to={{ pathname: '/reportmanager/handlereport/reportview', report: `${reportNo}` }}>
+                <Link to={{ pathname: '/report/handlereport/reportview', report: `${reportNo}` }}>
                     打印报告
               </Link>
             ),
         };
-    }
+    }//
     return {
         key,
         title: fileLabels[key],

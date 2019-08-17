@@ -16,7 +16,7 @@ const reportListKeys = Object.keys(reportListLabels);
     valveinfo,
     approveuserlist,
     loading: loading.effects['valvereport/getValveReportInfo'],
-  }))
+}))
 
 
 class ReportCheck extends PureComponent {
@@ -34,22 +34,22 @@ class ReportCheck extends PureComponent {
         this.getReportDetailInfo();
         this.fetchApproveUserList();
     }
-    
+
 
     getReportDetailInfo() {
         const { location, dispatch } = this.props;
-        const {  report } = location; 
+        const { report } = location;
         let reportno
-        if(report){
-           sessionStorage.setItem('detailreportno',report); 
-           reportno = report
-        }else {
-           reportno = sessionStorage.getItem('detailreportno');
+        if (report) {
+            sessionStorage.setItem('detailreportno', report);
+            reportno = report
+        } else {
+            reportno = sessionStorage.getItem('detailreportno');
         }
         this.setState({
-                reportNo: reportno,
-          });
-          
+            reportNo: reportno,
+        });
+
         dispatch({
             type: 'valvereport/getValveReportInfo',
             payload: reportno,
@@ -104,7 +104,7 @@ class ReportCheck extends PureComponent {
             realname,
         } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, approveuserlist, loading } = this.props;
-        console.log("approveuserlist:", approveuserlist)
+        //console.log("approveuserlist:", approveuserlist)
         let flag = 0;
         if (historyInfo) {
             const { modifyFlag } = historyInfo
@@ -172,7 +172,7 @@ class ReportCheck extends PureComponent {
                     <Card title="提交审批" style={{ marginTop: 24 }} bordered={false}>
                         <div className={styles.inputs}>
                             选择审批人：
-               <Select
+                            <Select
                                 className={styles.input}
                                 placeholder="请选择报告审批人员"
                                 onChange={this.handleSelect.bind(this)}
@@ -187,7 +187,8 @@ class ReportCheck extends PureComponent {
                                 loading={loading}
                             >
                                 提交
-            </Button>
+                                </Button>
+
                         </div>
 
                     </Card>

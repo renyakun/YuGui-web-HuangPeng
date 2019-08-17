@@ -123,7 +123,7 @@ class Center extends PureComponent {
       <GridContent className={styles.userCenter}>
         <Row gutter={24}>
           <Col lg={7} md={24}>
-            <Card bordered={false} style={{ marginBottom: 24 }} loading={currentUserLoading}>
+             <Card bordered={false} style={{ marginBottom: 24 }} loading={currentUserLoading}>
               {currentUser && Object.keys(currentUser).length ? (
                 <div>
                   <div className={styles.avatarHolder}>

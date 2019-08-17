@@ -1,41 +1,44 @@
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import StandardTable from '@/components/StandardTable';
-// import AuthController from '@/components/Bdp/AuthController';
-import { BackTop, Badge, Button, Card, Col, DatePicker, Divider, Dropdown, Form, Icon, Input, InputNumber, Menu, message, Modal, Radio, Row, Select, Steps, Table, Tag } from 'antd';
-import { connect } from 'dva';
-import Link from 'umi/link';
+import { BackTop, Button, Card, Col, Dropdown, Form, Icon, Input, Menu, Row, Tag, Select } from 'antd';
 import moment from 'moment';
+import { connect } from 'dva';
 import React, { Fragment, PureComponent } from 'react';
-import styles from './TableList.less';
+import Link from 'umi/link';
+import styles from './SearchReportList.less';
+
 
 
 const FormItem = Form.Item;
-const { Step } = Steps;
-const { TextArea } = Input;
-const { Option } = Select;
-const RadioGroup = Radio.Group;
 const MenuItem = Menu.Item;
+const { Option } = Select;
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['新建', '已审核', '已审批', '已归档'];
-const color = ['#f50', '#2db7f5', '#87d068', '#108ee9'];
-const realName = ['超级管理员', '审核员', '审批员', '文员']
+const flag = ['录入报告', '提交审核', '审核通过', '提交审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
+const flagcolor = ['#FF7F50', '#8B0A50', '#FF6A6A', '#20B2AA', '#CD5C5C', '#CD00CD', '', '', '', '', '', '', '#CD0000', '', '#EE0000', ''];
+
 
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+// , 
+@connect(({ SearchReport, SearchReport: { RealName }, loading }) => ({
+  SearchReport,
+  RealName,
+  loading: loading.models.SearchReport,
 }))
+
 @Form.create()
 class SearchReportList extends PureComponent {
-  state = {
-    selectedRows: [],
-    formValues: {},
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedRows: [],
+      formValues: {},
+      RealName: [],
+    }
+  }
 
   columns = [
     {
@@ -47,59 +50,51 @@ class SearchReportList extends PureComponent {
       title: '报告处理人',
       dataIndex: 'realName',
       width: 150,
-      filters: [
-        {
-          text: realName[0],
-          value: 0,
-        },
-        {
-          text: realName[1],
-          value: 1,
-        },
-        {
-          text: realName[2],
-          value: 2,
-        },
-        {
-          text: realName[3],
-          value: 3,
-        },
-      ],
-      render(val) {
-        return <Tag color={color[val]}>{realName[val]}</Tag>;
-      },
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      dataIndex: 'flag',
       width: 150,
       filters: [
         {
-          text: status[0],
-          value: 0,
-        },
-        {
-          text: status[1],
+          text: flag[1],
           value: 1,
         },
         {
-          text: status[2],
+          text: flag[2],
           value: 2,
         },
         {
-          text: status[3],
+          text: flag[3],
           value: 3,
         },
+        {
+          text: flag[4],
+          value: 4,
+        },
+        {
+          text: flag[5],
+          value: 5,
+        },
+        {
+          text: flag[12],
+          value: 12,
+        },
+        {
+          text: flag[14],
+          value: 14,
+        },
+
       ],
       render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
+        return <Tag color={flagcolor[val]}>{flag[val]}</Tag>;
       },
     },
     {
-      title: '更新报告时间',
-      dataIndex: 'updatedAt',
-      sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      title: '报告处理时间',
+      dataIndex: 'createTime',//
+      // sorter: true,
+      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '操作',
@@ -107,17 +102,28 @@ class SearchReportList extends PureComponent {
       width: 150,
       render: (text, record) => (
         <Fragment>
-          <Link to={{ pathname: '/workplatform/detailwaitApprove' }}>查看报告</Link>
-
+          <Link to={{ pathname: '/' }}>查看报告</Link>
         </Fragment>
       ),
     },
   ];
 
   componentDidMount() {
+    this.fetchSearchList();
+    this.fetchUserRealName();
+  }
+
+  fetchSearchList() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'SearchReport/fetchSearchList',
+    });
+  }
+
+  fetchUserRealName() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'SearchReport/fetchUserRealName',
     });
   }
 
@@ -131,6 +137,7 @@ class SearchReportList extends PureComponent {
       return newObj;
     }, {});
 
+
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
@@ -142,7 +149,7 @@ class SearchReportList extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'SearchReport/fetchSearchList',
       payload: params,
     });
   };
@@ -154,7 +161,7 @@ class SearchReportList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'SearchReport/fetchSearchList',
       payload: {},
     });
   };
@@ -194,17 +201,18 @@ class SearchReportList extends PureComponent {
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      //if(!err){console.log(fieldsValue);}
+      if (!err) { console.log(fieldsValue); }
       const values = {
         ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        //updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        createTime: fieldsValue.createTime && fieldsValue.createTime.valueOf(),
       };
-      //console.log(values);
+      console.log(values);
       this.setState({
         formValues: values,
       });
       dispatch({
-        type: 'rule/fetch',
+        type: 'SearchReport/fetchSearchList',
         payload: values,
       });
     });
@@ -213,6 +221,7 @@ class SearchReportList extends PureComponent {
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
+      RealName,
     } = this.props;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
@@ -220,6 +229,16 @@ class SearchReportList extends PureComponent {
           <Col md={8} sm={24}>
             <FormItem label="报告编号">
               {getFieldDecorator('reportNo')(<Input placeholder="请输入" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="报告处理人">
+              {getFieldDecorator('realName',{initialValue:RealName[0] })(
+              <Select>
+                <Option value={RealName[0]}>{RealName[0]}</Option>
+                <Option value={RealName[1]}>{RealName[1]}</Option>
+                <Option value={RealName[2]}>{RealName[2]}</Option>
+              </Select>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -239,7 +258,7 @@ class SearchReportList extends PureComponent {
 
   render() {
     const {
-      rule: { data },
+      SearchReport: { data },
       loading,
     } = this.props;
     const { selectedRows } = this.state;
@@ -249,7 +268,6 @@ class SearchReportList extends PureComponent {
         <MenuItem key="approval">批量审批</MenuItem>
       </Menu>
     );
-
 
 
     return (
@@ -279,14 +297,6 @@ class SearchReportList extends PureComponent {
             />
           </div>
         </Card>
-        {/* <Card  bordered={false} title="报表查询">
-          <Table
-            dataSource={search}
-            columns={searchColumns}
-            pagination={false}
-            rowKey="reportNo"
-          />
-        </Card> */}
         <BackTop />
       </PageHeaderWrapper>
     );

@@ -25,7 +25,6 @@ export default {
                         type: 'saveList',
                         payload: { info },
                     });
-                    console.log(res)
                 } else {
                     message.error(res.errMsg);
                 }

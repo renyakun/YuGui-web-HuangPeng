@@ -251,6 +251,7 @@ class UpdateForm extends PureComponent {
   rule,
   loading: loading.models.rule,
 }))
+
 @Form.create()
 class TableList extends PureComponent {
   state = {
@@ -260,6 +261,7 @@ class TableList extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    filters:{},
   };
 
   columns = [
@@ -301,6 +303,7 @@ class TableList extends PureComponent {
           value: 3,
         },
       ],
+      onFilter: (value, record) => record.status.toString() === value,
       render(val) {
         return <Badge status={statusMap[val]} text={status[val]} />;
       },
@@ -328,6 +331,7 @@ class TableList extends PureComponent {
     dispatch({
       type: 'rule/fetch',
     });
+    console.log(this.props)
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -339,6 +343,11 @@ class TableList extends PureComponent {
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
+
+    console.log(filters);
+    this.setState({
+      filters:filters
+    })
 
     const params = {
       currentPage: pagination.current,
@@ -364,7 +373,9 @@ class TableList extends PureComponent {
     });
     dispatch({
       type: 'rule/fetch',
-      payload: {},
+      payload: {
+        ...this.state.filters
+      },
     });
   };
 
@@ -640,7 +651,7 @@ class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} /> */}
+        <CreateForm {...parentMethods} modalVisible={modalVisible} />
          {stepFormValues && Object.keys(stepFormValues).length ? (
           <UpdateForm
             {...updateMethods}

@@ -22,7 +22,7 @@ export const reportListLabels = {
 };
 
 export const userInfoLabels = {
-    userName: '用户姓名',
+    realName: '用户姓名',
     phone: '电话',
     email: '邮箱',
     userLevel: '职位',
