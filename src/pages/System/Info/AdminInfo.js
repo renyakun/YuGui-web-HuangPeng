@@ -1,5 +1,4 @@
 import { userInfoLabels } from '@/common/labels';
-//import { info } from '@/common/data';
 import DescriptionList from '@/components/DescriptionList';
 import { Card } from 'antd';
 import { connect } from 'dva';

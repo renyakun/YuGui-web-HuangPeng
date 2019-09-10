@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { connect} from 'dva';
+import { connect } from 'dva';
 import Link from 'umi/link';
 import { BackTop, Button, Card } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -10,6 +10,7 @@ import ReportInfo from './ReportInfo';
     valveinfo,
     loading: loading.effects['valvereport/getValveReportInfo'],
 }))
+
 class ReportView extends PureComponent {
     constructor(props) {
         super(props);
@@ -26,10 +27,10 @@ class ReportView extends PureComponent {
         const { report } = location;
         let reportno
         if (report) {
-            sessionStorage.setItem('approvereportno', report);
+            sessionStorage.setItem('viewreportno', report);
             reportno = report
         } else {
-            reportno = sessionStorage.getItem('approvereportno');
+            reportno = sessionStorage.getItem('viewreportno');
         }
         this.setState({
             reportNo: reportno,
@@ -39,50 +40,52 @@ class ReportView extends PureComponent {
             type: 'valvereport/getValveReportInfo',
             payload: reportno,
         });
-
     }
 
-
     render() {
-        const { valveinfo: { reportInfo } } = this.props;
+        const { valveinfo, valveinfo: { reportInfo, historyInfo } } = this.props;
         const reportNo = reportInfo.reportNo;
         return (
             <PageHeaderWrapper>
-                <div style={{ textAlign: 'center', marginBottom: 20 }}>
-                    <Link
-                        to={{ pathname: '/report/handlereport/reportprint', report: `${reportNo}` }}
-                        //target="_blank"
-                        style={{ marginRight: 10 }}
-                    >
-                        <Button>打印</Button>
-                    </Link>
+                {historyInfo.modifyFlag == '5' ?
+                    <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                        <Link
+                            to={`/print?report=${reportNo}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ marginRight: 10 }}
+                        >
+                            <Button type="primary">打印</Button>
+                        </Link>
 
-                    <Button
-                        onClick={() => {
-                            const header =
-                                "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
-                                "xmlns:w='urn:schemas-microsoft-com:office:word' " +
-                                "xmlns='http://www.w3.org/TR/REC-html40'>" +
-                                "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
-                            const footer = '</body></html>';
-                            const sourceHTML = header + this.ref.current.innerHTML + footer;
-                            const source = `data:application/vnd.ms-word;charset=utf-8,${encodeURIComponent(
-                                sourceHTML
-                            )}`;
-                            const fileDownload = document.createElement('a');
-                            document.body.appendChild(fileDownload);
-                            fileDownload.href = source;
-                            fileDownload.download = '报告详情.doc';
-                            fileDownload.click();
-                            document.body.removeChild(fileDownload);
-                        }}
-                    >
-                        导出
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                const header =
+                                    "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
+                                    "xmlns:w='urn:schemas-microsoft-com:office:word' " +
+                                    "xmlns='http://www.w3.org/TR/REC-html40'>" +
+                                    "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+                                const footer = '</body></html>';
+                                const sourceHTML = header + this.ref.current.innerHTML + footer;
+                                const source = `data:application/vnd.ms-word;charset=utf-8,${encodeURIComponent(
+                                    sourceHTML
+                                )}`;
+                                const fileDownload = document.createElement('a');
+                                document.body.appendChild(fileDownload);
+                                fileDownload.href = source;
+                                fileDownload.download = `报告详情-${reportNo}.doc`;
+                                fileDownload.click();
+                                document.body.removeChild(fileDownload);
+                            }}
+                        >
+                            导出
                     </Button>
-                </div>
+                    </div>
+                    : null}
                 <div ref={this.ref}>
                     <Card bordered={false}>
-                        <ReportInfo {...reportInfo} />
+                        <ReportInfo valveinfo={valveinfo} />
                     </Card>
                 </div>
                 <BackTop />

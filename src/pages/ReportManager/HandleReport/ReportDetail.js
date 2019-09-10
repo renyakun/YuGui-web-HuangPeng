@@ -1,16 +1,17 @@
-import { reportListLabels } from '@/common/labels';
-import DescriptionList from '@/components/DescriptionList';
+import Particulars from '@/common/Report/Particulars';
+import ModifyReport from '@/common/Report/ModifyReport';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { addNotifyCheckUser } from '@/services/valverserver';
-import { Button, Card, message, Popover, Select, Steps } from 'antd';
+import { BackTop, Button, Card, message, Popover, Select, Steps, Switch } from 'antd';
 import { connect } from 'dva';
 import React, { Fragment, PureComponent } from 'react';
+import Link from 'umi/link';
 import styles from './styles.less';
+import { routerRedux } from 'dva/router';
 
-const { Description } = DescriptionList;
+
 const { Step } = Steps;
 const SelectOption = Select.Option;
-const reportListKeys = Object.keys(reportListLabels);
 
 @connect(({ valvereport: { valveinfo, checkuserlist }, loading }) => ({
   valveinfo,
@@ -25,16 +26,27 @@ class ReportDetail extends PureComponent {
     super(props);
     this.state = {
       welcome: true,
+      visible: false,
       checkuser: '',
-      realname: '',
+      userName: '',
       reportNo: '',
+      reportInformation: [],
     }
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.valveinfo.reportInfo != this.props.valveinfo.reportInfo) {
+      this.setState({
+        reportInformation: nextProps.valveinfo.reportInfo,
+        userName: nextProps.valveinfo.historyInfo.createName
+      })
+    }
+  }
+
   componentDidMount() {
     this.getReportDetailInfo();
     this.fetchCheckUserList();
   }
-
 
   getReportDetailInfo() {
     const { location, dispatch } = this.props;
@@ -57,39 +69,43 @@ class ReportDetail extends PureComponent {
 
   }
 
-
   fetchCheckUserList() {
     this.props.dispatch({
       type: 'valvereport/fetchCheckUserList',
     });
   }
 
-
   handleSelect(value) {
     const id = value;
     if (id) {
-
       const user = this.props.checkuserlist.find(item => item.userName === id);
       this.setState({
         checkuser: id,
-        realname: user.realName,
+        userName: user.userName,
       });
     }
   }
 
-
   async handleCommit() {
     const { checkuser, reportNo } = this.state;
     let userName = checkuser
-
     const res = await addNotifyCheckUser({ userName, reportNo });
-
     if (res) {
       if (res.ok) {
-        message.success('已将报告向审核人员提交');
+        message
+          .loading(`已将报告向${userName}提交`, 2)
+          .then(() => message.success('提交成功', 1))
+          .then(() => message.success('自动为你跳转', 1));
         this.setState({
           welcome: false,
         });
+        setTimeout(() => {
+          this.props.dispatch(
+            routerRedux.push({
+              pathname: '/report/myList/newlist',
+            })
+          )
+        }, 3000);
       } else {
         message.error(res.errMsg);
       }
@@ -97,14 +113,31 @@ class ReportDetail extends PureComponent {
   }
 
 
+  showModal = () => {
+    this.setState({ visible: true });
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  }
+
+  getChildMsg(flag, report) {
+    setTimeout(() => {
+      this.props.dispatch({
+        type: 'valvereport/getValveReportInfo',
+        payload: report,
+      });
+    }, 500)
+
+    if (flag) {
+      this.setState({ visible: false });
+    }
+  }
+
+
   render() {
-    const {
-      welcome,
-      checkuser,
-      realname,
-    } = this.state;
+    const { welcome, checkuser, userName, visible, reportInformation, } = this.state;
     const { valveinfo: { reportInfo, historyInfo, }, checkuserlist, loading } = this.props;
-    console.log("checkuserlist:", checkuserlist)
     let flag = 0;
     if (historyInfo) {
       const { modifyFlag } = historyInfo
@@ -121,9 +154,7 @@ class ReportDetail extends PureComponent {
         <Popover placement="topLeft" arrowPointAtCenter content={popoverContent}>
           {dot}
         </Popover>
-      ) : (
-          dot
-        );
+      ) : (dot);
 
     let desc1 = null
     let desc2 = null
@@ -131,7 +162,7 @@ class ReportDetail extends PureComponent {
       desc1 = (
         <div >
           <Fragment>
-            创建人:{historyInfo["createRealName"]}
+            创建人:{historyInfo["createName"]}
           </Fragment>
           <div>{historyInfo["createTime"]}</div>
         </div>
@@ -141,21 +172,24 @@ class ReportDetail extends PureComponent {
       desc2 = (
         <div >
           <Fragment>
-            待审核人:{realname}
+            待审核人:{userName}
           </Fragment>
         </div>
       );
     }
+
     return (
       <PageHeaderWrapper>
         <Card title="报告详情" loading={loading}>
-          <DescriptionList style={{ marginBottom: 24 }}>
-            {reportListKeys.map((item, i) => (
-              <Description key={item} term={reportListLabels[item]}>
-                {reportListLabels[item] == "维护检修情况说明" ? reportInfo[item] + "" : reportInfo[item]}
-              </Description>
-            ))}
-          </DescriptionList>
+          <Switch className={styles.Switch} onClick={this.showModal} checkedChildren='修改报告' unCheckedChildren='修改报告' defaultChecked={visible} />
+          <Particulars reportInfo={reportInfo} />
+          <ModifyReport
+            visible={visible}
+            title="修改报告"
+            reportInformation={reportInformation}
+            callback={this.getChildMsg.bind(this)}
+            onCancel={this.handleCancel}
+          />
         </Card>
 
         <Card title="流程进度" style={{ marginTop: 24 }} bordered={false}>
@@ -175,9 +209,8 @@ class ReportDetail extends PureComponent {
                 className={styles.input}
                 placeholder="请选择报告审核人员"
                 onChange={this.handleSelect.bind(this)}
-                allowClear
               >
-                {checkuserlist.map(item => <SelectOption key={item.userName}>{item.realName}</SelectOption>)}
+                {checkuserlist.map(item => <SelectOption key={item.userName}>{item.userName}</SelectOption>)}
               </Select>
               <Button
                 size="large"
@@ -187,6 +220,7 @@ class ReportDetail extends PureComponent {
               >
                 提交
             </Button>
+
             </div>
 
           </Card>
@@ -194,11 +228,11 @@ class ReportDetail extends PureComponent {
         <div style={{ display: welcome ? 'none' : 'block' }}>
           <Card title="已经提交审核" style={{ marginTop: 24 }} bordered={false}>
             <div className={styles.inputs}>
-              审核人:{realname}
+              <h4>审核人:</h4><span className={styles.Fontwg}>{userName}</span>
             </div>
-
           </Card>
         </div>
+        <BackTop />
       </PageHeaderWrapper>
     );
   }

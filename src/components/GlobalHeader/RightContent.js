@@ -1,12 +1,11 @@
 import { Button, Dropdown, Icon, Menu, Spin } from 'antd';
 import React, { PureComponent } from 'react';
-import Link from 'umi/link';
 import { FormattedMessage } from 'umi/locale';
 import styles from './index.less';
 
+const MenuItem = Menu.Item;
 
 export default class GlobalHeaderRight extends PureComponent {
-
 
   render() {
     const {
@@ -16,15 +15,15 @@ export default class GlobalHeaderRight extends PureComponent {
     } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-        <Menu.Item key="userCenter">
+        <MenuItem key="userCenter">
           <Icon type="user" />
-          <FormattedMessage id="menu.system.info" defaultMessage="system info" />
-        </Menu.Item>
+          <FormattedMessage id="menu.info" defaultMessage="system info" />
+        </MenuItem>
         <Menu.Divider />
-        <Menu.Item key="logout">
+        <MenuItem key="logout">
           <Icon type="logout" />
           <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
-        </Menu.Item>
+        </MenuItem>
       </Menu>
     );
     let className = styles.right;
@@ -33,7 +32,6 @@ export default class GlobalHeaderRight extends PureComponent {
     }
     return (
       <div className={className}>
-        <Link to={{ pathname: '/searchreport/searchreportlist' }}><Button type="link" icon="search" style={{ color: 'rgba(0,0,0)' }}>查询</Button></Link>
         {account ? (
           <Dropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>

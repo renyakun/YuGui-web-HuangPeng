@@ -1,31 +1,35 @@
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import StandardTable from '@/components/StandardTable';
-import { BackTop, Button, Card, Col, Dropdown, Form, Icon, Input, Menu, Row, Tag, Select } from 'antd';
-import moment from 'moment';
+import { BackTop, Button, Card, Col, Form, Icon, Input, Row, Select, Tag, Tooltip, DatePicker } from 'antd';
 import { connect } from 'dva';
 import React, { Fragment, PureComponent } from 'react';
 import Link from 'umi/link';
+import moment from 'moment';
 import styles from './SearchReportList.less';
 
-
+function createData(list, total, pageSize, current) {
+  const newData = new Object();
+  newData.list = list;
+  newData.pagination = new Object();
+  newData.pagination.total = total;
+  newData.pagination.pageSize = pageSize;
+  newData.pagination.current = current;
+  return newData;
+}
 
 const FormItem = Form.Item;
-const MenuItem = Menu.Item;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
+const dateFormat = 'YYYY/MM/DD';
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
 const flag = ['录入报告', '提交审核', '审核通过', '提交审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
-const flagcolor = ['#FF7F50', '#8B0A50', '#FF6A6A', '#20B2AA', '#CD5C5C', '#CD00CD', '', '', '', '', '', '', '#CD0000', '', '#EE0000', ''];
+const flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000', ''];
 
-
-
-/* eslint react/no-multi-comp:0 */
-// , 
-@connect(({ SearchReport, SearchReport: { RealName }, loading }) => ({
+@connect(({ SearchReport, SearchReport: { UserName }, loading }) => ({
   SearchReport,
-  RealName,
+  UserName,
   loading: loading.models.SearchReport,
 }))
 
@@ -36,25 +40,26 @@ class SearchReportList extends PureComponent {
     this.state = {
       selectedRows: [],
       formValues: {},
-      RealName: [],
+      UserName: [],
+      expandForm: false,
     }
   }
 
   columns = [
     {
-      title: '报告编号',
+      title: '编号',
       dataIndex: 'reportNo',
-      width: 100,
+      width: 200,
     },
     {
-      title: '报告处理人',
-      dataIndex: 'realName',
-      width: 150,
+      title: '当前处理人',
+      dataIndex: 'userName',
+      width: 200,
     },
     {
       title: '状态',
       dataIndex: 'flag',
-      width: 150,
+      width: 200,
       filters: [
         {
           text: flag[1],
@@ -84,17 +89,24 @@ class SearchReportList extends PureComponent {
           text: flag[14],
           value: 14,
         },
-
       ],
-      render(val) {
-        return <Tag color={flagcolor[val]}>{flag[val]}</Tag>;
-      },
+      render: (text, record) => {
+        if (text == '12') {
+          return <Tooltip placement="right" title={`理由:${record.valveHistory.checkReason}`}>
+            <Tag color={flagcolor[text]}>{flag[text]}</Tag>
+          </Tooltip>
+        } else if (text == '14') {
+          return <Tooltip placement="right" title={`理由:${record.valveHistory.approveReason}`}>
+            <Tag color={flagcolor[text]}>{flag[text]}</Tag>
+          </Tooltip>
+        } else {
+          return <Tag color={flagcolor[text]}>{flag[text]}</Tag>
+        }
+      }
     },
     {
-      title: '报告处理时间',
-      dataIndex: 'createTime',//
-      // sorter: true,
-      // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      title: '处理时间',
+      dataIndex: 'createTime',
     },
     {
       title: '操作',
@@ -102,15 +114,23 @@ class SearchReportList extends PureComponent {
       width: 150,
       render: (text, record) => (
         <Fragment>
-          <Link to={{ pathname: '/' }}>查看报告</Link>
+          <Link to={{ pathname: '/report/handle/reportview', report: `${record.reportNo}` }}>查看报告</Link>
         </Fragment>
       ),
     },
   ];
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.UserName != this.props.UserName) {
+      this.setState({
+        UserName: nextProps.UserName,
+      });
+    }
+  }
+
   componentDidMount() {
     this.fetchSearchList();
-    this.fetchUserRealName();
+    this.fetchUserName();
   }
 
   fetchSearchList() {
@@ -120,10 +140,10 @@ class SearchReportList extends PureComponent {
     });
   }
 
-  fetchUserRealName() {
+  fetchUserName() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'SearchReport/fetchUserRealName',
+      type: 'SearchReport/fetchUserName',
     });
   }
 
@@ -139,7 +159,7 @@ class SearchReportList extends PureComponent {
 
 
     const params = {
-      currentPage: pagination.current,
+      pageNum: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
       ...filters,
@@ -155,40 +175,8 @@ class SearchReportList extends PureComponent {
   };
 
   handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'SearchReport/fetchSearchList',
-      payload: {},
-    });
+    this.fetchSearchList();
   };
-
-  // handleMenuClick = e => {
-  //   const { dispatch } = this.props;
-  //   const { selectedRows } = this.state;
-
-  //   if (!selectedRows) return;
-  //   switch (e.key) {
-  //     case 'remove':
-  //       dispatch({
-  //         type: 'rule/remove',
-  //         payload: {
-  //           key: selectedRows.map(row => row.key),
-  //         },
-  //         callback: () => {
-  //           this.setState({
-  //             selectedRows: [],
-  //           });
-  //         },
-  //       });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
 
   handleSelectRows = rows => {
     this.setState({
@@ -201,16 +189,13 @@ class SearchReportList extends PureComponent {
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      if (!err) { console.log(fieldsValue); }
       const values = {
         ...fieldsValue,
-        //updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-        createTime: fieldsValue.createTime && fieldsValue.createTime.valueOf(),
       };
-      console.log(values);
       this.setState({
         formValues: values,
       });
+      console.log(fieldsValue)
       dispatch({
         type: 'SearchReport/fetchSearchList',
         payload: values,
@@ -218,27 +203,38 @@ class SearchReportList extends PureComponent {
     });
   };
 
+  toggleForm = () => {
+    const { expandForm } = this.state;
+    this.setState({
+      expandForm: !expandForm,
+    });
+  };
+
   renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-      RealName,
-    } = this.props;
+    const { form: { getFieldDecorator } } = this.props;
+    const { UserName } = this.state;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="报告编号">
-              {getFieldDecorator('reportNo')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('reportNo')(<Input allowClear />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="报告处理人">
-              {getFieldDecorator('realName',{initialValue:RealName[0] })(
-              <Select>
-                <Option value={RealName[0]}>{RealName[0]}</Option>
-                <Option value={RealName[1]}>{RealName[1]}</Option>
-                <Option value={RealName[2]}>{RealName[2]}</Option>
-              </Select>)}
+              {getFieldDecorator('userName', { initialValue: 'admin' })(
+                <Select allowClear
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {UserName.map((item, i) => (
+                    <Option key={item} value={item}>{item}</Option>
+                  ))}
+                </Select>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -249,6 +245,9 @@ class SearchReportList extends PureComponent {
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
+              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                展开 <Icon type="down" />
+              </a>
             </span>
           </Col>
         </Row>
@@ -256,49 +255,107 @@ class SearchReportList extends PureComponent {
     );
   }
 
-  render() {
-    const {
-      SearchReport: { data },
-      loading,
-    } = this.props;
-    const { selectedRows } = this.state;
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <MenuItem key="remove">删除</MenuItem>
-        <MenuItem key="approval">批量审批</MenuItem>
-      </Menu>
-    );
-
-
+  renderAdvancedForm() {
+    const { form: { getFieldDecorator } } = this.props;
+    const { UserName } = this.state;
     return (
-      <PageHeaderWrapper>
+      <Form onSubmit={this.handleSearch} layout="inline">
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col md={8} sm={24}>
+            <FormItem label="报告编号">
+              {getFieldDecorator('reportNo')(<Input allowClear />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="报告处理人">
+              {getFieldDecorator('userName', { initialValue: 'admin' })(
+                <Select
+                  allowClear
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {UserName.map((item, i) => (
+                    <Option key={item} value={item}>{item}</Option>
+                  ))}
+                </Select>)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="状态">
+              {getFieldDecorator('flag', { initialValue: '1' })(
+                <Select allowClear>
+                  <Option value="1">提交审核</Option>
+                  <Option value="2">审核通过</Option>
+                  <Option value="3">提交审批</Option>
+                  <Option value="4">审批通过</Option>
+                  <Option value="5">报告归档</Option>
+                  <Option value="12">审核不通过</Option>
+                  <Option value="14">审批不通过</Option>
+                </Select>)}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          {/* <Col md={8} sm={24}>
+            <FormItem label="处理时间">
+              {getFieldDecorator('createTime')(
+                <RangePicker
+                  defaultValue={[moment('2015/01/01', dateFormat), moment('2019/09/05', dateFormat)]}
+                  format={dateFormat}
+                />
+              )}
+            </FormItem>
+          </Col> */}
+          <Col md={8} sm={24}>
+            <span className={styles.submitButtons}>
+              <Button type="primary" htmlType="submit">
+                查询
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
+              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
+                收起 <Icon type="up" />
+              </a>
+            </span>
+          </Col>
+        </Row>
+      </Form>
+    )
+  }
+
+  renderForm() {
+    const { expandForm } = this.state;
+    return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
+  }
+
+  render() {
+    const { SearchReport: { SearchList }, loading, } = this.props;
+    const { selectedRows } = this.state;
+    const data = createData(SearchList.list, SearchList.total, SearchList.pageSize, SearchList.pageNum)
+    return (
+      <div>
         <Card bordered={false} title="报表查询">
           <div className={styles.tableList}>
-            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-            <div className={styles.tableListOperator}>
-              {selectedRows.length > 0 && (
-                <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown>
-                </span>
-              )}
+            <div className={styles.tableListForm}>
+              {this.renderForm()}</div>
+            <div className={styles.tableBody}>
+              <StandardTable
+                selectedRows={selectedRows}
+                onSelectRow={this.handleSelectRows}
+                loading={loading}
+                data={data}
+                columns={this.columns}
+                onChange={this.handleStandardTableChange}
+              />
             </div>
-            <StandardTable
-              selectedRows={selectedRows}
-              loading={loading}
-              data={data}
-              columns={this.columns}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-            />
           </div>
         </Card>
         <BackTop />
-      </PageHeaderWrapper>
+      </div>
     );
   }
 }

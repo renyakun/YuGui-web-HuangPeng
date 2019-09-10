@@ -1,6 +1,6 @@
 import {
     getSearchReport,
-    getUserRealName
+    getUserName
 } from '@/services/SearchReportList';
 import { message } from 'antd';
 
@@ -13,31 +13,42 @@ export default {
             pagination: {},
         },
         RealName: [],
+        SearchList:{}
     },
 
     effects: {
 
         *fetchSearchList({ payload }, { call, put }) {
             const res = yield call(getSearchReport, payload);
-            yield put({
-                type: 'savelist',
-                payload: res,
-            });
-        },
-        *fetchUserRealName({ payload }, { call, put }) {
-            const res = yield call(getUserRealName, payload);
             if (res) {
                 if (res.ok) {
-                    const RealName = res.data;
+                    const SearchList = res.data;
                     yield put({
                         type: 'savelist',
-                        payload: { RealName },
+                        payload: { SearchList },
                     });
                 } else {
                     message.error(res.errMsg);
                 }
             }
-
+            // yield put({
+            //     type: 'savelist',
+            //     payload: res,
+            // });
+        },
+        *fetchUserName({ payload }, { call, put }) {
+            const res = yield call(getUserName, payload);
+            if (res) {
+                if (res.ok) {
+                    const UserName = res.data;
+                    yield put({
+                        type: 'savelist',
+                        payload: { UserName },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
         },
     },
 

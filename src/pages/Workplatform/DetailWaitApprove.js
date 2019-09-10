@@ -1,21 +1,19 @@
-import { reportListLabels } from '@/common/labels';
-import DescriptionList from '@/components/DescriptionList';
+import Particulars from '@/common/Report/Particulars';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import {approveResult} from '@/services/valverserver';
+import { approveResult } from '@/services/valverserver';
 import { BackTop, Button, Card, Input, message, Popover, Radio, Steps } from 'antd';
 import { connect } from 'dva';
-import React, { PureComponent, Fragment } from 'react';
+import { routerRedux } from 'dva/router';
+import React, { Fragment, PureComponent } from 'react';
+import styles from './styles.less';
 
-const { Description } = DescriptionList;
 const { Step } = Steps;
 const RadioGroup = Radio.Group;
-const reportListKeys = Object.keys(reportListLabels);
 
 @connect(({ valvereport: { valveinfo, }, loading }) => ({
     valveinfo,
     loading: loading.effects['valvereport/getValveReportInfo'],
 }))
-
 
 class DetailWaitApproveReport extends PureComponent {
     constructor(props) {
@@ -29,11 +27,9 @@ class DetailWaitApproveReport extends PureComponent {
         }
     }
 
-
     componentDidMount() {
         this.getReportDetailInfo();
     }
-
 
     getReportDetailInfo() {
         const { location, dispatch } = this.props;
@@ -65,26 +61,34 @@ class DetailWaitApproveReport extends PureComponent {
 
     async handleCommit() {
         const { agree, reason, reportNo } = this.state;
-
-        console.log('reason', reason);
-        console.log('agree', agree);
         let flag = 4
         if (!agree) {
             flag = 14
         }
-
-        const res = await approveResult({ reportNo, reason, flag });
-
-        if (res) {
-            if (res.ok) {
-                message.success('审批通过');
-                this.setState({
-                    welcome: false,
-                });
-            } else {
-                message.error(res.errMsg);
+        if (reason != '' || agree) {
+            const res = await approveResult({ reportNo, reason, flag });
+            if (res) {
+                if (res.ok) {
+                    message
+                        .loading('正在提交', 2)
+                        .then(() => message.success('提交成功', 1))
+                        .then(() => message.success('自动为你跳转', 1));
+                    this.setState({
+                        welcome: false,
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
             }
+            setTimeout(() => {
+                this.props.dispatch(
+                    routerRedux.push({
+                        pathname: '/workplatform/mytask',
+                    })
+                )
+            }, 3000);
         }
+
     }
 
     onChange = (e) => {
@@ -95,18 +99,10 @@ class DetailWaitApproveReport extends PureComponent {
 
 
     render() {
-        const {
-            welcome,
-            agree,
-        } = this.state;
-
+        const { welcome, agree, reason } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
-        console.log("welcome:", historyInfo)
         let flag = 0;
-        if (historyInfo) {
-            const { modifyFlag } = historyInfo
-            flag = modifyFlag;
-        }
+        if (historyInfo) { const { modifyFlag } = historyInfo; flag = modifyFlag; }
         const popoverContent = (
             <div style={{ width: 160 }}>
                 耗时：2小时25分钟
@@ -129,7 +125,7 @@ class DetailWaitApproveReport extends PureComponent {
             desc1 = (
                 <div >
                     <Fragment>
-                        创建人:{historyInfo["createRealName"]}
+                        创建人:{historyInfo["createName"]}
                     </Fragment>
                     <div>{historyInfo["createTime"]}</div>
                 </div>
@@ -139,7 +135,7 @@ class DetailWaitApproveReport extends PureComponent {
             desc2 = (
                 <div >
                     <Fragment>
-                        审核人:{historyInfo["checkRealName"]}
+                        审核人:{historyInfo["checkName"]}
                     </Fragment>
                     <div>{historyInfo["checkTime"]}</div>
                 </div>
@@ -150,13 +146,7 @@ class DetailWaitApproveReport extends PureComponent {
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="基础信息">
-                    <DescriptionList>
-                        {reportListKeys.map((item, i) => (
-                            <Description key={item} term={reportListLabels[item]}>
-                                {reportListLabels[item] == "维护检修情况说明" ? reportInfo[item] + "" : reportInfo[item]}
-                            </Description>
-                        ))}
-                    </DescriptionList>
+                    <Particulars reportInfo={reportInfo} />
                 </Card>
                 <Card title="流程进度" style={{ marginTop: 24 }} bordered={false}>
                     <Steps direction='horizontal' progressDot={customDot} current={flag}>
@@ -196,11 +186,9 @@ class DetailWaitApproveReport extends PureComponent {
                 <div style={{ display: welcome ? 'none' : 'block' }}>
                     <Card title="审核结果" style={{ marginTop: 24 }} bordered={false}>
                         <div style={{ display: agree ? 'none' : 'block' }}>
-                            审批不通过
+                            <div><b className={styles.Fontwg}>审批不通过</b>  <p style={{ display: 'inline-block',color:'black' }}>理由:</p><em className={styles.Fontwg} style={{ color:'red'}}>{reason}</em></div>
                         </div>
-                        <div style={{ display: agree ? 'block' : 'none' }}>
-                            审批通过
-                        </div>
+                        <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审批通过</div>
                     </Card>
                 </div>
                 <BackTop />

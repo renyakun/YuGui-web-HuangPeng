@@ -28,12 +28,22 @@
     .ant-form-item-control-wrapper {
       flex: 1;
     }
+    
   }
   .submitButtons {
     display: block;
     white-space: nowrap;
     margin-bottom: 24px;
   }
+}
+
+.tableBody{
+  :global{
+    .ant-table-column-title{
+      font-weight: bolder
+    }
+  }
+  
 }
 
 @media screen and (max-width: @screen-lg) {

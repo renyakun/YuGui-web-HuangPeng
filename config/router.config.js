@@ -6,87 +6,64 @@ export default [
     routes: [
       { path: '/user', redirect: '/user/login' },
       { path: '/user/login', component: './User/Login' },
-      { path: '/user/register', component: './User/Register' },
-      { path: '/user/register-result', component: './User/RegisterResult' },
     ],
   },
+
+  //ReportPrint
+  {
+    path: '/print',
+    routes: [
+      { path: '/print', component: './ReportPrint' },
+    ],
+  },
+
   // app
   {
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user','super', 'partner', 'app'], 
+    authority: ['admin', 'examine', 'approval', 'clerk'],
+    // 服务端返回的userLevel隐射关系，0：admin 超级管理员, 1:examine 管理员(审核)企业子账号, 2: approval 企业子账号(审批), 3: clerk 账号(文员)
     routes: [
-      { path: '/', redirect: '/workplatform/mytask',},//index
-      //{ path: '/', authority: ['admin', 'user'],},
-      
-      //templent
-      {
-        path: '/templent',
-        name: 'templent',
-        icon: 'snippets',
-        hideInMenu: 'true',
-        component: './Templent',
-      },
+      { path: '/', redirect: '/workplatform/mytask', },//index
 
-      //house
-      {
-        path: '/house',
-        name: 'house',
-        icon: 'home',
-        //hideInMenu: 'true',
-        routes: [
-          {
-            path: '/house/resource',
-            name: 'resource',
-            component: './haoke/house/Resource',
-          },
-          {
-            path: '/house/addResource',
-            name: 'addResource',
-            component: './haoke/house/AddResource',
-          },
-          {
-            path: '/house/analysis',
-            name: 'analysis', 
-            component: './haoke/house/NewAnalysis',
-          },
-        ],
-      },
       //Workplatform
       {
         path: '/workplatform',
         name: 'workplatform',
         icon: 'fund',
+        //iconfont:'icon-reportList',
+        // authority: ['admin', 'examine', 'approval', ],
         routes: [
           {
             path: '/workplatform/mytask',
             name: 'mytask',
-            icon: 'radar-chart',
             component: './Workplatform/MyTask',
           },
           {
             path: '/workplatform/waitcheckList',
             name: 'waitcheckList',
-            icon: 'radar-chart',
+            hideInMenu: 'true',
             component: './Workplatform/WaitCheckList',
           },
           {
             path: '/workplatform/waitapprveList',
             name: 'waitapprveList',
-            icon: 'radar-chart',
+            hideInMenu: 'true',
+            //authority: ['admin', 'approval',],
             component: './Workplatform/WaitApprveList',
           },
           {
             path: '/workplatform/detailwaitCheck',
             name: 'detailwaitCheck',
-            hideInMenu: 'true', //添加页不需要在menu上显示
+            hideInMenu: 'true',
             component: './Workplatform/DetailWaitCheck',
           },
           {
             path: '/workplatform/detailwaitApprove',
             name: 'detailwaitApprove',
             hideInMenu: 'true',
+            //authority: ['admin', 'approval',],
             component: './Workplatform/DetailWaitApprove',
           },
         ],
@@ -96,123 +73,118 @@ export default [
       {
         path: '/report',
         name: 'report',
-        icon: 'radar-chart',
+        icon: 'snippets',
+        //authority: ['admin', 'examine', 'approval',],
         routes: [
+          { path: '/report', redirect: '/report/create/basicForm', },
           {
-            path: '/report/createreport/basicform',
+            path: '/report/create/basicForm',
             name: 'basicform',
-            icon: 'radar-chart',
             component: './ReportManager/CreateReport/BasicForm',
           },
           {
-            path: '/report/myreportList/newlist',
+            path: '/report/myList/newlist',
             name: 'newlist',
-            icon: 'radar-chart',
             component: './ReportManager/MyReportList/NewList',
           },
           {
-            path: '/report/myreportList/checkedlist',
+            path: '/report/myList/checkedlist',
             name: 'checkedlist',
-            icon: 'radar-chart',
+            //authority: ['admin', 'examine', 'approval',],
             component: './ReportManager/MyReportList/CheckedList',
           },
           {
-            path: '/report/myreportList/approvelist',
+            path: '/report/myList/approvelist',
             name: 'approvelist',
-            icon: 'radar-chart',
+            //authority: ['admin', 'approval',],
             component: './ReportManager/MyReportList/ApproveList',
           },
           {
-            path: '/report/myreportList/filelist',
+            path: '/report/myList/filelist',
             name: 'filelist',
-            icon: 'radar-chart',
+            //authority: ['admin',  'approval',],
             component: './ReportManager/MyReportList/FileList',
           },
           {
-            path: '/report/handlereport/reportdetail',
+            path: '/report/handle/reportdetail',
             name: 'reportdetail',
-            icon: 'radar-chart',
             hideInMenu: 'true',
             component: './ReportManager/HandleReport/ReportDetail',
           },
           {
-            path: '/report/handlereport/reportcheck',
+            path: '/report/handle/reportcheck',
             name: 'reportcheck',
-            icon: 'radar-chart',
             hideInMenu: 'true',
             component: './ReportManager/HandleReport/ReportCheck',
           },
           {
-            path: '/report/handlereport/reportapprove',
+            path: '/report/handle/reportapprove',
             name: 'reportapprove',
-            icon: 'radar-chart',
             hideInMenu: 'true',
             component: './ReportManager/HandleReport/ReportApprove',
           },
           {
-            path: '/report/handlereport/reportview',
-            name: 'reportview',
-            icon: 'radar-chart',
+            path: '/report/handle/modifyreportdetail',
+            name: 'modifyreportdetail',
             hideInMenu: 'true',
-            component: './ReportManager/HandleReport/ReportView',
+            component: './ReportManager/HandleReport/ModifyReportDetail',
           },
           {
-            path: '/report/handlereport/reportprint',
-            name: 'reportprint',
-            icon: 'radar-chart',
+            path: '/report/handle/modifyreportcheck',
+            name: 'modifyreportcheck',
             hideInMenu: 'true',
-            component: './ReportManager/HandleReport/ReportPrint',
+            component: './ReportManager/HandleReport/ModifyReportCheck',
+          },
+          {
+            path: '/report/handle/reportview',
+            name: 'reportview',
+            hideInMenu: 'true',
+            component: './ReportManager/HandleReport/ReportView',
           },
         ],
       },
 
+      //SearchReport
+      {
+        path: '/search',
+        name: 'search',
+        icon: 'file-search',
+        component: './SearchReport/SearchReportList',
+      },
+
       //System
       {
-        path: '/system',
-        name: 'system',
-        icon: 'radar-chart',
-        hideInMenu: 'true',
+        path: '/system/info',
+        name: 'info',
+        icon: 'usergroup-add',
+        component: './System/Info/Info',
         routes: [
           {
             path: '/system/info',
-            name: 'info',
-            icon: 'radar-chart',
-            component: './System/Info/Info',
-            routes: [
-              {
-                path: '/system/info',
-                redirect: '/system/info/admininfo',
-              },
-              {
-                path: '/system/info/admininfo',
-                component: './System/Info/AdminInfo',
-              },
-              {
-                path: '/system/info/security',
-                component: './System/Info/Security',
-              },
-              {
-                path: '/system/info/addadmin',
-                component: './System/Info/AddAdmin',
-              },
-            ],
+            redirect: '/system/info/admininfo',
           },
-        ]
+          {
+            path: '/system/info/admininfo',
+            component: './System/Info/AdminInfo',
+          },
+          {
+            path: '/system/info/security',
+            component: './System/Info/Security',
+          },
+          {
+            path: '/system/info/usertable',
+            //authority: ['admin',],
+            component: './System/Info/UserTable',
+          },
+        ],
       },
 
-      //SearchReport
+      //Corporation
       {
-        path: '/searchreport',
-        name: 'searchreport',
-        icon: 'radar-chart',
-        hideInMenu: 'true',
-        routes: [
-          {
-            path: '/searchreport/searchreportlist',
-            name: 'searchreportlist',
-            component: './SearchReport/SearchReportList',
-          }
-        ]
+        path: '/company',
+        name: 'company',
+        icon: 'hdd',
+        component: './CorporateManageMent/Corporation',
       },
 
       //dashboard
@@ -239,12 +211,13 @@ export default [
           },
         ],
       },
+
       // forms
       {
         path: '/form',
         icon: 'form',
         name: 'form',
-        hideInMenu: 'true',
+        //hideInMenu: 'true',
         routes: [
           {
             path: '/form/basic-form',
@@ -287,12 +260,13 @@ export default [
           },
         ],
       },
+
       // list
       {
         path: '/list',
         icon: 'table',
         name: 'list',
-        hideInMenu: 'true',
+        //hideInMenu: 'true',
         routes: [
           {
             path: '/list/table-list',
@@ -337,13 +311,14 @@ export default [
           },
         ],
       },
+
+      // profile
       {
         path: '/profile',
         name: 'profile',
         icon: 'profile',
         hideInMenu: 'true',
         routes: [
-          // profile
           {
             path: '/profile/basic',
             name: 'basic',
@@ -357,13 +332,14 @@ export default [
           },
         ],
       },
+
+      // result
       {
         name: 'result',
         icon: 'check-circle-o',
         path: '/result',
         hideInMenu: 'true',
         routes: [
-          // result
           {
             path: '/result/success',
             name: 'success',
@@ -372,13 +348,14 @@ export default [
           { path: '/result/fail', name: 'fail', component: './Result/Error' },
         ],
       },
+
+      // exception
       {
         name: 'exception',
         icon: 'warning',
         path: '/exception',
         hideInMenu: 'true',
         routes: [
-          // exception
           {
             path: '/exception/403',
             name: 'not-permission',
@@ -402,6 +379,8 @@ export default [
           },
         ],
       },
+
+      //account
       {
         name: 'account',
         icon: 'user',
@@ -460,9 +439,11 @@ export default [
           },
         ],
       },
+
       {
         component: '404',
       },
     ],
   },
+
 ];

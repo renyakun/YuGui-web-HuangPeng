@@ -50,6 +50,7 @@ export default {
   define: {
     APP_TYPE: process.env.APP_TYPE || '',
   },
+
   // 路由配置
   routes: pageRoutes,
   // Theme for antd
@@ -63,10 +64,16 @@ export default {
   proxy: {
     '/report': {
       target: 'http://120.79.181.56:8089',
-      //target: 'http://192.168.101.7:8080',
+      //target: 'http://192.168.101.7:8089',
       changeOrigin: true,
     },
   },
+
+  base: "/YuGui/",
+  publicPath: '/YuGui/',
+  //history:'hash',
+  hash: true,
+
   ignoreMomentLocale: true,
   lessLoaderOptions: {
     javascriptEnabled: true,

@@ -3,8 +3,8 @@ import { logout, login, checkLogin } from '../services/user';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 
-// 服务端返回的userLevel隐射关系，0：super 暂无, 1: admin 管理员, 2: partner 企业子账号, 3: app app账号
-const roles = ['super', 'admin', 'partner', 'app'];
+// 服务端返回的userLevel隐射关系，0：admin 超级管理员, 1:examine 管理员(审核)企业子账号, 2: approval 企业子账号(审批), 3: clerk 账号(文员)
+const roles = ['admin', 'examine', 'approval', 'clerk'];
 
 export default {
   namespace: 'login',
@@ -50,22 +50,35 @@ export default {
           const { userLevel, userName, enable } = data;
           res.account = userName;
           res.userLevel = userLevel;
-          res.currentAuthority = roles[enable];
+          res.currentAuthority = roles[userLevel];
         }
         reloadAuthorized();
         yield put({
           type: 'changeLoginStatus',
           payload: res,
         });
-        if (fromLogin) {
-          reloadAuthorized();
-          yield put(
-            routerRedux.replace({
-              pathname: '/workplatform/mytask', // here
-              state: { fromLogin },
-            }),
-          );
+        if (window.location.pathname.substring(6) === "/user/login") {
+          if (fromLogin) {
+            reloadAuthorized();
+            yield put(
+              routerRedux.replace({
+                pathname: "/", //here
+                state: { fromLogin },
+              }),
+            );
+          }
+        } else {
+          if (fromLogin) {
+            reloadAuthorized();
+            yield put(
+              routerRedux.replace({
+                pathname: window.location.pathname.substring(6), //here
+                state: { fromLogin },
+              }),
+            );
+          }
         }
+
       }
     },
     *login({ payload }, { call, put }) {

@@ -1,16 +1,15 @@
-import { reportListLabels } from '@/common/labels';
-import DescriptionList from '@/components/DescriptionList';
+import Particulars from '@/common/Report/Particulars';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { addNotifyApproveUser } from '@/services/valverserver';
 import { Button, Card, message, Popover, Select, Steps } from 'antd';
 import { connect } from 'dva';
 import React, { Fragment, PureComponent } from 'react';
+import Link from 'umi/link';
 import styles from './styles.less';
+import { routerRedux } from 'dva/router';
 
-const { Description } = DescriptionList;
 const { Step } = Steps;
 const SelectOption = Select.Option;
-const reportListKeys = Object.keys(reportListLabels);
 
 @connect(({ valvereport: { valveinfo, approveuserlist }, loading }) => ({
     valveinfo,
@@ -26,7 +25,7 @@ class ReportCheck extends PureComponent {
         this.state = {
             welcome: true,
             approveuser: '',
-            realname: '',
+            userName: '',
             reportNo: '',
         }
     }
@@ -41,10 +40,10 @@ class ReportCheck extends PureComponent {
         const { report } = location;
         let reportno
         if (report) {
-            sessionStorage.setItem('detailreportno', report);
+            sessionStorage.setItem('checkreportno', report);
             reportno = report
         } else {
-            reportno = sessionStorage.getItem('detailreportno');
+            reportno = sessionStorage.getItem('checkreportno');
         }
         this.setState({
             reportNo: reportno,
@@ -68,11 +67,10 @@ class ReportCheck extends PureComponent {
     handleSelect(value) {
         const id = value;
         if (id) {
-
             const user = this.props.approveuserlist.find(item => item.userName === id);
             this.setState({
                 approveuser: id,
-                realname: user.realName,
+                userName: user.userName,
             });
         }
     }
@@ -81,15 +79,23 @@ class ReportCheck extends PureComponent {
     async handleCommit() {
         const { approveuser, reportNo } = this.state;
         let userName = approveuser
-
         const res = await addNotifyApproveUser({ userName, reportNo });
-
         if (res) {
             if (res.ok) {
-                message.success('已将报告向审批人员提交');
+                message
+                    .loading(`已将报告向${userName}提交`, 2)
+                    .then(() => message.success('提交成功', 1))
+                    .then(() => message.success('自动为你跳转', 1));
                 this.setState({
                     welcome: false,
                 });
+                setTimeout(() => {
+                    this.props.dispatch(
+                        routerRedux.push({
+                            pathname: '/report/myList/checkedlist',
+                        })
+                    )
+                }, 3000);
             } else {
                 message.error(res.errMsg);
             }
@@ -101,10 +107,9 @@ class ReportCheck extends PureComponent {
         const {
             welcome,
             approveuser,
-            realname,
+            userName,
         } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, approveuserlist, loading } = this.props;
-        //console.log("approveuserlist:", approveuserlist)
         let flag = 0;
         if (historyInfo) {
             const { modifyFlag } = historyInfo
@@ -131,7 +136,7 @@ class ReportCheck extends PureComponent {
             desc1 = (
                 <div >
                     <Fragment>
-                        创建人:{historyInfo["createRealName"]}
+                        创建人:{historyInfo["createName"]}
                     </Fragment>
                     <div>{historyInfo["createTime"]}</div>
                 </div>
@@ -141,7 +146,7 @@ class ReportCheck extends PureComponent {
             desc2 = (
                 <div >
                     <Fragment>
-                        审核人:{historyInfo["checkRealName"]}
+                        审核人:{historyInfo["checkName"]}
                     </Fragment>
                     <div>{historyInfo["checkTime"]}</div>
                 </div>
@@ -150,13 +155,7 @@ class ReportCheck extends PureComponent {
         return (
             <PageHeaderWrapper>
                 <Card title="报告详情" loading={loading}>
-                    <DescriptionList style={{ marginBottom: 24 }}>
-                        {reportListKeys.map((item, i) => (
-                            <Description key={item} term={reportListLabels[item]}>
-                                {reportListLabels[item] == "维护检修情况说明" ? reportInfo[item] + "" : reportInfo[item]}
-                            </Description>
-                        ))}
-                    </DescriptionList>
+                    <Particulars reportInfo={reportInfo} />
                 </Card>
 
                 <Card title="流程进度" style={{ marginTop: 24 }} bordered={false}>
@@ -176,9 +175,8 @@ class ReportCheck extends PureComponent {
                                 className={styles.input}
                                 placeholder="请选择报告审批人员"
                                 onChange={this.handleSelect.bind(this)}
-                                allowClear
                             >
-                                {approveuserlist.map(item => <SelectOption key={item.userName}>{item.realName}</SelectOption>)}
+                                {approveuserlist.map(item => <SelectOption key={item.userName}>{item.userName}</SelectOption>)}
                             </Select>
                             <Button
                                 size="large"
@@ -188,17 +186,15 @@ class ReportCheck extends PureComponent {
                             >
                                 提交
                                 </Button>
-
                         </div>
 
                     </Card>
                 </div>
                 <div style={{ display: welcome ? 'none' : 'block' }}>
-                    <Card title="已经提交审核" style={{ marginTop: 24 }} bordered={false}>
+                    <Card title="已经提交审批" style={{ marginTop: 24 }} bordered={false}>
                         <div className={styles.inputs}>
-                            审核人:{realname}
+                            <h4>审批人:</h4><span className={styles.Fontwg}>{userName}</span>
                         </div>
-
                     </Card>
                 </div>
             </PageHeaderWrapper>

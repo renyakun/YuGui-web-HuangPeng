@@ -5,7 +5,6 @@ export async function getSearchReport(params) {
   return request(`/report/list?${stringify(params)}`);
 }
 
-
-export async function getUserRealName() {
-  return request(`/report/getUserRealName`);
+export async function getUserName() {
+  return request(`/report/preUser`);
 }

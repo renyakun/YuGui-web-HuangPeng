@@ -11,7 +11,7 @@ class Info extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            enable: 1,
+            userLevel: 1,
         }
     }
 
@@ -34,8 +34,8 @@ class Info extends PureComponent {
             case 'security':
                 router.push(`${match.url}/security`);
                 break;
-            case 'addadmin':
-                router.push(`${match.url}/addadmin`);
+            case 'usertable':
+                router.push(`${match.url}/usertable`);
                 break;
             default:
                 break;
@@ -56,7 +56,7 @@ class Info extends PureComponent {
             {
                 key: 'admininfo',
                 tab: (
-                    <span>管理员信息</span>
+                    <span>个人信息</span>
                 ),
             },
             {
@@ -66,17 +66,19 @@ class Info extends PureComponent {
                 ),
             },
         ];
-        const operation = [{
-            key: 'addadmin',
-            tab: (
-                <span>添加管理员</span>
-            ),
-        }];
+        const operation = [
+            {
+                key: 'usertable',
+                tab: (
+                    <span>用户列表</span>
+                ),
+            },
+        ];
 
         return (
             <Card style={{ marginTop: 24 }}
                 bordered={false}
-                tabList={info.enable == '1' ? operationTabList.concat(operation) : operationTabList}
+                tabList={info.userLevel == '0' ? operationTabList.concat(operation) : operationTabList}
                 activeTabKey={location.pathname.replace(`${match.path}/`, '')}
                 onTabChange={this.onTabChange}
             >

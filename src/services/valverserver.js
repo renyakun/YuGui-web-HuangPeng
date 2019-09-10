@@ -11,6 +11,16 @@ export async function creatValveReport(params) {
   });
 }
 
+export async function updateReport(params) {
+  return request(`/report/updateReport`, {
+    method: "POST",
+    body: {
+      ...params,
+      method: 'post',
+    },
+  });
+}
+
 export async function getDetailValve(params) {
   return request(`/report/getReportDetail?${stringify(params)}`);
 }
@@ -51,35 +61,45 @@ export async function addFileReport(params) {
   });
 }
 
-export async function getNewReportList() {
-  return request(`/report/getNewReportList`);
+export async function getNewReportList(params) {
+  return request(`/report/getNewReportList?${stringify(params)}`);
 }
 
 export async function getApproveUserList() {
   return request(`/report/getApproveUserList`);
 }
-export async function getCheckedReportList() {
-  return request(`/report/getCheckedReportList`);
+export async function getCheckedReportList(params) {
+  return request(`/report/getCheckedReportList?${stringify(params)}`);
 }
 
 export async function getCheckUserList() {
   return request(`/report/getCheckUserList`);
 }
 
-export async function getApproveReportList() {
-  return request(`/report/getApproveReportList`);
+export async function getApproveReportList(params) {
+  return request(`/report/getApproveReportList?${stringify(params)}`);
 }
 
-export async function getFileReportList() {
-  return request(`/report/getFileReportList`);
+export async function getFileReportList(params) {
+  return request(`/report/getFileReportList?${stringify(params)}`);
 }
 
 export async function getcreateReportNumber() {
   return request(`/report/createReportNumber`);
 }
 
-export async function getcompanyInfo(params) {
-  return request(`/report/companyInfo?${stringify(params)}`);
+export async function getcompanyInfo() {
+  return request(`/report/companyInfo`);
 }
 
+// export async function getCompanyList(params) {
+//   return request(`/report/getCompanyList?${stringify(params)}`);
+// }
+
+export async function getautoCheck(params) {
+  return request(`/report/autoCheck`, {
+    method: "POST",
+    body: params,
+  });
+}
  

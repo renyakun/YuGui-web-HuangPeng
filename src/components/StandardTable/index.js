@@ -12,6 +12,8 @@ function initTotalList(columns) {
   return totalList;
 }
 
+
+
 class StandardTable extends PureComponent {
   constructor(props) {
     super(props);
@@ -21,6 +23,7 @@ class StandardTable extends PureComponent {
     this.state = {
       selectedRowKeys: [],
       needTotalList,
+      flag: '12'
     };
   }
 
@@ -84,6 +87,13 @@ class StandardTable extends PureComponent {
       }),
     };
 
+    //   const RowRender = {
+    //     expandedRowRender={ record => <p style={{ margin: 0 }}>{record.flag}</p>}
+    // }
+
+
+
+
     return (
       <div className={styles.standardTable}>
         <div className={styles.tableAlert}>
@@ -112,7 +122,7 @@ class StandardTable extends PureComponent {
         <Table
           loading={loading}
           rowKey={rowKey || 'reportNo'}
-          rowSelection={rowSelection}
+          //rowSelection={rowSelection}
           dataSource={list}
           columns={columns}
           pagination={paginationProps}

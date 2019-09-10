@@ -1,4 +1,4 @@
-# Test against the latest version of this Node.js version  qq
+# Test against the latest version of this Node.js version
 environment:
   nodejs_version: "8"
 

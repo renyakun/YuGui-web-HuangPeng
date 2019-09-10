@@ -1,20 +1,14 @@
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { ReportLabels } from '@/common/labels';
 import { Card, Table } from 'antd';
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
 
-const newReportLabels = {
-    reportNo: '报告编号',
-    realName: '提交人',
-    createTime: '提交时间',
-    actions: '操作',
-};
-
-const reportColumns = Object.keys(newReportLabels).map(key => {
+const reportColumns = Object.keys(ReportLabels).map(key => {
     if (key === 'actions') {
         return {
-            title: newReportLabels[key],
+            title: ReportLabels[key],
             render: ({ reportNo }) => (
                 <Link to={{ pathname: '/workplatform/detailwaitApprove', report: `${reportNo}` }}>
                     审批报告
@@ -25,7 +19,7 @@ const reportColumns = Object.keys(newReportLabels).map(key => {
     return {
         key,
         dataIndex: key,
-        title: newReportLabels[key],
+        title: ReportLabels[key],
     };
 });
 
@@ -38,6 +32,20 @@ class WaitApprveList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
+            waitapprovelist: [],
+            pageSize: 5,
+            total: 10,
+            current: 1
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.waitapprovelist != this.props.waitapprovelist) {
+            this.setState({
+                waitapprovelist: nextProps.waitapprovelist.list,
+                pageSize: nextProps.waitapprovelist.pageSize,
+                total: nextProps.waitapprovelist.total,
+                current: nextProps.waitapprovelist.pageNum
+            });
         }
     }
 
@@ -50,16 +58,39 @@ class WaitApprveList extends PureComponent {
         });
     }
 
+    handleTableChange = (pagination) => {
+        const params = {
+            pageNum: pagination.current,
+            pageSize: pagination.pageSize,
+        };
+
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'userseting/fetchWaitApproveList',
+            payload: params,
+        });
+
+    };
+
     render() {
-        const { waitapprovelist, listLoading } = this.props;
+        const { waitapprovelist, pageSize, total, current } = this.state;
+        const { listLoading } = this.props;
+        const paginationProps = {
+            showSizeChanger: true,
+            showQuickJumper: true,
+            pageSize: pageSize,
+            total: total,
+            current: current
+        };
         return (
             <PageHeaderWrapper>
-                <Card bordered={false} title="待审核报告列表" loading={listLoading}>
+                <Card bordered={false} title="待审批报告列表" loading={listLoading}>
 
                     <Table
                         dataSource={waitapprovelist}
                         columns={reportColumns}
-                        pagination={false}
+                        pagination={paginationProps}
+                        onChange={this.handleTableChange}
                         loading={listLoading}
                         rowKey="reportNo"
                     />

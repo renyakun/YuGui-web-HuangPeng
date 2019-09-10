@@ -2,8 +2,10 @@ import { routerRedux } from 'dva/router';
 import { message } from 'antd';
 import {
     creatValveReport,
+    updateReport,
     getcreateReportNumber,
     getcompanyInfo,
+    getautoCheck,
     getDetailValve,
     getNewReportList,
     getCheckUserList,
@@ -21,6 +23,7 @@ export default {
         checkuserlist: [],
         approvedreportlist: [],
         approveuserlist: [],
+        CompanyList:{},
         valveinfo: {
             reportInfo: {},
             historyInfo: {},
@@ -32,14 +35,18 @@ export default {
             const res = yield call(creatValveReport, payload);
             if (res) {
                 if (res.ok) {
-                    const reportno = res.data;
-                    //console.log("report:", reportno)
-                    yield put(
-                        routerRedux.push({
-                            pathname: '/report/myreportList/newlist',//提交审核,选择报告审核人员
-                            state: { reportno },
-                        })
-                    );
+                    message.success('创建成功');
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *updateReport({ payload }, { call, put }) {
+            const res = yield call(updateReport, payload);
+            if (res) {
+                if (res.ok) {
+                    message.success('修改成功');
                 } else {
                     message.error(res.errMsg);
                 }
@@ -61,16 +68,16 @@ export default {
             }
         },
 
-        *fetchcompanyInfo({ payload }, { call, put }) {
-            const res = yield call(getcompanyInfo,payload);
+        *fetchCompanyList(_, { call, put }) {
+            const res = yield call(getcompanyInfo);
             if (res) {
                 if (res.ok) {
-                    const companyList = res.data;
+                    const CompanyList = res.data;
                     yield put({
-                        type: 'saveList',
-                        payload: { companyList },
+                        type: 'savelist',
+                        payload: { CompanyList },
                     });
-                    localStorage.setItem('companyDataList', JSON.stringify(companyList));
+                    localStorage.setItem('companyDataList', JSON.stringify(CompanyList));
                 } else {
                     message.error(res.errMsg);
                 }
@@ -78,10 +85,8 @@ export default {
         },
 
         *getValveReportInfo({ payload }, { call, put }) {
-
             const params = {};
             params.reportNo = payload
-
             const res = yield call(getDetailValve, params);
             if (res) {
                 if (res.ok) {
@@ -96,8 +101,8 @@ export default {
             }
         },
 
-        *fetchNewReportList(_, { call, put }) {
-            const res = yield call(getNewReportList);
+        *fetchNewReportList({ payload }, { call, put }) {
+            const res = yield call(getNewReportList, payload);
             if (res) {
                 if (res.ok) {
                     const newreportlist = res.data;
@@ -111,8 +116,8 @@ export default {
             }
         },
 
-        *fetchCheckReportList(_, { call, put }) {
-            const res = yield call(getCheckedReportList);
+        *fetchCheckReportList({ payload }, { call, put }) {
+            const res = yield call(getCheckedReportList, payload);
             if (res) {
                 if (res.ok) {
                     const checkedreportlist = res.data;
@@ -141,8 +146,8 @@ export default {
             }
         },
 
-        *fetchApproveUserList(_, { call, put }) {
-            const res = yield call(getApproveUserList);
+        *fetchApproveUserList({ payload }, { call, put }) {
+            const res = yield call(getApproveUserList, payload);
             if (res) {
                 if (res.ok) {
                     const approveuserlist = res.data;
@@ -156,8 +161,8 @@ export default {
             }
         },
 
-        *fetchApproveReportList(_, { call, put }) {
-            const res = yield call(getApproveReportList);
+        *fetchApproveReportList({ payload }, { call, put }) {
+            const res = yield call(getApproveReportList, payload);
             if (res) {
                 if (res.ok) {
                     const approvedreportlist = res.data;
@@ -171,8 +176,8 @@ export default {
             }
         },
 
-        *fetchApproveFilelist(_, { call, put }) {
-            const res = yield call(getFileReportList);
+        *fetchApproveFilelist({ payload }, { call, put }) {
+            const res = yield call(getFileReportList, payload);
             if (res) {
                 if (res.ok) {
                     const approvedfilelist = res.data;
@@ -186,6 +191,21 @@ export default {
             }
         },
 
+
+        *fetchAutoCheck({ payload }, { call, put }) {
+            const res = yield call(getautoCheck, payload);
+            if (res) {
+                if (res.ok) {
+                    const autocheck = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { autocheck },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
 
     },
 

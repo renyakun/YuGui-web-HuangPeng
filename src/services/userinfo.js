@@ -1,19 +1,43 @@
 import request from '@/utils/request';
 import { stringify } from 'qs';
 
-export async function getUserInfo() {
-    return request(`/report/user/getuser`);
-}
-
 export async function getUserNotifyInfo() {
   return request(`/report/getUserNotifyInfo`);
 }
 
-export async function getWaitCheckList() {
-  return request(`/report/getWaitCheckList`);
+export async function getWaitCheckList(params) {
+  return request(`/report/getWaitCheckList?${stringify(params)}`);
 }
 
-export async function getWaitApproveList() {
-  return request(`/report/getWaitApproveList`);
+export async function getWaitApproveList(params) {
+  return request(`/report/getWaitApproveList?${stringify(params)}`);
 }
 
+export async function getUserInfo() {
+    return request(`/report/user/getuser`);
+}
+
+export async function getAddUser(params) {
+  return request(`/report/user/addUser`, {
+    method: "POST",
+    body: params,
+  });
+}
+
+export async function getUpdateUser(params) {
+  return request(`/report/user/updateUser`, {
+    method: "POST",
+    body: params,
+  });
+}
+
+export async function getDeleteUser(params) {
+  return request(`/report/user/deleteUser`, {
+    method: "POST",
+    body: params,
+  });
+}
+
+export async function getUserList(params) {
+  return request(`/report/user/list?${stringify(params)}`);
+}

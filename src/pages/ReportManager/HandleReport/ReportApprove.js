@@ -1,16 +1,16 @@
-import { reportListLabels } from '@/common/labels';
-import DescriptionList from '@/components/DescriptionList';
+import Particulars from '@/common/Report/Particulars';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { addFileReport } from '@/services/valverserver';
 import { Button, Card, message, Popover, Select, Steps } from 'antd';
 import { connect } from 'dva';
 import React, { Fragment, PureComponent } from 'react';
+import Link from 'umi/link';
 import styles from './styles.less';
+import { routerRedux } from 'dva/router';
 
-const { Description } = DescriptionList;
 const { Step } = Steps;
 const SelectOption = Select.Option;
-const reportListKeys = Object.keys(reportListLabels);
+
 
 @connect(({ valvereport: { valveinfo }, loading }) => ({
     valveinfo,
@@ -52,18 +52,25 @@ class ReportDetail extends PureComponent {
 
     }
 
-
     async handleCommit() {
         const { reportNo } = this.state;
-
         const res = await addFileReport({ reportNo });
-
         if (res) {
             if (res.ok) {
-                message.success('归档成功');
+                message
+                    .loading('正在归档', 2)
+                    .then(() => message.success('归档成功', 1))
+                    .then(() => message.success('自动为你跳转', 1));
                 this.setState({
                     welcome: false,
                 });
+                setTimeout(() => {
+                    this.props.dispatch(
+                        routerRedux.push({
+                            pathname: '/report/myList/approvelist',
+                        })
+                    )
+                }, 3000);
             } else {
                 message.error(res.errMsg);
             }
@@ -72,9 +79,7 @@ class ReportDetail extends PureComponent {
 
 
     render() {
-        const {
-            welcome,
-        } = this.state;
+        const { welcome, } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
         let flag = 0;
         if (historyInfo) {
@@ -99,11 +104,12 @@ class ReportDetail extends PureComponent {
         let desc1 = null
         let desc2 = null
         let desc3 = null
+        let desc4 = null
         if (flag >= 0) {
             desc1 = (
                 <div >
                     <Fragment>
-                        创建人:{historyInfo["createRealName"]}
+                        创建人:{historyInfo["createName"]}
                     </Fragment>
                     <div>{historyInfo["createTime"]}</div>
                 </div>
@@ -113,7 +119,7 @@ class ReportDetail extends PureComponent {
             desc2 = (
                 <div >
                     <Fragment>
-                        审核人:{historyInfo["checkRealName"]}
+                        审核人:{historyInfo["checkName"]}
                     </Fragment>
                     <div>{historyInfo["checkTime"]}</div>
                 </div>
@@ -124,9 +130,19 @@ class ReportDetail extends PureComponent {
             desc3 = (
                 <div >
                     <Fragment>
-                        审批人:{historyInfo["approveRealName"]}
+                        审批人:{historyInfo["approveName"]}
                     </Fragment>
                     <div>{historyInfo["approveTime"]}</div>
+                </div>
+            );
+        }
+
+        if (flag >= 5) {
+            desc4 = (
+                <div >
+                    <Fragment>
+                    待归档人:
+                    </Fragment>
                 </div>
             );
         }
@@ -135,13 +151,7 @@ class ReportDetail extends PureComponent {
         return (
             <PageHeaderWrapper>
                 <Card title="报告详情" loading={loading}>
-                    <DescriptionList style={{ marginBottom: 24 }}>
-                        {reportListKeys.map((item, i) => (
-                            <Description key={item} term={reportListLabels[item]}>
-                                {reportListLabels[item] == "维护检修情况说明" ? reportInfo[item] + "" : reportInfo[item]}
-                            </Description>
-                        ))}
-                    </DescriptionList>
+                    <Particulars reportInfo={reportInfo} />
                 </Card>
 
                 <Card title="流程进度" style={{ marginTop: 24 }} bordered={false}>
@@ -149,7 +159,7 @@ class ReportDetail extends PureComponent {
                         <Step title="新建报告" description={desc1} />
                         <Step title="审核报告" description={desc2} />
                         <Step title="审批报告" description={desc3} />
-                        <Step title="归档报告" />
+                        <Step title="归档报告" description={desc4} />
                     </Steps>
                 </Card>
 
@@ -169,6 +179,7 @@ class ReportDetail extends PureComponent {
                 <div style={{ display: welcome ? 'none' : 'block' }}>
                     <Card title="已经提交归档" style={{ marginTop: 24 }} bordered={false}>
                         <div className={styles.inputs}>
+                            <h4 style={{ color: 'dodgerblue', fontWeight: 'bolder' }}>已归档</h4>
                         </div>
                     </Card>
                 </div>
