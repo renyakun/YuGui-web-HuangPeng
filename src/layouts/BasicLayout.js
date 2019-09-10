@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, ConfigProvider, Menu, message } from 'antd';
+import { Layout, ConfigProvider } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
@@ -10,18 +10,14 @@ import pathToRegexp from 'path-to-regexp';
 import { enquireScreen, unenquireScreen } from 'enquire-js';
 import { formatMessage } from 'umi/locale';
 import SiderMenu from '@/components/SiderMenu';
-import CountDown from '@/components/CountDown';
 import Authorized from '@/utils/Authorized';
-import logo from '../assets/logohome.svg';
+import logo from '../assets/logo.svg';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
-import Link from 'umi/link';
-import styles from './BasicLayout.less';
 
 const { Content } = Layout;
-const MenuItem = Menu.Item;
 
 // Conversion router to menu. 将路由器转换为菜单
 function formatter(data, parentAuthority, parentName) {
@@ -99,9 +95,7 @@ class BasicLayout extends React.PureComponent {
     rendering: true,
     isMobile: false,
     menuData: this.getMenuData(),
-    timer: 1802000,
   };
-
 
   componentDidMount() {
     const { dispatch } = this.props;
@@ -124,7 +118,6 @@ class BasicLayout extends React.PureComponent {
         });
       }
     });
-
   }
 
   componentDidUpdate(preProps) { //移动端
@@ -224,17 +217,6 @@ class BasicLayout extends React.PureComponent {
     });
   };
 
-  handleEnd = () => {
-    const { dispatch } = this.props;
-    this.setState({
-      timer: 1802000,
-    })
-    dispatch({
-      type: 'login/logout',
-    });
-    message.error('登录已失效！请重新登录！', 5)
-  }
-
 
   render() {
     const {
@@ -244,10 +226,9 @@ class BasicLayout extends React.PureComponent {
       account,
       location: { pathname },
     } = this.props;
-    const { isMobile, menuData, timer } = this.state;
+    const { isMobile, menuData } = this.state;
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.matchParamsPath(pathname);
-    const targetTime = new Date().getTime() + timer;
     const layout = (
       <Layout>
         {isTop && !isMobile ? null : (
@@ -278,18 +259,8 @@ class BasicLayout extends React.PureComponent {
             <Authorized
               authority={routerConfig && routerConfig.authority}
               noMatch={<Exception403 />}
-            //className={styles.Authorized}
             >
-              <CountDown style={{ fontSize: 20, display: 'none' }} target={targetTime} onEnd={this.handleEnd}></CountDown>
-              {/* <Menu className={styles.Menu}>
-                <MenuItem key="remove">
-                  <Link to={{ pathname: '/search' }}>搜索报告</Link>
-                </MenuItem>
-              </Menu>
-              <br /> */}{children}
-              {/* <div className={styles.children}>
-                
-              </div> */}
+              {children}
             </Authorized>
           </Content>
           <Footer />

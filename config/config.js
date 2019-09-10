@@ -63,8 +63,8 @@ export default {
   },
   proxy: {
     '/report': {
-      target: 'http://120.79.181.56:8089',
-      //target: 'http://192.168.101.7:8089',
+      //target: 'http://120.79.181.56:8089',
+      target: 'http://192.168.101.7:8089',
       changeOrigin: true,
     },
   },

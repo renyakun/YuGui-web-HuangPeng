@@ -1,10 +1,8 @@
-import AddAdmin from '@/common/User/AddAdmin';
-import Ellipsis from '@/components/Ellipsis';
 import md5 from '@/utils/md5';
-import { Button, Card, Dropdown, Icon, Menu, Modal, Popconfirm, Table } from 'antd';
+import { Button, Card, Modal, Menu, Popconfirm, Dropdown, Icon, Table } from 'antd';
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
-import styles from './Admin.less';
+import AddAdmin from '@/common/User/AddAdmin';
 
 const MenuItem = Menu.Item;
 
@@ -118,11 +116,11 @@ class UserTable extends PureComponent {
             });
         }, 500)
     }
-
+    
     handleCancel = () => {
         this.setState({
             selectedRowKeys: [],
-            visible: false
+            visible:false
         });
     }
 
@@ -155,7 +153,6 @@ class UserTable extends PureComponent {
             title: '邮件地址',
             dataIndex: 'email',
             width: 300,
-            render: (text, record) => <Ellipsis length={16}>{record.email}</Ellipsis>
         },
         {
             title: '职位',
@@ -223,19 +220,15 @@ class UserTable extends PureComponent {
                     </span>
                     : ''
                 }
-
-                <div className={styles.tableBody}>
-                    <Table
-                        rowSelection={rowSelection}
-                        dataSource={userlist}
-                        columns={this.columns}
-                        loading={loading}
-                        pagination={paginationProps}
-                        onChange={this.handleTableChange}
-                        rowKey='userName'
-                    />
-                </div>
-
+                <Table
+                    rowSelection={rowSelection}
+                    dataSource={userlist}
+                    columns={this.columns}
+                    loading={loading}
+                    pagination={paginationProps}
+                    onChange={this.handleTableChange}
+                    rowKey='userName'
+                />
                 <Modal
                     title="添加用户"
                     visible={visible}

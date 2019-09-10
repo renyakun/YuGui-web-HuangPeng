@@ -6,7 +6,6 @@ import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
 
-
 @connect(({ userseting: { notifyinfo },  loading }) => ({
   notifyinfo,
   loading: loading.effects['userseting/fetchUserNotifyInfo'],

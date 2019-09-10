@@ -104,7 +104,6 @@ class ReportDetail extends PureComponent {
         let desc1 = null
         let desc2 = null
         let desc3 = null
-        let desc4 = null
         if (flag >= 0) {
             desc1 = (
                 <div >
@@ -137,16 +136,6 @@ class ReportDetail extends PureComponent {
             );
         }
 
-        if (flag >= 5) {
-            desc4 = (
-                <div >
-                    <Fragment>
-                    待归档人:
-                    </Fragment>
-                </div>
-            );
-        }
-
         flag = flag - 2
         return (
             <PageHeaderWrapper>
@@ -159,7 +148,7 @@ class ReportDetail extends PureComponent {
                         <Step title="新建报告" description={desc1} />
                         <Step title="审核报告" description={desc2} />
                         <Step title="审批报告" description={desc3} />
-                        <Step title="归档报告" description={desc4} />
+                        <Step title="归档报告" />
                     </Steps>
                 </Card>
 

@@ -4,7 +4,6 @@ import { Card, Table, BackTop, Tag, Tooltip, Collapse } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import styles from './styles.less';
 
 const flag = ['录入报告', '提交审核', '审核通过', '提交审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
 const flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000'];
@@ -124,17 +123,15 @@ class CheckedList extends PureComponent {
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="我的审核报告" loading={listLoading}>
-                    <div className={styles.tableBody}>
-                        <Table
-                            dataSource={checkedreportlist}
-                            columns={microcheckedColumns}
-                            loading={listLoading}
-                            pagination={paginationProps}
-                            onChange={this.handleTableChange}
-                            rowKey="reportNo"
-                            expandedRowRender={expandedRowRender}
-                        />
-                    </div>
+                    <Table
+                        dataSource={checkedreportlist}
+                        columns={microcheckedColumns}
+                        loading={listLoading}
+                        pagination={paginationProps}
+                        onChange={this.handleTableChange}
+                        rowKey="reportNo"
+                        expandedRowRender={expandedRowRender}
+                    />
                 </Card>
                 <BackTop />
             </PageHeaderWrapper>

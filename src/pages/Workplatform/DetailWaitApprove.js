@@ -97,6 +97,83 @@ class DetailWaitApproveReport extends PureComponent {
         });
     }
 
+    OnCancel = (currentStep) => {
+        this.setState({
+            visible: false,
+            currentStep: 0
+        });
+    };
+
+    handleClick = () => {
+        this.setState({
+            visible: true
+        })
+    };
+
+    backward = (currentStep) => {
+        this.setState({
+            currentStep: currentStep - 1,
+        });
+    };
+
+    handleNext = (currentStep) => {
+        if (currentStep < 2) {
+            this.forward(currentStep);
+        } else {
+            this.OnCancel(currentStep);
+            //this.handleCommit();
+        }
+    };
+
+    forward = (currentStep) => {
+        this.setState({
+            currentStep: currentStep + 1,
+        });
+    };
+
+    renderContent = (currentStep) => {
+        if (currentStep === 1) {
+            return 987654321
+        }
+        if (currentStep === 2) {
+            return 654321789
+        }
+        return [
+            <div className="container" >
+                <div id="canvasBox" >
+                    <SignatureCanvas penColor='green' canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }} />
+                </div>
+            </div>
+        ]
+    };
+
+    renderFooter = currentStep => {
+        if (currentStep === 1) {
+            return [
+                <Button key="back" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
+                    上一步
+            </Button>,
+                <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
+                    下一步
+            </Button>,
+            ];
+        }
+        if (currentStep === 2) {
+            return [
+                <Button key="back" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
+                    上一步
+            </Button>,
+                <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
+                    完成
+            </Button>,
+            ];
+        }
+        return [
+            <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
+                下一步
+          </Button>,
+        ];
+    };   
 
     render() {
         const { welcome, agree, reason } = this.state;
@@ -148,6 +225,7 @@ class DetailWaitApproveReport extends PureComponent {
                 <Card bordered={false} title="基础信息">
                     <Particulars reportInfo={reportInfo} />
                 </Card>
+
                 <Card title="流程进度" style={{ marginTop: 24 }} bordered={false}>
                     <Steps direction='horizontal' progressDot={customDot} current={flag}>
                         <Step title="新建报告" description={desc1} />
@@ -156,6 +234,7 @@ class DetailWaitApproveReport extends PureComponent {
                         <Step title="归档报告" />
                     </Steps>
                 </Card>
+                
                 <div style={{ display: welcome ? 'block' : 'none' }}>
                     <Card title="提交审核" style={{ marginTop: 24 }} bordered={false}>
                         <div style={{ marginBottom: 24 }}>
@@ -164,6 +243,7 @@ class DetailWaitApproveReport extends PureComponent {
                                 <Radio value={false}>审批不通过</Radio>
                             </RadioGroup>
                         </div>
+
                         <div style={{ display: agree ? 'none' : 'block' }}>
                             <Input
                                 size="large"
@@ -171,20 +251,44 @@ class DetailWaitApproveReport extends PureComponent {
                                 onChange={this.handleInput.bind(this)}
                             />
                         </div>
+
                         <div style={{ marginTop: 24 }}>
                             <Button
                                 size="large"
                                 type="primary"
-                                onClick={this.handleCommit.bind(this)}
+                                onClick={this.handleClick}
                                 loading={loading}
                             >
                                 提交
                             </Button>
+                            
+                            <Modal
+                            title="电子签名"
+                            visible={visible}
+                            onCancel={this.OnCancel}
+                            maskClosable={false}
+                            destroyOnClose
+                            centered
+                            footer={null}
+                            width={800}
+                            footer={this.renderFooter(currentStep)}
+                        >
+                            <Fragment>
+                                <Steps style={{ marginBottom: 28 }} current={currentStep}>
+                                    <Step title="填写电子签名" />
+                                    <Step title="确认电子签名" />
+                                    <Step title="完成" />
+                                </Steps>
+                                {this.renderContent(currentStep)}
+                            </Fragment>
+                        </Modal>
                         </div>
                     </Card>
                 </div>
+                
                 <div style={{ display: welcome ? 'none' : 'block' }}>
                     <Card title="审核结果" style={{ marginTop: 24 }} bordered={false}>
+                        
                         <div style={{ display: agree ? 'none' : 'block' }}>
                             <div><b className={styles.Fontwg}>审批不通过</b>  <p style={{ display: 'inline-block',color:'black' }}>理由:</p><em className={styles.Fontwg} style={{ color:'red'}}>{reason}</em></div>
                         </div>

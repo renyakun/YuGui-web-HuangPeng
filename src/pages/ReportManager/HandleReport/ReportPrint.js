@@ -1,16 +1,17 @@
-import { Button } from 'antd';
-import { connect } from 'dva';
 import React from 'react';
+import { connect } from 'dva';
 import ReportInfo from './ReportInfo';
 
 @connect(({ valvereport: { valveinfo }, loading }) => ({
     valveinfo,
     loading: loading.effects['valvereport/getValveReportInfo'],
 }))
- class ReportPrint extends React.Component {
+
+class ReportPrint extends React.Component {
 
     componentDidMount() {
         this.getReportDetailInfo();
+        console.log(window.location)
     }
 
     getReportDetailInfo() {
@@ -26,22 +27,28 @@ import ReportInfo from './ReportInfo';
         this.setState({
             reportNo: reportno,
         });
-
         dispatch({
             type: 'valvereport/getValveReportInfo',
             payload: reportno,
         });
 
     }
+
     render() {
         const { valveinfo: { reportInfo } } = this.props;
         return (
-            <div style={{ textAlign: 'center'}}>
-                <Button onClick={() => window.print()} style={{ marginBottom: 10 }}>打印</Button>
+            <div style={{ textAlign: 'center' }}>
+                <button onClick={() => window.print()} style={{ marginBottom: 10 }}>打印</button>
                 <ReportInfo {...reportInfo} />
             </div>
         );
     }
 }
-
 export default ReportPrint;
+
+
+
+
+
+
+

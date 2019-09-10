@@ -15,18 +15,17 @@ class ReportInfo extends PureComponent {
     }
 
     let checkTime = '';
-    let approveTime = '';
+    let approveTime='';
     if (historyInfo.checkTime != undefined) {// 14
       checkTime = historyInfo.checkTime.substring(0, 10).replace('/', '&emsp;<b>年</b>&emsp;');
-      checkTime = checkTime.substring(0, 26) + checkTime.substring(27, checkTime.length);
-      checkTime = checkTime.slice(0, 26) + '&emsp;<b>月</b>&emsp;' + checkTime.slice(26) + '&emsp;<b>日</b>';
-    }
-    if (historyInfo.approveTime != undefined) {
+      checkTime = checkTime.substring(0,26) + checkTime.substring(27,checkTime.length);
+      checkTime =checkTime.slice(0,26)+'&emsp;<b>月</b>&emsp;'+ checkTime.slice( 26 )+'&emsp;<b>日</b>';
+      
       approveTime = historyInfo.approveTime.substring(0, 10).replace('/', '&emsp;<b>年</b>&emsp;');
-      approveTime = approveTime.substring(0, 26) + approveTime.substring(27, approveTime.length);
-      approveTime = approveTime.slice(0, 26) + '&emsp;<b>月</b>&emsp;' + approveTime.slice(26) + '&emsp;<b>日</b>';
+      approveTime = approveTime.substring(0,26) + approveTime.substring(27,approveTime.length);
+      approveTime =approveTime.slice(0,26)+'&emsp;<b>月</b>&emsp;'+ approveTime.slice( 26 )+'&emsp;<b>日</b>';
     }
-
+    
     return (
       <div>
         <p>
@@ -115,7 +114,7 @@ class ReportInfo extends PureComponent {
             </tr>
             <tr>
               <td colSpan={2}>
-                <b>校验:</b><span className={styles.check}>{historyInfo.checkName}</span><br />
+                <b>校验:</b><span className={styles.check}>{historyInfo.checkName}</span><br/>
                 <b>日期：</b><div className={styles.Check} dangerouslySetInnerHTML={{ __html: `${checkTime}` }} />
               </td>
               <td colSpan={2} rowSpan={2}>
@@ -127,7 +126,7 @@ class ReportInfo extends PureComponent {
             </tr>
             <tr>
               <td colSpan={2}>
-                <b>审批:</b><span className={styles.check}>{historyInfo.approveName}</span><br />
+                <b>审批:</b><span className={styles.check}>{historyInfo.approveName}</span><br/>
                 <b>日期：</b><div className={styles.Check} dangerouslySetInnerHTML={{ __html: `${approveTime}` }} />
               </td>
             </tr>

@@ -1,11 +1,9 @@
-import Addcompany from '@/common/Company/Addcompany';
 import Incorporation from '@/common/Company/Incorporation';
+import Addcompany from '@/common/Company/Addcompany';
 import { companyLabels } from '@/common/labels';
-import Ellipsis from '@/components/Ellipsis';
-import { Button, Card, Col, Divider, Dropdown, Form, Icon, Input, Menu, Modal, Popconfirm, Row, Table } from 'antd';
+import { Button, Card, Divider, Dropdown, Icon, Menu, Modal, Popconfirm, Table, Form, Col, Row, Input, } from 'antd';
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
-import styles from './Corporation.less';
 
 
 const MenuItem = Menu.Item;
@@ -169,23 +167,25 @@ class Corporation extends PureComponent {
 
     }
 
+
     handleSearch = e => {
         e.preventDefault();
         const { dispatch, form } = this.props;
         form.validateFields((err, values) => {
-            if (!err) {
+            if (!err){
                 dispatch({
                     type: 'company/fetchCompanyList',
                     payload: values,
                 });
             };
 
-        })
+        }) 
     }
 
     handleFormReset = () => {
         this.fetchcompanyList();
-    };
+      };
+
 
     renderAddcompanyForm() {
         const { form: { getFieldDecorator } } = this.props;
@@ -194,12 +194,12 @@ class Corporation extends PureComponent {
                 <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
                     <Col md={8} sm={24}>
                         <FormItem label="单位名称:">
-                            {getFieldDecorator('companyUse')(<Input allowClear />)}
+                            {getFieldDecorator('companyUse')(<Input  allowClear />)}
                         </FormItem>
                     </Col>
                     <Col md={8} sm={24}>
                         <FormItem label="联系人:">
-                            {getFieldDecorator('companyContacts')(<Input allowClear />)}
+                            {getFieldDecorator('companyContacts')(<Input  allowClear />)}
                         </FormItem>
                     </Col>
                     <Col md={8} sm={24}>
@@ -237,7 +237,6 @@ class Corporation extends PureComponent {
                 <MenuItem key="approval">更多操作</MenuItem>
             </Menu>
         );
-
         const paginationProps = {
             showSizeChanger: true,
             showQuickJumper: true,
@@ -247,18 +246,6 @@ class Corporation extends PureComponent {
         };
 
         const companyColumns = Object.keys(companyLabels).map(key => {
-            if (key === 'companyUse') {
-                return {
-                    title: companyLabels[key],
-                    render: (text, record) => <Ellipsis length={6}>{text.companyUse}</Ellipsis>
-                }
-            }
-            if (key === 'companyAddress') {
-                return {
-                    title: companyLabels[key],
-                    render: (text, record) => <Ellipsis length={6}>{text.companyAddress}</Ellipsis>
-                }
-            }
             if (key === 'actions') {
                 return {
                     title: companyLabels[key],
@@ -283,68 +270,61 @@ class Corporation extends PureComponent {
             };
         });
 
+
         return (
             <Card bordered={false} title="公司管理列表">
-                <div className={styles.tableList}>
-                    <div className={styles.tableListForm}>{this.renderAddcompanyForm()}</div>
-
-                    <div style={{ marginTop: 16, position: 'relative' }}>
-                        <Button type="primary" onClick={() => this.handleAdd()} style={{ marginRight: 24 }}>添加</Button>
-                        {hasSelected ?
-                            <span>
-                                <Dropdown overlay={menu}>
-                                    <Button>
-                                        批量操作<Icon type="down" />
-                                    </Button>
-                                </Dropdown>
-                                <span style={{ marginLeft: 8 }}>
-                                    {hasSelected ? `已选择 ${selectedRowKeys.length} 项` : ''}
-                                </span>
+                <div >{this.renderAddcompanyForm()}</div>
+                <div style={{ marginTop: 16, position: 'relative' }}>
+                    <Button type="primary" onClick={() => this.handleAdd()} style={{ marginRight: 24 }}>添加</Button>
+                    {hasSelected ?
+                        <span>
+                            <Dropdown overlay={menu}>
+                                <Button>
+                                    批量操作<Icon type="down" />
+                                </Button>
+                            </Dropdown>
+                            <span style={{ marginLeft: 8 }}>
+                                {hasSelected ? `已选择 ${selectedRowKeys.length} 项` : ''}
                             </span>
-                            : ''
-                        }
-                    </div>
-
-                    <div className={styles.tableBody}>
-                        <Table
-                            rowSelection={rowSelection}
-                            dataSource={CompanyList}
-                            columns={companyColumns}
-                            pagination={paginationProps}
-                            onChange={this.handleTableChange}
-                            loading={listLoading}
-                            rowKey="id"
-                        />
-                    </div>
-
-                    <Modal
-                        title="修改内容"
-                        visible={visible}
-                        onCancel={this.OnCancel}
-                        maskClosable={false}
-                        destroyOnClose
-                        centered
-                        footer={null}
-                        width={800}
-                    >
-                        <Incorporation companyContent={companyContent} callback={this.getChildUpdet.bind(this)} />
-                    </Modal>
-
-                    <Modal
-                        title="添加公司"
-                        visible={AddFlag}
-                        onCancel={this.OnCancel}
-                        maskClosable={false}
-                        destroyOnClose
-                        centered
-                        footer={null}
-                        width={800}
-                    >
-                        <Addcompany callback={this.getChildAdd.bind(this)} />
-                    </Modal>
-
+                        </span>
+                        : ''
+                    }
                 </div>
-            </Card >
+                <Table
+                    rowSelection={rowSelection}
+                    dataSource={CompanyList}
+                    columns={companyColumns}
+                    pagination={paginationProps}
+                    onChange={this.handleTableChange}
+                    loading={listLoading}
+                    rowKey="id"
+                />
+                <Modal
+                    title="修改内容"
+                    visible={visible}
+                    onCancel={this.OnCancel}
+                    maskClosable={false}
+                    destroyOnClose
+                    centered
+                    footer={null}
+                    width={800}
+                >
+                    <Incorporation companyContent={companyContent} callback={this.getChildUpdet.bind(this)} />
+                </Modal>
+
+                <Modal
+                    title="添加公司"
+                    visible={AddFlag}
+                    onCancel={this.OnCancel}
+                    maskClosable={false}
+                    destroyOnClose
+                    centered
+                    footer={null}
+                    width={800}
+                >
+                    <Addcompany callback={this.getChildAdd.bind(this)} />
+                </Modal>
+            </Card>
         )
     }
 }

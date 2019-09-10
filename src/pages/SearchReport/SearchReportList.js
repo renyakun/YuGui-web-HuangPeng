@@ -18,7 +18,7 @@ function createData(list, total, pageSize, current) {
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
+const { RangePicker, } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 const getValue = obj =>
   Object.keys(obj)
@@ -175,7 +175,15 @@ class SearchReportList extends PureComponent {
   };
 
   handleFormReset = () => {
-    this.fetchSearchList();
+    const { form, dispatch } = this.props;
+    form.resetFields();
+    this.setState({
+      formValues: {},
+    });
+    dispatch({
+      type: 'SearchReport/fetchSearchList',
+      payload: {},
+    });
   };
 
   handleSelectRows = rows => {
@@ -212,13 +220,12 @@ class SearchReportList extends PureComponent {
 
   renderSimpleForm() {
     const { form: { getFieldDecorator } } = this.props;
-    const { UserName } = this.state;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="报告编号">
-              {getFieldDecorator('reportNo')(<Input allowClear />)}
+              {getFieldDecorator('reportNo')(<Input placeholder="请输入" allowClear />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -231,7 +238,7 @@ class SearchReportList extends PureComponent {
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  {UserName.map((item, i) => (
+                  {this.state.UserName.map((item, i) => (
                     <Option key={item} value={item}>{item}</Option>
                   ))}
                 </Select>)}
@@ -257,27 +264,25 @@ class SearchReportList extends PureComponent {
 
   renderAdvancedForm() {
     const { form: { getFieldDecorator } } = this.props;
-    const { UserName } = this.state;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="报告编号">
-              {getFieldDecorator('reportNo')(<Input allowClear />)}
+              {getFieldDecorator('reportNo')(<Input placeholder="请输入" allowClear />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="报告处理人">
               {getFieldDecorator('userName', { initialValue: 'admin' })(
-                <Select
-                  allowClear
+                <Select allowClear
                   showSearch
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  {UserName.map((item, i) => (
+                  {this.state.UserName.map((item, i) => (
                     <Option key={item} value={item}>{item}</Option>
                   ))}
                 </Select>)}
@@ -285,7 +290,7 @@ class SearchReportList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="状态">
-              {getFieldDecorator('flag', { initialValue: '1' })(
+              {getFieldDecorator('flag', {initialValue: '1'})(
                 <Select allowClear>
                   <Option value="1">提交审核</Option>
                   <Option value="2">审核通过</Option>
@@ -342,16 +347,14 @@ class SearchReportList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>
               {this.renderForm()}</div>
-            <div className={styles.tableBody}>
-              <StandardTable
-                selectedRows={selectedRows}
-                onSelectRow={this.handleSelectRows}
-                loading={loading}
-                data={data}
-                columns={this.columns}
-                onChange={this.handleStandardTableChange}
-              />
-            </div>
+            <StandardTable
+              selectedRows={selectedRows}
+              onSelectRow={this.handleSelectRows}
+              loading={loading}
+              data={data}
+              columns={this.columns}
+              onChange={this.handleStandardTableChange}
+            />
           </div>
         </Card>
         <BackTop />

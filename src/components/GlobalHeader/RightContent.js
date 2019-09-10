@@ -1,11 +1,12 @@
 import { Button, Dropdown, Icon, Menu, Spin } from 'antd';
 import React, { PureComponent } from 'react';
+import Link from 'umi/link';
 import { FormattedMessage } from 'umi/locale';
 import styles from './index.less';
 
-const MenuItem = Menu.Item;
 
 export default class GlobalHeaderRight extends PureComponent {
+
 
   render() {
     const {
@@ -15,15 +16,15 @@ export default class GlobalHeaderRight extends PureComponent {
     } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-        <MenuItem key="userCenter">
+        <Menu.Item key="userCenter">
           <Icon type="user" />
           <FormattedMessage id="menu.info" defaultMessage="system info" />
-        </MenuItem>
+        </Menu.Item>
         <Menu.Divider />
-        <MenuItem key="logout">
+        <Menu.Item key="logout">
           <Icon type="logout" />
           <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
-        </MenuItem>
+        </Menu.Item>
       </Menu>
     );
     let className = styles.right;

@@ -1,7 +1,7 @@
-import ReportInfo from '@/pages/ReportManager/HandleReport/ReportInfo';
-import { Button, Card } from 'antd';
-import { connect } from 'dva';
 import React from 'react';
+import { connect } from 'dva';
+import { BackTop, Button, Card, Checkbox, Form, Icon, Input, Select, AutoComplete, message, DatePicker, Row, Col, InputNumber } from 'antd';
+import ReportInfo from '@/pages/ReportManager/HandleReport/ReportInfo';
 
 @connect(({ valvereport: { valveinfo }, loading }) => ({
     valveinfo,
@@ -17,6 +17,7 @@ class ReportPrint extends React.Component {
             reportNo: ''
         };
     }
+
 
     componentDidMount() {
         this.getReportDetailInfo();
@@ -41,6 +42,7 @@ class ReportPrint extends React.Component {
         });
 
     }
+
 
     render() {
         const { valveinfo } = this.props;

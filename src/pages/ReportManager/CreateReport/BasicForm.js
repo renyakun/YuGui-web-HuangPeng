@@ -1,10 +1,10 @@
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { AutoComplete, BackTop, Button, Card, Checkbox, Col, DatePicker, Form, Icon, Input, InputNumber, message, Row, Select } from 'antd';
+import { BackTop, Button, Card, Checkbox, Form, Icon, Input, Select, AutoComplete, message, DatePicker, Row, Col, InputNumber } from 'antd';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'umi/locale';
+import { routerRedux } from 'dva/router';
 
 function IndexofByKeyValue(arraytosearch, key, valuetosearch) {
     for (var i = 0; i < arraytosearch.length; i++) {
@@ -21,9 +21,7 @@ const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const CheckboxGroup = Checkbox.Group;
 
-const plainOptions = ['外观检查、清理、校验','解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
-const nominalOptions = ['10', '15', '20', '25', '32', '40', '50', '65', '80', '100', '125', '150', '200', '225', '250', '275', '300', '350', '400'];
-const channelOptions = ['6', '9', '10', '15', '20', '32', '40', '50', '65', '80', '100', '125', '150', '200', '225', '250', '275', '300', '350'];
+const plainOptions = ['解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
 const companyDataList = JSON.parse(localStorage.getItem('companyDataList') || '[]');
 
 @connect(({ valvereport, valvereport: { ReportNumber, CompanyList, autocheck }, loading }) => ({
@@ -115,36 +113,25 @@ class BasicForm extends PureComponent {
                     delete values.micheckMe;
                 }
 
-
+                let nominalDiameter = values.nominalDiameter;
                 let minominal = values.minominal;
                 if (minominal == undefined) {
-                    values.nominalDiameter = values.nominalDiameter + 'mm';
+                    nominalDiameter = nominalDiameter
                     delete values.minominal;
-                    delete values.nominalunit;
-                    delete values.minominalunit;
-                }
-                else {
-                    values.nominalDiameter = values.minominal + values.minominalunit;
+                } else {
+                    values.nominalDiameter = values.minominal
                     delete values.minominal;
-                    delete values.nominalunit;
-                    delete values.minominalunit;
                 }
 
-
+                let channelDiameter = values.channelDiameter;
                 let michannel = values.michannel;
                 if (michannel == undefined) {
-                    values.channelDiameter = values.channelDiameter + 'mm';
+                    channelDiameter = channelDiameter
                     delete values.michannel;
-                    delete values.channelunit;
-                    delete values.michannelunit;
-                }
-                else {
-                    values.channelDiameter = values.michannel + values.michannelunit;
+                } else {
+                    values.channelDiameter = values.michannel
                     delete values.michannel;
-                    delete values.channelunit;
-                    delete values.michannelunit;
                 }
-
 
                 let pressureLevel = values.pressureLevel;
                 if (pressureLevel != undefined) {
@@ -212,8 +199,17 @@ class BasicForm extends PureComponent {
                     delete values.psreqset;
                 }
 
+                // let settingPressure = values.settingPressure;
+                // if (settingPressure != undefined) {
+                //     values.settingPressure = values.settingPressure + values.pssetg;
+                //     delete values.pssetg;
+                // }
 
-                console.log(values)
+                // let sealTestPressure = values.sealTestPressure;
+                // if (sealTestPressure != undefined) {
+                //     values.sealTestPressure = values.sealTestPressure + values.pssealt;
+                //     delete values.pssealt;
+                // }
 
                 if (values.checkResult != undefined) {
                     dispatch({
@@ -221,7 +217,7 @@ class BasicForm extends PureComponent {
                         payload: values,
                     });
                     setTimeout(() => {
-                        message.success("自动为你跳转", 2);
+                        message.success("自动为你跳转提交审核");
                         dispatch(
                             routerRedux.push({
                                 pathname: '/report/handle/reportdetail',
@@ -282,6 +278,53 @@ class BasicForm extends PureComponent {
             payload: autovalue,
         });
     }
+
+    //     <FormItem {...formItemLayout} label={"整定压力"}>
+    //     <Row>
+    //         <Col span={18}>
+    //             {getFieldDecorator('settingPressure', {
+    //                 rules: [
+    //                     { required: true, message: '请输入整定压力', },
+    //                     { pattern: new RegExp('^[0-9]+(.[0-9]{0,5})?$'), message: '请输入数字' },
+    //                 ],
+    //             })(<Input />)}
+    //         </Col>
+    //         <Col span={3}>
+    //             {getFieldDecorator('pssetg', {
+    //                 initialValue: "Mpa",
+    //             })(
+    //                 <Select style={{ width: 70 }}>
+    //                     <Option value="Mpa">Mpa</Option>
+    //                     <Option value="bar">bar</Option>
+    //                     <Option value="psi">psi</Option>
+    //                 </Select>
+    //             )}
+    //         </Col>
+    //     </Row>
+    // </FormItem>
+    //     <FormItem {...formItemLayout} label={"密封试验压力"}>
+    //         <Row>
+    //             <Col span={18}>
+    //                 {getFieldDecorator('sealTestPressure', {
+    //                     rules: [
+    //                         { required: true, message: '请输入密封试验压力', },
+    //                         { pattern: new RegExp('^[0-9]+(.[0-9]{0,5})?$'), message: '请输入数字' },
+    //                     ],
+    //                 })(<Input />)}
+    //             </Col>
+    //             <Col span={3}>
+    //                 {getFieldDecorator('pssealt', {
+    //                     initialValue: "Mpa",
+    //                 })(
+    //                     <Select style={{ width: 70 }}>
+    //                         <Option value="Mpa">Mpa</Option>
+    //                         <Option value="bar">bar</Option>
+    //                         <Option value="psi">psi</Option>
+    //                     </Select>
+    //                 )}
+    //             </Col>
+    //         </Row>
+    //     </FormItem>
 
     OnChange = (value) => {
         console.log(value)
@@ -375,74 +418,99 @@ class BasicForm extends PureComponent {
                         ],
                     })(<Input placeholder='联系电话' />)}
                 </FormItem>
-                <FormItem {...formItemLayout} label={"安全阀出厂编号"}>
+                <FormItem {...formItemLayout} label={"设备代码/出厂编号"}>
                     {getFieldDecorator('deviceNo', {
                         rules: [
-                            { required: true, message: '请输入安全阀出厂编号', }
+                            { required: true, message: '请输入设备代码/出厂编号', }
                         ],
                     })(<Input placeholder='' />)}
                 </FormItem>
-                <FormItem {...formItemLayout} label={"设备名称"}>
+                <FormItem {...formItemLayout} label={"设备型号"}>
                     {getFieldDecorator('deviceType', {
                         rules: [
-                            { required: true, message: '请输入设备名称', }
+                            { required: true, message: '请输入设备型号', }
                         ],
                     })(<Input placeholder='' />)}
                 </FormItem>
                 <FormItem {...formItemLayout} label={"公称通径"}>
                     <Row>
-                        <Col span={7}>
-                            {getFieldDecorator('nominalDiameter', {})(
-                                <Select allowClear>
-                                    {nominalOptions.map((item, i) => (
-                                        <Option key={item} value={item}>{item}</Option>
-                                    ))}
-                                </Select>)}
-                        </Col>
-                        <Col span={1}>
-                            {getFieldDecorator('nominalunit', { initialValue: "mm", })(
-                                <Button type="default" style={{ width: 60, color: 'black' }} disabled>mm</Button>)}
-                        </Col>
-                        <Col span={4}> </Col>
-                        <Col span={2}>或 </Col>
-                        <Col span={6}>{getFieldDecorator('minominal', {})
-                            (<InputNumber min={0} max={1000} step={0.1} style={{ width: '100%' }} />)}</Col>
-                        <Col span={1}>
-                            {getFieldDecorator('minominalunit', { initialValue: "mm", })(
-                                <Select style={{ width: 120 }}>
-                                    <Option value="mm">mm</Option>
-                                    <Option value="(毫米/英吋)">(毫米/英吋)</Option>
+                        <Col span={9}>
+                            {getFieldDecorator('nominalDiameter', {
+                                initialValue: "10",
+                                rules: [
+                                    { required: true, message: '请输入公称通径' },
+                                ]
+                            })(
+                                <Select>
+                                    <Option value="10">10</Option>
+                                    <Option value="15">15</Option>
+                                    <Option value="20">20</Option>
+                                    <Option value="25">25</Option>
+                                    <Option value="32">32</Option>
+                                    <Option value="40">40</Option>
+                                    <Option value="50">50</Option>
+                                    <Option value="65">65</Option>
+                                    <Option value="80">80</Option>
+                                    <Option value="100">100</Option>
+                                    <Option value="125">125</Option>
+                                    <Option value="150">150</Option>
+                                    <Option value="200">200</Option>
+                                    <Option value="225">225</Option>
+                                    <Option value="250">250</Option>
+                                    <Option value="275">275</Option>
+                                    <Option value="300">300</Option>
+                                    <Option value="350">350</Option>
+                                    <Option value="400">400</Option>
                                 </Select>
                             )}
                         </Col>
+                        <Col span={1}> </Col>
+                        <Col span={2}>或 </Col>
+                        <Col span={9}>{getFieldDecorator('minominal', {})
+                            (<InputNumber min={0} max={1000} step={0.1} style={{ width: '100%' }} />)}</Col>
+                        <Col span={1}> </Col>
+                        <Col span={1}>mm</Col>
                     </Row>
                 </FormItem>
                 <FormItem {...formItemLayout} label={"流道直径"}>
                     <Row>
-                        <Col span={7}>
-                            {getFieldDecorator('channelDiameter', {})(
-                                <Select allowClear>
-                                    {channelOptions.map((item, i) => (
-                                        <Option key={item} value={item}>{item}</Option>
-                                    ))}
-                                </Select>)}
-                        </Col>
-                        <Col span={1}>
-                            {getFieldDecorator('channelunit', { initialValue: "mm", })(
-                                <Button type="default" style={{ width: 60, color: 'black' }} disabled>mm</Button>)}
-                        </Col>
-                        <Col span={4}> </Col>
-                        <Col span={2}>或 </Col>
-                        <Col span={6}>{getFieldDecorator('michannel', {})
-                            (<InputNumber min={0} max={1000} step={0.1} style={{ width: '100%' }} />)}</Col>
-                        <Col span={1}>
-                            {getFieldDecorator('michannelunit', { initialValue: "mm", })(
-                                <Select style={{ width: 120 }}>
-                                    <Option value="mm">mm</Option>
-                                    <Option value="(毫米/英吋)">(毫米/英吋)</Option>
+                        <Col span={9}>
+                            {getFieldDecorator('channelDiameter', {
+                                initialValue: "6",
+                                rules: [
+                                    { required: true, message: '请输入流道直径' }
+                                ]
+                            })(
+                                <Select>
+                                    <Option value="6">6</Option>
+                                    <Option value="9">9</Option>
+                                    <Option value="10">10</Option>
+                                    <Option value="15">15</Option>
+                                    <Option value="20">20</Option>
+                                    <Option value="25">25</Option>
+                                    <Option value="32">32</Option>
+                                    <Option value="40">40</Option>
+                                    <Option value="50">50</Option>
+                                    <Option value="65">65</Option>
+                                    <Option value="80">80</Option>
+                                    <Option value="100">100</Option>
+                                    <Option value="125">125</Option>
+                                    <Option value="150">150</Option>
+                                    <Option value="200">200</Option>
+                                    <Option value="225">225</Option>
+                                    <Option value="250">250</Option>
+                                    <Option value="275">275</Option>
+                                    <Option value="300">300</Option>
+                                    <Option value="350">350</Option>
                                 </Select>
                             )}
                         </Col>
+                        <Col span={1}> </Col>
+                        <Col span={2}>或 </Col>
+                        <Col span={9}>{getFieldDecorator('michannel', {})(
+                            <InputNumber min={0} max={1000} step={0.1} style={{ width: '100%' }} />)}</Col>
+                        <Col span={1}> </Col>
+                        <Col span={1}>mm</Col>
                     </Row>
                 </FormItem>
                 <FormItem {...formItemLayout} label={"压力级别范围"} >
@@ -501,10 +569,10 @@ class BasicForm extends PureComponent {
                 </FormItem>
                 <FormItem {...formItemLayout} label={"检验介质温度"}>
                     <Row>
-                        <Col span={4}>
+                        <Col span={3}>
                             {getFieldDecorator('checkMediumTemperature', {
                                 initialValue: '常温',
-                            })(<Input style={{ width: 60, marginRight: 10 }} />)}
+                            })(<input style={{ marginLeft:20, width:60}} />)}
                         </Col>
                         <Col span={1}> </Col>
                         <Col span={2}>或</Col>
@@ -625,21 +693,10 @@ class BasicForm extends PureComponent {
                 </FormItem>
                 <FormItem {...formItemLayout} label={"执行标准"}>
                     {getFieldDecorator('standard', {
-                        initialValue: "ISG ZF001-2006",
                         rules: [
                             { required: true, message: '请输入执行标准', },
                         ],
-                    })(
-                        <Select
-                            showSearch
-                            optionFilterProp="children"
-                            filterOption={(input, option) =>
-                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                            }>
-                            <Option value="ISG ZF001-2006">ISG ZF001-2006</Option>
-                            <Option value="GBT 12243-2005">GBT 12243-2005</Option>
-                        </Select>
-                    )}
+                    })(<Input placeholder='' />)}
                 </FormItem>
                 <FormItem {...formItemLayout} label={"校验方式"}>
                     {getFieldDecorator('checkMode', {
@@ -865,14 +922,9 @@ class BasicForm extends PureComponent {
                 </FormItem>
                 <FormItem {...formItemLayout} label={"校验结论"}>
                     {getFieldDecorator('checkResult', { initialValue: autocheck, })
-                        (
-                            //<Input   />
-                            <Select showArrow={false} style={{ width: '100%' }}>
-                                <Option value="合格">合格</Option>
-                                <Option value="不合格">不合格</Option>
-                            </Select>
+                        (<Input   />
                         )}
-                    {/* addonAfter={addIcon} onChange={this.OnChange} */}
+                        {/* addonAfter={addIcon} onChange={this.OnChange} */}
                 </FormItem>
                 <FormItem {...formItemLayout} label={"备注"}>
                     {getFieldDecorator('remarks', {

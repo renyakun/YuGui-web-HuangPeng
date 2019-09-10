@@ -4,7 +4,6 @@ import { Card, Table } from 'antd';
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import styles from './styles.less';
 
 const reportColumns = Object.keys(newListLabels).map(key => {
     if (key === 'actions') {
@@ -56,7 +55,6 @@ class NewList extends PureComponent {
     componentDidMount() {
         this.fetchNewList();
     }
-
     fetchNewList() {
         const { dispatch } = this.props;
         dispatch({
@@ -91,16 +89,14 @@ class NewList extends PureComponent {
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="我的新建报告" loading={listLoading} >
-                    <div className={styles.tableBody}>
-                        <Table
-                            dataSource={newreportlist}
-                            columns={reportColumns}
-                            loading={listLoading}
-                            pagination={paginationProps}
-                            onChange={this.handleTableChange}
-                            rowKey="reportNo"
-                        />
-                    </div>
+                    <Table
+                        dataSource={newreportlist}
+                        columns={reportColumns}
+                        loading={listLoading}
+                        pagination={paginationProps}
+                        onChange={this.handleTableChange}
+                        rowKey="reportNo"
+                    />
                 </Card>
             </PageHeaderWrapper>
         )

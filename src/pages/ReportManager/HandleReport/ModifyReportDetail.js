@@ -2,14 +2,12 @@ import ModifyReport from '@/common/Report/ModifyReport';
 import Particulars from '@/common/Report/Particulars';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { addNotifyCheckUser } from '@/services/valverserver';
-import { BackTop, Button, Card, Form, Input, message, Steps,Switch ,Popover,} from 'antd';
+import { BackTop, Button, Card, Form, Input, message, Switch } from 'antd';
 import { connect } from 'dva';
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import Link from 'umi/link';
 import styles from './styles.less';
 import { routerRedux } from 'dva/router';
-
-const { Step } = Steps;
 
 @connect(({ valvereport: { valveinfo, checkuserlist }, loading }) => ({
     valveinfo,
@@ -82,9 +80,9 @@ class ModifyReportDetail extends PureComponent {
         if (res) {
             if (res.ok) {
                 message
-                    .loading(`已将报告向${userName}提交`, 2)
-                    .then(() => message.success('提交成功', 1))
-                    .then(() => message.success('自动为你跳转', 1));
+                .loading(`已将报告向${userName}提交`, 2)
+                .then(() => message.success('提交成功', 1))
+                .then(() => message.success('自动为你跳转', 1));
                 this.setState({
                     welcome: false,
                 });
@@ -105,7 +103,7 @@ class ModifyReportDetail extends PureComponent {
         this.setState({ visible: true });
     };
 
-    handleCancel = () => {
+    handleCancel=()=>{
         this.setState({ visible: false });
     }
 
@@ -126,46 +124,6 @@ class ModifyReportDetail extends PureComponent {
         const { welcome, checkuser, userName, condition, visible, reportInformation, } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, checkuserlist, loading, } = this.props;
 
-        let flag = 0;
-        if (historyInfo) {
-            const { modifyFlag } = historyInfo
-            flag = modifyFlag;
-        }
-        const popoverContent = (
-            <div style={{ width: 160 }}>
-                耗时：2小时25分钟
-	  </div>
-        );
-
-        const customDot = (dot, { status }) =>
-            status === 'process' ? (
-                <Popover placement="topLeft" arrowPointAtCenter content={popoverContent}>
-                    {dot}
-                </Popover>
-            ) : (dot);
-
-        let desc1 = null
-        let desc2 = null
-        if (flag >= 0) {
-            desc1 = (
-                <div >
-                    <Fragment>
-                        创建人:{historyInfo["createName"]}
-                    </Fragment>
-                    <div>{historyInfo["createTime"]}</div>
-                </div>
-            );
-        }
-        if (flag >= 1) {
-            desc2 = (
-                <div >
-                    <Fragment>
-                        待审核人:{userName}
-                    </Fragment>
-                </div>
-            );
-        }
-
         return (
             <PageHeaderWrapper>
                 <Card title="报告详情" loading={loading} >
@@ -180,15 +138,6 @@ class ModifyReportDetail extends PureComponent {
                             onCancel={this.handleCancel}
                         />
                     </div>
-                </Card>
-
-                <Card title="流程进度" style={{ marginTop: 24 }} bordered={false}>
-                    <Steps direction='horizontal' progressDot={customDot} current={flag}>
-                        <Step title="新建报告" description={desc1} />
-                        <Step title="审核报告" description={desc2} />
-                        <Step title="审批报告" />
-                        <Step title="归档报告" />
-                    </Steps>
                 </Card>
 
                 <div style={{ display: welcome ? 'block' : 'none' }}>
@@ -211,7 +160,7 @@ class ModifyReportDetail extends PureComponent {
                 <div style={{ display: welcome ? 'none' : 'block' }}>
                     <Card title="已经提交审核" style={{ marginTop: 24 }} bordered={false}>
                         <div className={styles.inputs}>
-                            <h4>审核人:</h4><span className={styles.Fontwg}>{userName}</span>
+                        <h4>审核人:</h4><span className={styles.Fontwg}>{userName}</span>
                         </div>
                     </Card>
                 </div>

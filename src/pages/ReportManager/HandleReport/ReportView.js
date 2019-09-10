@@ -40,7 +40,14 @@ class ReportView extends PureComponent {
             type: 'valvereport/getValveReportInfo',
             payload: reportno,
         });
+
     }
+
+
+    // handle() {
+    //     const w = window.open('about:blank');
+    //     w.location.href = `/report/handle/reportprint`;
+    // }
 
     render() {
         const { valveinfo, valveinfo: { reportInfo, historyInfo } } = this.props;
@@ -57,7 +64,6 @@ class ReportView extends PureComponent {
                         >
                             <Button type="primary">打印</Button>
                         </Link>
-
                         <Button
                             type="primary"
                             onClick={() => {

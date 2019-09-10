@@ -1,13 +1,11 @@
 import Particulars from '@/common/Report/Particulars';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { checkResult } from '@/services/valverserver';
-import { BackTop, Button, Card, Input, message, Popover, Radio, Steps, Modal } from 'antd';
+import { BackTop, Button, Card, Input, message, Popover, Radio, Steps } from 'antd';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import React, { Fragment, PureComponent } from 'react';
 import styles from './styles.less';
-import Draw from '@/utils/draw';
-import SignatureCanvas from 'react-signature-canvas';
 
 const { Step } = Steps;
 const RadioGroup = Radio.Group;
@@ -26,15 +24,11 @@ class DetailWaitCheck extends PureComponent {
             reportNo: '',
             agree: true,
             reason: '',
-            visible: false,
-            currentStep: 0,
-            mycolor: 'black',
         }
     }
-
     componentDidMount() {
         this.getReportDetailInfo();
-    };
+    }
 
     getReportDetailInfo() {
         const { location, dispatch } = this.props;
@@ -55,14 +49,14 @@ class DetailWaitCheck extends PureComponent {
             payload: reportno,
         });
 
-    };
+    }
 
     handleInput(e) {
         this.setState({
             reason: e.target.value,
         });
 
-    };
+    }
 
     async handleCommit() {
         const { agree, reason, reportNo } = this.state;
@@ -92,153 +86,18 @@ class DetailWaitCheck extends PureComponent {
                     })
                 )
             }, 3000);
-            this.setState({
-                visible: false,
-            });
         }
-    };
+    }
+
 
     onChange = (e) => {
         this.setState({
             agree: e.target.value,
         });
-    };
-
-    OnCancel = (currentStep) => {
-        this.setState({
-            visible: false,
-            currentStep: 0
-        });
-    };
-
-    handleClick = () => {
-        this.setState({
-            visible: true
-        })
-    };
-
-    backward = (currentStep) => {
-        this.setState({
-            currentStep: currentStep - 1,
-        });
-    };
-
-    handleNext = (currentStep) => {
-        if (currentStep < 2) {
-            this.forward(currentStep);
-        } else {
-            this.OnCancel(currentStep);
-            //this.handleCommit();
-        }
-    };
-
-    forward = (currentStep) => {
-        this.setState({
-            currentStep: currentStep + 1,
-        });
-    };
-
-    getHorizontalStyle() {
-
-        const d = document;
-        const w = window.innerWidth || d.documentElement.clientWidth || d.body.clientWidth;
-        const h = window.innerHeight || d.documentElement.clientHeight || d.body.clientHeight;
-        let length = (h - w) / 2;
-        let width = w;
-        let height = h;
-
-        switch (this.degree) {
-            case -90:
-                length = -length;
-            case 90:
-                width = h;
-                height = w;
-                break;
-            default:
-                length = 0;
-        }
-
-        if (this.canvasBox) {
-            this.canvasBox.removeChild(document.querySelector('canvas'));
-            this.canvasBox.appendChild(document.createElement('canvas'));
-            setTimeout(() => {
-                this.initCanvas();
-            }, 200);
-        }
-
-        return {
-            transform: `rotate(${this.degree}deg) translate(${length}px,${length}px)`,
-            width: `${width}px`,
-            height: `${height}px`,
-            transformOrigin: 'center center',
-        };
     }
-
-    initCanvas = (e) => {
-        const canvas = e.target.className;
-        this.draw = new Draw(canvas, -this.degree);
-    }
-
-    handleMouseDown = (e) => {
-
-    }
-
-    renderContent = (currentStep) => {
-        if (currentStep === 1) {
-            return 987654321
-        }
-        if (currentStep === 2) {
-            return 654321789
-        }
-        return [
-            <div className="container" >
-                <div id="canvasBox" >
-                    <SignatureCanvas penColor='green' canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }} />
-                </div>
-            </div>
-        ]
-    };
-
-    // style={this.getHorizontalStyle} style={getsty}style={{ height: 300, background: '#ccc' }} onMouseDown={this.handleMouseDown}
-    renderFooter = currentStep => {
-        if (currentStep === 1) {
-            return [
-                <Button key="back" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
-                    上一步
-            </Button>,
-                <Button key="cancel" onClick={this.OnCancel}>
-                    取消
-            </Button>,
-                <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-                    下一步
-            </Button>,
-            ];
-        }
-        if (currentStep === 2) {
-            return [
-                <Button key="back" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
-                    上一步
-            </Button>,
-                <Button key="cancel" onClick={this.OnCancel}>
-                    取消
-            </Button>,
-                <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-                    完成
-            </Button>,
-            ];
-        }
-        return [
-            <Button key="cancel" onClick={this.OnCancel}>
-                取消
-          </Button>,
-            <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-                下一步
-          </Button>,
-        ];
-    };
 
     render() {
-        const { welcome, reason, agree, visible, currentStep } = this.state;
+        const { welcome, reason, agree, } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
         let flag = 0;
         if (historyInfo) { const { modifyFlag } = historyInfo; flag = modifyFlag; }
@@ -278,6 +137,7 @@ class DetailWaitCheck extends PureComponent {
             );
         }
 
+
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="基础信息" loading={loading}>
@@ -314,48 +174,19 @@ class DetailWaitCheck extends PureComponent {
                             <Button
                                 size="large"
                                 type="primary"
-                                onClick={this.handleClick}
+                                onClick={this.handleCommit.bind(this)}
                                 loading={loading}
                             >
                                 提交
                             </Button>
                         </div>
 
-                        <Modal
-                            title="修改内容"
-                            visible={visible}
-                            onCancel={this.OnCancel}
-                            maskClosable={false}
-                            destroyOnClose
-                            centered
-                            footer={null}
-                            width={800}
-                            footer={this.renderFooter(currentStep)}
-                        >
-                            <Fragment>
-                                <Steps style={{ marginBottom: 28 }} current={currentStep}>
-                                    <Step title="填写电子签名" />
-                                    <Step title="确认电子签名" />
-                                    <Step title="完成" />
-                                </Steps>
-                                {this.renderContent(currentStep)}
-                            </Fragment>
-                            {/* <Button
-                                size="large"
-                                type="primary"
-                                onClick={this.handleCommit.bind(this)}
-                                loading={loading}
-                            >
-                                提交
-                            </Button> */}
-                        </Modal>
-
                     </Card>
                 </div>
                 <div style={{ display: welcome ? 'none' : 'block' }}>
                     <Card title="审核结果" style={{ marginTop: 24 }} bordered={false}>
                         <div style={{ display: agree ? 'none' : 'block', fontWeight: 'bolder', color: 'dodgerblue' }}>
-                            <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
+                            <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block',color:'black' }}>理由:</p><em className={styles.Fontwg} style={{ color:'red'}}>{reason}</em></div>
                         </div>
                         <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审核通过</div>
                     </Card>
