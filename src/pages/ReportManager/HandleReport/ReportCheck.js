@@ -104,34 +104,19 @@ class ReportCheck extends PureComponent {
 
 
     render() {
-        const {
-            welcome,
-            approveuser,
-            userName,
-        } = this.state;
+        const { welcome, approveuser, userName, } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, approveuserlist, loading } = this.props;
         let flag = 0;
-        if (historyInfo) {
-            const { modifyFlag } = historyInfo
-            flag = modifyFlag;
-        }
-        const popoverContent = (
-            <div style={{ width: 160 }}>
-                耗时：2小时25分钟
-	  </div>
-        );
+        if (historyInfo) { const { modifyFlag } = historyInfo;flag = modifyFlag; }
+        const popoverContent = (<div style={{ width: 160 }}>耗时：2小时25分钟</div>);
 
         const customDot = (dot, { status }) =>
-            status === 'process' ? (
-                <Popover placement="topLeft" arrowPointAtCenter content={popoverContent}>
-                    {dot}
-                </Popover>
-            ) : (
-                    dot
-                );
+            status === 'process' ? ( <Popover placement="topLeft" arrowPointAtCenter content={popoverContent}>{dot}</Popover>
+            ) : (dot);
 
         let desc1 = null
         let desc2 = null
+        
         if (flag >= 0) {
             desc1 = (
                 <div >
@@ -152,6 +137,7 @@ class ReportCheck extends PureComponent {
                 </div>
             );
         }
+        
         return (
             <PageHeaderWrapper>
                 <Card title="报告详情" loading={loading}>
