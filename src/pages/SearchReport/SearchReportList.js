@@ -230,7 +230,7 @@ class SearchReportList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="报告处理人">
-              {getFieldDecorator('userName', { initialValue: 'admin' })(
+              {getFieldDecorator('userName', )(
                 <Select allowClear
                   showSearch
                   optionFilterProp="children"
@@ -274,7 +274,7 @@ class SearchReportList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="报告处理人">
-              {getFieldDecorator('userName', { initialValue: 'admin' })(
+              {getFieldDecorator('userName', )(
                 <Select allowClear
                   showSearch
                   optionFilterProp="children"

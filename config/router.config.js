@@ -217,7 +217,7 @@ export default [
         path: '/form',
         icon: 'form',
         name: 'form',
-        //hideInMenu: 'true',
+        hideInMenu: 'true',
         routes: [
           {
             path: '/form/basic-form',

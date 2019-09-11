@@ -1,7 +1,6 @@
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { ChartCard, } from '@/components/Charts';
+import { ChartCard } from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
-import { BackTop, Card, Row, Col, Tooltip, Icon } from 'antd';
+import { BackTop, Col, Icon, Row, Tooltip } from 'antd';
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';

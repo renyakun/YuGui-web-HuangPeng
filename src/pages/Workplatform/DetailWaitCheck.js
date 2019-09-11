@@ -1,10 +1,11 @@
 import Particulars from '@/common/Report/Particulars';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { checkResult } from '@/services/valverserver';
-import { BackTop, Button, Card, Input, message, Popover, Radio, Steps } from 'antd';
+import { BackTop, Button, Card, Input, message, Popover, Radio, Steps, Modal } from 'antd';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import React, { Fragment, PureComponent } from 'react';
+import SignatureCanvas from 'react-signature-canvas'
 import styles from './styles.less';
 
 const { Step } = Steps;
@@ -24,6 +25,9 @@ class DetailWaitCheck extends PureComponent {
             reportNo: '',
             agree: true,
             reason: '',
+            visible: false,
+            currentStep: 0,
+            trimmedDataURL: null
         }
     }
     componentDidMount() {
@@ -58,14 +62,47 @@ class DetailWaitCheck extends PureComponent {
 
     }
 
+    onChange = (e) => {
+        this.setState({
+            agree: e.target.value,
+        });
+    }
+
+    sigPad = {}
+
+    clear = () => {
+        this.sigPad.clear()
+    }
+
+    trim = () => {
+        this.setState({
+            trimmedDataURL: this.sigPad.getTrimmedCanvas()
+                .toDataURL('image/png')
+        })
+    }
+
+    OnCancel = () => {
+        this.setState({
+            visible: false,
+            currentStep: 0
+        });
+    };
+
+    handleClick = () => {
+        this.setState({
+            visible: true
+        })
+    };
+
     async handleCommit() {
-        const { agree, reason, reportNo } = this.state;
+        const { agree, reason, reportNo, trimmedDataURL } = this.state;
+        const checkSignature = trimmedDataURL;
         let flag = 2
         if (!agree) {
             flag = 12
         }
-        if (reason != '' || agree) {
-            const res = await checkResult({ reportNo, reason, flag });
+        if (reason != '' || agree || trimmedDataURL == null) {
+            const res = await checkResult({ reportNo, reason, flag, checkSignature });
             if (res) {
                 if (res.ok) {
                     message
@@ -89,15 +126,80 @@ class DetailWaitCheck extends PureComponent {
         }
     }
 
-
-    onChange = (e) => {
+    backward = (currentStep) => {
         this.setState({
-            agree: e.target.value,
+            currentStep: currentStep - 1,
         });
-    }
+    };
+
+    forward = (currentStep) => {
+        this.setState({
+            currentStep: currentStep + 1,
+        });
+    };
+
+    handleNext = (currentStep) => {
+        const { trimmedDataURL } = this.state;
+        if (trimmedDataURL == null) {
+            message.error('请输入电子签名', 3)
+        } else {
+            if (currentStep < 1) {
+                this.forward(currentStep);
+            } else {
+                this.OnCancel();
+                this.handleCommit();
+            }
+        }
+    };
+
+    renderContent = (currentStep) => {
+        const { trimmedDataURL, reason, agree } = this.state;
+        if (currentStep === 1) {
+            return [
+                <div className={styles.content}>
+                    <h3>电子签名:</h3>
+                    <div className={styles.src}>{trimmedDataURL ? <img className={styles.srcImg} src={trimmedDataURL} /> : null}</div>
+                    <div style={{ display: agree ? 'none' : 'block', fontWeight: 'bolder', color: 'dodgerblue' }}>
+                        <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
+                    </div>
+                    <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审核通过</div>
+                </div>
+            ]
+        }
+        return [
+            <div className={styles.container}>
+                <div className={styles.sigContainer}>
+                    <SignatureCanvas canvasProps={{ className: styles.sigPad }}
+                        ref={(ref) => { this.sigPad = ref }} />
+                </div>
+                <div style={{ marginTop: 15 }}>
+                    <Button type="primary" onClick={this.clear} style={{ marginRight: 30 }}>重置</Button>
+                    <Button type="primary" onClick={this.trim}>确认</Button>
+                </div>
+            </div>
+        ]
+    };
+
+    renderFooter = currentStep => {
+        if (currentStep === 1) {
+            return [
+                <Button key="back" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
+                    上一步
+            </Button>,
+                <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
+                    完成提交
+            </Button>,
+            ];
+        }
+        return [
+            <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
+                下一步
+          </Button>,
+        ];
+    };
 
     render() {
-        const { welcome, reason, agree, } = this.state;
+        const { welcome, reason, agree, visible, currentStep } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
         let flag = 0;
         if (historyInfo) { const { modifyFlag } = historyInfo; flag = modifyFlag; }
@@ -174,19 +276,41 @@ class DetailWaitCheck extends PureComponent {
                             <Button
                                 size="large"
                                 type="primary"
-                                onClick={this.handleCommit.bind(this)}
+                                onClick={this.handleClick}
                                 loading={loading}
                             >
                                 提交
                             </Button>
+
+                            <Modal
+                                title="输入电子签名"
+                                visible={visible}
+                                onCancel={this.OnCancel}
+                                maskClosable={false}
+                                destroyOnClose
+                                centered
+                                footer={null}
+                                width={800}
+                                footer={this.renderFooter(currentStep)}
+                            >
+                                <Fragment>
+                                    <Steps style={{ marginBottom: 28 }} current={currentStep}>
+                                        <Step title="填写电子签名" />
+                                        <Step title="确认电子签名" />
+                                    </Steps>
+                                    {this.renderContent(currentStep)}
+                                </Fragment>
+                            </Modal>
+
                         </div>
 
                     </Card>
                 </div>
+
                 <div style={{ display: welcome ? 'none' : 'block' }}>
                     <Card title="审核结果" style={{ marginTop: 24 }} bordered={false}>
                         <div style={{ display: agree ? 'none' : 'block', fontWeight: 'bolder', color: 'dodgerblue' }}>
-                            <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block',color:'black' }}>理由:</p><em className={styles.Fontwg} style={{ color:'red'}}>{reason}</em></div>
+                            <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
                         </div>
                         <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审核通过</div>
                     </Card>

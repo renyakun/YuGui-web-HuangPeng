@@ -1,10 +1,11 @@
 import Particulars from '@/common/Report/Particulars';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import { approveResult } from '@/services/valverserver';
-import { BackTop, Button, Card, Input, message, Popover, Radio, Steps } from 'antd';
+import { BackTop, Button, Card, Input, message, Popover, Radio, Steps, Modal } from 'antd';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import React, { Fragment, PureComponent } from 'react';
+import SignatureCanvas from 'react-signature-canvas'
 import styles from './styles.less';
 
 const { Step } = Steps;
@@ -24,6 +25,9 @@ class DetailWaitApproveReport extends PureComponent {
             reportNo: '',
             agree: true,
             reason: '',
+            currentStep: 0,
+            visible: false,
+            trimmedDataURL: null
         }
     }
 
@@ -52,6 +56,12 @@ class DetailWaitApproveReport extends PureComponent {
 
     }
 
+    onChange = (e) => {
+        this.setState({
+            agree: e.target.value,
+        });
+    }
+
     handleInput(e) {
         this.setState({
             reason: e.target.value,
@@ -59,14 +69,41 @@ class DetailWaitApproveReport extends PureComponent {
 
     }
 
+    sigPad = {}
+
+    clear = () => {
+        this.sigPad.clear()
+    }
+
+    trim = () => {
+        this.setState({
+            trimmedDataURL: this.sigPad.getTrimmedCanvas()
+                .toDataURL('image/png')
+        })
+    }
+
+    OnCancel = () => {
+        this.setState({
+            visible: false,
+            currentStep: 0
+        });
+    };
+
+    handleClick = () => {
+        this.setState({
+            visible: true
+        })
+    };
+
     async handleCommit() {
-        const { agree, reason, reportNo } = this.state;
+        const { agree, reason, reportNo, trimmedDataURL } = this.state;
+        const approveSignature = trimmedDataURL;
         let flag = 4
         if (!agree) {
             flag = 14
         }
-        if (reason != '' || agree) {
-            const res = await approveResult({ reportNo, reason, flag });
+        if (reason != '' || agree || trimmedDataURL == null) {
+            const res = await approveResult({ reportNo, reason, flag, approveSignature });
             if (res) {
                 if (res.ok) {
                     message
@@ -91,25 +128,6 @@ class DetailWaitApproveReport extends PureComponent {
 
     }
 
-    onChange = (e) => {
-        this.setState({
-            agree: e.target.value,
-        });
-    }
-
-    OnCancel = (currentStep) => {
-        this.setState({
-            visible: false,
-            currentStep: 0
-        });
-    };
-
-    handleClick = () => {
-        this.setState({
-            visible: true
-        })
-    };
-
     backward = (currentStep) => {
         this.setState({
             currentStep: currentStep - 1,
@@ -117,11 +135,11 @@ class DetailWaitApproveReport extends PureComponent {
     };
 
     handleNext = (currentStep) => {
-        if (currentStep < 2) {
+        if (currentStep < 1) {
             this.forward(currentStep);
         } else {
             this.OnCancel(currentStep);
-            //this.handleCommit();
+            this.handleCommit();
         }
     };
 
@@ -132,16 +150,28 @@ class DetailWaitApproveReport extends PureComponent {
     };
 
     renderContent = (currentStep) => {
+        const { trimmedDataURL, reason, agree } = this.state;
         if (currentStep === 1) {
-            return 987654321
-        }
-        if (currentStep === 2) {
-            return 654321789
+            return [
+                <div className={styles.content}>
+                    <h3>电子签名:</h3>
+                    <div className={styles.src}>{trimmedDataURL ? <img className={styles.srcImg} src={trimmedDataURL} /> : null}</div>
+                    <div style={{ display: agree ? 'none' : 'block', fontWeight: 'bolder', color: 'dodgerblue' }}>
+                        <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
+                    </div>
+                    <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审核通过</div>
+                </div>
+            ]
         }
         return [
-            <div className="container" >
-                <div id="canvasBox" >
-                    <SignatureCanvas penColor='green' canvasProps={{ width: 500, height: 200, className: 'sigCanvas' }} />
+            <div className={styles.container}>
+                <div className={styles.sigContainer}>
+                    <SignatureCanvas canvasProps={{ className: styles.sigPad }}
+                        ref={(ref) => { this.sigPad = ref }} />
+                </div>
+                <div style={{ marginTop: 15 }}>
+                    <Button type="primary" onClick={this.clear} style={{ marginRight: 30 }}>重置</Button>
+                    <Button type="primary" onClick={this.trim}>确认</Button>
                 </div>
             </div>
         ]
@@ -154,17 +184,7 @@ class DetailWaitApproveReport extends PureComponent {
                     上一步
             </Button>,
                 <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
-                    下一步
-            </Button>,
-            ];
-        }
-        if (currentStep === 2) {
-            return [
-                <Button key="back" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
-                    上一步
-            </Button>,
-                <Button key="submit" type="primary" onClick={() => this.handleNext(currentStep)}>
-                    完成
+                    完成提交
             </Button>,
             ];
         }
@@ -173,10 +193,10 @@ class DetailWaitApproveReport extends PureComponent {
                 下一步
           </Button>,
         ];
-    };   
+    };
 
     render() {
-        const { welcome, agree, reason } = this.state;
+        const { welcome, agree, reason, visible, currentStep } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
         let flag = 0;
         if (historyInfo) { const { modifyFlag } = historyInfo; flag = modifyFlag; }
@@ -234,11 +254,11 @@ class DetailWaitApproveReport extends PureComponent {
                         <Step title="归档报告" />
                     </Steps>
                 </Card>
-                
+
                 <div style={{ display: welcome ? 'block' : 'none' }}>
                     <Card title="提交审核" style={{ marginTop: 24 }} bordered={false}>
                         <div style={{ marginBottom: 24 }}>
-                            <RadioGroup onChange={this.onChange} value={this.state.agree}>
+                            <RadioGroup onChange={this.onChange} value={agree}>
                                 <Radio value={true}>审批通过</Radio>
                                 <Radio value={false}>审批不通过</Radio>
                             </RadioGroup>
@@ -261,36 +281,36 @@ class DetailWaitApproveReport extends PureComponent {
                             >
                                 提交
                             </Button>
-                            
+
                             <Modal
-                            title="电子签名"
-                            visible={visible}
-                            onCancel={this.OnCancel}
-                            maskClosable={false}
-                            destroyOnClose
-                            centered
-                            footer={null}
-                            width={800}
-                            footer={this.renderFooter(currentStep)}
-                        >
-                            <Fragment>
-                                <Steps style={{ marginBottom: 28 }} current={currentStep}>
-                                    <Step title="填写电子签名" />
-                                    <Step title="确认电子签名" />
-                                    <Step title="完成" />
-                                </Steps>
-                                {this.renderContent(currentStep)}
-                            </Fragment>
-                        </Modal>
+                                title="输入电子签名"
+                                visible={visible}
+                                onCancel={this.OnCancel}
+                                maskClosable={false}
+                                destroyOnClose
+                                centered
+                                footer={null}
+                                width={800}
+                                footer={this.renderFooter(currentStep)}
+                            >
+                                <Fragment>
+                                    <Steps style={{ marginBottom: 28 }} current={currentStep}>
+                                        <Step title="填写电子签名" />
+                                        <Step title="完成" />
+                                    </Steps>
+                                    {this.renderContent(currentStep)}
+                                </Fragment>
+                            </Modal>
+
                         </div>
                     </Card>
                 </div>
-                
+
                 <div style={{ display: welcome ? 'none' : 'block' }}>
                     <Card title="审核结果" style={{ marginTop: 24 }} bordered={false}>
-                        
+
                         <div style={{ display: agree ? 'none' : 'block' }}>
-                            <div><b className={styles.Fontwg}>审批不通过</b>  <p style={{ display: 'inline-block',color:'black' }}>理由:</p><em className={styles.Fontwg} style={{ color:'red'}}>{reason}</em></div>
+                            <div><b className={styles.Fontwg}>审批不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
                         </div>
                         <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审批通过</div>
                     </Card>
