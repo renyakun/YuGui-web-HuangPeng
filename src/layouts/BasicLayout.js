@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, ConfigProvider } from 'antd';
+import { Layout, ConfigProvider, message } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
@@ -10,6 +10,7 @@ import pathToRegexp from 'path-to-regexp';
 import { enquireScreen, unenquireScreen } from 'enquire-js';
 import { formatMessage } from 'umi/locale';
 import SiderMenu from '@/components/SiderMenu';
+import CountDown from '@/components/CountDown';
 import Authorized from '@/utils/Authorized';
 import logo from '../assets/logo.svg';
 import Footer from './Footer';
@@ -95,6 +96,7 @@ class BasicLayout extends React.PureComponent {
     rendering: true,
     isMobile: false,
     menuData: this.getMenuData(),
+    timer: 1805500,
   };
 
   componentDidMount() {
@@ -218,19 +220,33 @@ class BasicLayout extends React.PureComponent {
   };
 
 
+
+  handleEnd = () => {
+    this.setState({
+      timer: 1805500,
+    })
+    message.error('请重新登录！', 2)
+    this.props.dispatch({
+      type: 'login/logout',
+    });
+  }
+
+  handleMove = () => {
+    this.setState({
+      timer: 1805500,
+    })
+  }
+
+
+
   render() {
-    const {
-      navTheme,
-      layout: PropsLayout,
-      children,
-      account,
-      location: { pathname },
-    } = this.props;
-    const { isMobile, menuData } = this.state;
+    const { navTheme, layout: PropsLayout, children, account, location: { pathname }, } = this.props;
+    const { isMobile, menuData, timer } = this.state;
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.matchParamsPath(pathname);
+    const targetTime = new Date().getTime() + timer;
     const layout = (
-      <Layout>
+      <Layout onMouseMove={this.handleMove}>
         {isTop && !isMobile ? null : (
           <SiderMenu
             logo={logo}
@@ -260,6 +276,7 @@ class BasicLayout extends React.PureComponent {
               authority={routerConfig && routerConfig.authority}
               noMatch={<Exception403 />}
             >
+              <CountDown style={{ fontSize: 20 ,display:'none'}} target={targetTime} onEnd={this.handleEnd} />
               {children}
             </Authorized>
           </Content>
@@ -271,9 +288,9 @@ class BasicLayout extends React.PureComponent {
 
     return (
       <ConfigProvider>
-        <React.Fragment>
-          <DocumentTitle title={this.getPageTitle(pathname)}>
-            <ContainerQuery query={query}>
+        <React.Fragment >
+          <DocumentTitle title={this.getPageTitle(pathname)} >
+            <ContainerQuery query={query} >
               {params => (
                 <Context.Provider value={this.getContext()}>
                   <div className={classNames(params)}>{layout}</div>

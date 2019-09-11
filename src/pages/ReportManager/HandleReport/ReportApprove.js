@@ -159,6 +159,7 @@ class ReportDetail extends PureComponent {
                             type="primary"
                             onClick={this.handleCommit.bind(this)}
                             loading={loading}
+                            
                         >
                             提交
                         </Button>
