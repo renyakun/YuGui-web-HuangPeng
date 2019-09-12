@@ -79,9 +79,7 @@ const query = {
   },
 };
 
-// sessionStorage.setItem('loginUser', '未登陆');
-// const loginUser = sessionStorage.getItem('loginUser') || '';
-// console.log(loginUser);
+
 
 class BasicLayout extends React.PureComponent {
   constructor(props) {
@@ -219,13 +217,11 @@ class BasicLayout extends React.PureComponent {
     });
   };
 
-
-
   handleEnd = () => {
     this.setState({
       timer: 1805500,
     })
-    message.error('请重新登录！', 2)
+    message.error('登录已失效！请重新登录！', 2)
     this.props.dispatch({
       type: 'login/logout',
     });
@@ -236,8 +232,6 @@ class BasicLayout extends React.PureComponent {
       timer: 1805500,
     })
   }
-
-
 
   render() {
     const { navTheme, layout: PropsLayout, children, account, location: { pathname }, } = this.props;

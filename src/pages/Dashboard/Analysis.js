@@ -683,6 +683,7 @@ class Analysis extends Component {
             ))}
           </Tabs>
         </Card>
+      
       </GridContent>
     );
   }

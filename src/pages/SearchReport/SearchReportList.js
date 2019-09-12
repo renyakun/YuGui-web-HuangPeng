@@ -53,13 +53,13 @@ class SearchReportList extends PureComponent {
     },
     {
       title: '当前处理人',
-      dataIndex: 'userName',
-      width: 200,
+      dataIndex: 'preUser',
+      width: 150,
     },
     {
       title: '状态',
       dataIndex: 'flag',
-      width: 200,
+      width: 150,
       filters: [
         {
           text: flag[1],
@@ -91,22 +91,13 @@ class SearchReportList extends PureComponent {
         },
       ],
       render: (text, record) => {
-        if (text == '12') {
-          return <Tooltip placement="right" title={`理由:${record.valveHistory.checkReason}`}>
-            <Tag color={flagcolor[text]}>{flag[text]}</Tag>
-          </Tooltip>
-        } else if (text == '14') {
-          return <Tooltip placement="right" title={`理由:${record.valveHistory.approveReason}`}>
-            <Tag color={flagcolor[text]}>{flag[text]}</Tag>
-          </Tooltip>
-        } else {
-          return <Tag color={flagcolor[text]}>{flag[text]}</Tag>
-        }
+        return <Tag color={flagcolor[text]}>{flag[text]}</Tag>
       }
     },
     {
       title: '处理时间',
       dataIndex: 'createTime',
+      width: 200,
     },
     {
       title: '操作',
@@ -118,6 +109,20 @@ class SearchReportList extends PureComponent {
         </Fragment>
       ),
     },
+    {
+      title: '备注',
+      dataIndex: 'remarks',
+      render: (text, record) => {
+        if (record.flag == '12') {
+          return <b>{record.valveHistory.checkReason}</b>
+        } else if (record.flag == '14') {
+          return <b>{record.valveHistory.approveReason}</b>
+        } else {
+          return <b>--</b>
+        }
+
+      }
+    }
   ];
 
   componentWillReceiveProps(nextProps) {
@@ -230,7 +235,7 @@ class SearchReportList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="报告处理人">
-              {getFieldDecorator('userName', )(
+              {getFieldDecorator('userName')(
                 <Select allowClear
                   showSearch
                   optionFilterProp="children"
@@ -274,7 +279,7 @@ class SearchReportList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="报告处理人">
-              {getFieldDecorator('userName', )(
+              {getFieldDecorator('userName')(
                 <Select allowClear
                   showSearch
                   optionFilterProp="children"
@@ -290,7 +295,7 @@ class SearchReportList extends PureComponent {
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="状态">
-              {getFieldDecorator('flag', {initialValue: '1'})(
+              {getFieldDecorator('flag', { initialValue: '1' })(
                 <Select allowClear>
                   <Option value="1">提交审核</Option>
                   <Option value="2">审核通过</Option>

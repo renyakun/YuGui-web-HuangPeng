@@ -5,6 +5,10 @@ export async function getUserNotifyInfo() {
   return request(`/report/getUserNotifyInfo`);
 }
 
+export async function getTodayNotify() {
+  return request(`/report/getTodayNotify`);
+}
+
 export async function getWaitCheckList(params) {
   return request(`/report/getWaitCheckList?${stringify(params)}`);
 }

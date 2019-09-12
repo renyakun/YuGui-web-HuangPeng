@@ -290,13 +290,7 @@ class BasicForm extends PureComponent {
         const { submitting, ReportNumber, autocheck } = this.props;
         let isQualified = '';
         let reason = '';
-        if (autocheck != undefined) {
-            isQualified = autocheck.isQualified;
-            reason = autocheck.reason;
-        }
-        console.log(isQualified, reason);
-        console.log(autocheck)
-
+        if (autocheck != undefined) {isQualified = autocheck.isQualified;reason = autocheck.reason;}
 
         const { form: { getFieldDecorator } } = this.props;
         const formItemLayout = {

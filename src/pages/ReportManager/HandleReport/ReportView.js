@@ -80,7 +80,7 @@ class ReportView extends PureComponent {
                                 const fileDownload = document.createElement('a');
                                 document.body.appendChild(fileDownload);
                                 fileDownload.href = source;
-                                fileDownload.download = `报告详情-${reportNo}.doc`;
+                                fileDownload.download = `报告-${reportNo}.doc`;
                                 fileDownload.click();
                                 document.body.removeChild(fileDownload);
                             }}

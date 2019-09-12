@@ -47,6 +47,7 @@ const links = [
   activitiesLoading: loading.effects['activities/fetchList'],
 }))
 class Workplace extends PureComponent {
+  
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
