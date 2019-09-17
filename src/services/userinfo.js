@@ -8,6 +8,10 @@ export async function getUserNotifyInfo() {
 export async function getTodayNotify() {
   return request(`/report/getTodayNotify`);
 }
+//GET /report/getReportNotify
+export async function getNewReportNotify() {
+  return request(`/report/getReportNotify`);
+}
 
 export async function getWaitCheckList(params) {
   return request(`/report/getWaitCheckList?${stringify(params)}`);

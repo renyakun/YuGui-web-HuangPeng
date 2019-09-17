@@ -81,6 +81,7 @@ export default {
   'menu.workplatform.waitapprveList':'待审批报告列表',
   'menu.workplatform.detailwaitCheck':'审核报告详情',
   'menu.workplatform.detailwaitApprove':'审批报告详情',
+  'menu.workplatform.dynamic':'动态',
   'menu.report':'我的报告管理',
   'menu.report.basicform':'新建报告',
   'menu.report.newlist':'新建报告列表',

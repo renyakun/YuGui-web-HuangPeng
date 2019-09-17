@@ -610,12 +610,7 @@ class Analysis extends Component {
               loading={loading}
               className={styles.salesCard}
               bordered={false}
-              title={
-                <FormattedMessage
-                  id="app.analysis.the-proportion-of-sales"
-                  defaultMessage="The Proportion of Sales"
-                />
-              }
+              title={<FormattedMessage id="app.analysis.the-proportion-of-sales" defaultMessage="The Proportion of Sales"/>}
               bodyStyle={{ padding: 24 }}
               extra={
                 <div className={styles.salesCardExtra}>

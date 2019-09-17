@@ -178,7 +178,13 @@ class GlobalHeaderRight extends PureComponent {
     return (
       <div className={className}>
 
-        <NoticeIcon className="notice-icon" count={data.length} onItemClick={this.onItemClick} onClear={this.handleNoticeClear}>
+        <NoticeIcon 
+        className="notice-icon"
+        count={data.length} 
+        onItemClick={this.onItemClick}
+        onClear={this.handleNoticeClear}
+        style={{marginRight:30}}
+        >
           <NoticeIconTab
             list={noticeData.notification}
             title="通知"
@@ -206,7 +212,7 @@ class GlobalHeaderRight extends PureComponent {
             </span>
           </Dropdown>
         ) : (
-            <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
+            <Spin size="small" style={{  marginRight: 30 }} />
           )}
       </div>
     );

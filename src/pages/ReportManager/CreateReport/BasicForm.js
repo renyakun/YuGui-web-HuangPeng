@@ -208,7 +208,7 @@ class BasicForm extends PureComponent {
                     delete values.psreqset;
                 }
 
-                console.log(values)
+                //console.log(values)
 
                 if (values.checkResult != undefined) {
                     dispatch({

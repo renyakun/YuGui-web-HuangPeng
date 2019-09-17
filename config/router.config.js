@@ -32,8 +32,6 @@ export default [
         path: '/workplatform',
         name: 'workplatform',
         icon: 'fund',
-        //iconfont:'icon-reportList',
-        // authority: ['admin', 'examine', 'approval', ],
         routes: [
           {
             path: '/workplatform/mytask',
@@ -50,7 +48,6 @@ export default [
             path: '/workplatform/waitapprveList',
             name: 'waitapprveList',
             hideInMenu: 'true',
-            //authority: ['admin', 'approval',],
             component: './Workplatform/WaitApprveList',
           },
           {
@@ -63,8 +60,13 @@ export default [
             path: '/workplatform/detailwaitApprove',
             name: 'detailwaitApprove',
             hideInMenu: 'true',
-            //authority: ['admin', 'approval',],
             component: './Workplatform/DetailWaitApprove',
+          },
+          {
+            path: '/workplatform/dynamic',
+            name: 'dynamic',
+            hideInMenu: 'true',
+            component: './Workplatform/Dynamic',
           },
         ],
       },
@@ -192,7 +194,7 @@ export default [
         path: '/dashboard',
         name: 'dashboard',
         icon: 'dashboard',
-        hideInMenu: 'true',
+        //hideInMenu: 'true',
         routes: [
           {
             path: '/dashboard/analysis',
@@ -266,7 +268,7 @@ export default [
         path: '/list',
         icon: 'table',
         name: 'list',
-        hideInMenu: 'true',
+        //hideInMenu: 'true',
         routes: [
           {
             path: '/list/table-list',
