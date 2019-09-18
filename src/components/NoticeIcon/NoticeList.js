@@ -2,6 +2,7 @@ import React from 'react';
 import { Avatar, List } from 'antd';
 import classNames from 'classnames';
 import styles from './NoticeList.less';
+import Link from 'umi/link';
 
 export default function NoticeList({
   data = [],
@@ -33,28 +34,40 @@ export default function NoticeList({
             typeof item.avatar === 'string' ? (
               <Avatar className={styles.avatar} src={item.avatar} />
             ) : (
-              item.avatar
-            )
+                item.avatar
+              )
           ) : null;
 
           return (
             <List.Item className={itemCls} key={item.key || i} onClick={() => onClick(item)}>
               <List.Item.Meta
                 className={styles.meta}
-                avatar={<span className={styles.iconElement}>{leftIcon}</span>}
                 title={
                   <div className={styles.title}>
-                    {item.title}
-                    <div className={styles.extra}>{item.extra}</div>
+                    <span>
+                      <span>{
+                        item.message.split(/@\{([^{}]*)\}/gi).map(key => {
+                          if (item[key]) {
+                            if (key == "preUser") {
+                              return (<b>你</b>)
+                            }
+                            if (item.operationType == 'notification' && key == 'userName') {
+                              return (<b>你</b>)
+                            }
+                            return (<span style={{ color: 'dodgerblue' }}>{item[key]}</span>)
+                          }
+                          return (<span style={{ marginLeft: 5, marginRight: 5 }}>{key}</span>);
+                        })
+                      }</span>
+                    </span>
                   </div>
                 }
                 description={
-                  <div>
-                    <div className={styles.description} title={item.description}>
-                      {item.description}
-                    </div>
-                    <div className={styles.datetime}>{item.datetime}</div>
-                  </div>
+                  <span>
+                    <span className={styles.datetime} title={item.operationTime} >
+                      <em>{item.operationTime.slice(0, 16).replace('T', ' ')}</em>
+                    </span>
+                  </span>
                 }
               />
             </List.Item>
@@ -63,7 +76,7 @@ export default function NoticeList({
       </List>
       {showClear ? (
         <div className={styles.clear} onClick={onClear}>
-          {locale.clear} {title}
+           {/* {locale.clear}  清空{title} */}更多
         </div>
       ) : null}
     </div>

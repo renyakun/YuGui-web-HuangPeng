@@ -2,156 +2,115 @@ import { Button, Dropdown, Icon, Menu, Spin, Tag, message } from 'antd';
 import React, { PureComponent } from 'react';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import NoticeIcon from '../NoticeIcon';
+import { routerRedux } from 'dva/router';
 import styles from './index.less';
+import { connect } from 'dva';
+import CountDown from '@/components/CountDown';
 
 const NoticeIconTab = NoticeIcon.Tab;
 
+@connect(({ userseting: { NotifyEvt }, loading }) => ({
+  NotifyEvt,
+  loading: loading.models.userseting,
+}))
 class GlobalHeaderRight extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [],
+      timer: 3000,
+    }
+  }
+
+  componentDidMount() {
+    this.getNotifyOrEvent();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.NotifyEvt != this.props.NotifyEvt) {
+      this.setState({
+        data: nextProps.NotifyEvt,
+      });
+    }
+  }
+
+  getNotifyOrEvent() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'userseting/fetchNotifyOrEvent',
+    });
+  }
 
   onItemClick = (item, tabProps) => {
     console.log(item, tabProps);
   }
 
-  handleNoticeClear = type => {
-    message.success(`${type}`);
-  };
+  // handleNoticeClear = type => {
+  //   const { data } = this.state;
+  //   message.success(`${type}`);
+  //   this.setState({
+  //     data:[]
+  //   })
+  // };
+
+  fetchMore = () => {
+    const { dispatch } = this.props;
+    message.loading('加载更多', 2);
+    setTimeout(() => {
+      dispatch(
+        routerRedux.push({
+          pathname: '/',
+        })
+      )
+    }, 2500);
+  }
 
   getNoticeData(notices) {
     if (notices.length === 0) {
       return {};
     }
-  
+
     const newNotices = notices.map(notice => {
       const newNotice = { ...notice };
       // transform id to item key
       if (newNotice.id) {
         newNotice.key = newNotice.id;
       }
-      if (newNotice.extra && newNotice.status) {
-        const color = {
-          todo: '',
-          processing: 'blue',
-          urgent: 'red',
-          doing: 'gold',
-        }[newNotice.status];
-        newNotice.extra = (
-          <Tag color={color} style={{ marginRight: 0 }}>
-            {newNotice.extra}
-          </Tag>
-        );
-      }
+      // if (newNotice.extra && newNotice.status) {
+      //   const color = {
+      //     todo: '',
+      //     processing: 'blue',
+      //     urgent: 'red',
+      //     doing: 'gold',
+      //   }[newNotice.status];
+      //   newNotice.extra = (
+      //     <Tag color={color} style={{ marginRight: 0 }}>
+      //       {newNotice.extra}
+      //     </Tag>
+      //   );
+      // }
       return newNotice;
     });
-  
+
     return newNotices.reduce((pre, data) => {
-      if (!pre[data.type]) {
-        pre[data.type] = [];
+      if (!pre[data.operationType]) {
+        pre[data.operationType] = [];
       }
-      pre[data.type].push(data);
+      pre[data.operationType].push(data);
       return pre;
     }, {});
   }
 
+  handleEnd = () => {
+    this.setState({
+      timer: 3000,
+    })
+    //this.getNotifyOrEvent();
+  }
+
   render() {
-
-    const data = [
-      {
-        id: '000000001',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png',
-        title: '你收到了 14 份新周报',
-        datetime: '2017-08-09',
-        type: 'notification',
-      },
-      {
-        id: '000000002',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/OKJXDXrmkNshAMvwtvhu.png',
-        title: '你推荐的 曲妮妮 已通过第三轮面试',
-        datetime: '2017-08-08',
-        type: 'notification',
-      },
-      {
-        id: '000000003',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/kISTdvpyTAhtGxpovNWd.png',
-        title: '这种模板可以区分多种通知类型',
-        datetime: '2017-08-07',
-        read: true,
-        type: 'notification',
-      },
-      {
-        id: '000000004',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/GvqBnKhFgObvnSGkDsje.png',
-        title: '左侧图标用于区分不同的类型',
-        datetime: '2017-08-07',
-        type: 'notification',
-      },
-      {
-        id: '000000005',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png',
-        title: '内容不要超过两行字，超出时自动截断',
-        datetime: '2017-08-07',
-        type: 'notification',
-      },
-      {
-        id: '000000006',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/fcHMVNCjPOsbUGdEduuv.jpeg',
-        title: '曲丽丽 评论了你',
-        description: '描述信息描述信息描述信息',
-        datetime: '2017-08-07',
-        type: 'message',
-        clickClose: true,
-      },
-      {
-        id: '000000007',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/fcHMVNCjPOsbUGdEduuv.jpeg',
-        title: '朱偏右 回复了你',
-        description: '这种模板用于提醒谁与你发生了互动，左侧放『谁』的头像',
-        datetime: '2017-08-07',
-        type: 'message',
-        clickClose: true,
-      },
-      {
-        id: '000000008',
-        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/fcHMVNCjPOsbUGdEduuv.jpeg',
-        title: '标题',
-        description: '这种模板用于提醒谁与你发生了互动，左侧放『谁』的头像',
-        datetime: '2017-08-07',
-        type: 'message',
-        clickClose: true,
-      },
-      {
-        id: '000000009',
-        title: '任务名称',
-        description: '任务需要在 2017-01-12 20:00 前启动',
-        extra: '未开始',
-        status: 'todo',
-        type: 'event',
-      },
-      {
-        id: '000000010',
-        title: '第三方紧急代码变更',
-        description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务',
-        extra: '马上到期',
-        status: 'urgent',
-        type: 'event',
-      },
-      {
-        id: '000000011',
-        title: '信息安全考试',
-        description: '指派竹尔于 2017-01-09 前完成更新并发布',
-        extra: '已耗时 8 天',
-        status: 'doing',
-        type: 'event',
-      },
-      {
-        id: '000000012',
-        title: 'ABCD 版本发布',
-        description: '冠霖提交于 2017-01-06，需在 2017-01-07 前完成代码变更任务',
-        extra: '进行中',
-        status: 'processing',
-        type: 'event',
-      },
-    ];
-
+    const { data , timer} = this.state;
+    console.log(data)
     const { account, onMenuClick, theme, } = this.props;
 
     const noticeData = this.getNoticeData(data);
@@ -175,27 +134,23 @@ class GlobalHeaderRight extends PureComponent {
       className = `${styles.right}  ${styles.dark}`;
     }
 
+    const targetTime = new Date().getTime() + timer;
+    //display:'none'
     return (
       <div className={className}>
-
-        <NoticeIcon 
-        className="notice-icon"
-        count={data.length} 
-        onItemClick={this.onItemClick}
-        onClear={this.handleNoticeClear}
-        style={{marginRight:30}}
+        <CountDown style={{ fontSize: 20, }} target={targetTime} onEnd={this.handleEnd} />
+        <NoticeIcon
+          className="notice-icon"
+          count={data.length}
+          onItemClick={this.onItemClick}
+          onClear={this.fetchMore}
+          style={{ marginRight: 30 }}
         >
           <NoticeIconTab
             list={noticeData.notification}
             title="通知"
             emptyText="你已查看所有通知"
             emptyImage="https://gw.alipayobjects.com/zos/rmsportal/wAhyIChODzsoKIOBHcBk.svg"
-          />
-          <NoticeIconTab
-            list={noticeData.message}
-            title="消息"
-            emptyText="您已读完所有消息"
-            emptyImage="https://gw.alipayobjects.com/zos/rmsportal/sAuJeJzSKbUmHfBQRzmZ.svg"
           />
           <NoticeIconTab
             list={noticeData.event}
@@ -212,7 +167,7 @@ class GlobalHeaderRight extends PureComponent {
             </span>
           </Dropdown>
         ) : (
-            <Spin size="small" style={{  marginRight: 30 }} />
+            <Spin size="small" style={{ marginRight: 30 }} />
           )}
       </div>
     );

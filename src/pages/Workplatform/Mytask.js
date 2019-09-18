@@ -1,18 +1,15 @@
-import { ChartCard, Pie, TagCloud } from '@/components/Charts';
+import { Pie, TagCloud } from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
-import { BackTop, Button, Card, Col, Icon, List, Row, Tooltip, message, } from 'antd';
+import { BackTop, Card, Col, List, message, Row } from 'antd';
 import { connect } from 'dva';
-import moment from 'moment';
-import React, { PureComponent } from 'react';
-import Link from 'umi/link';
-import { FormattedMessage } from 'umi/locale';
 import { routerRedux } from 'dva/router';
-import styles from './styles.less';
+import React, { PureComponent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-
+import Link from 'umi/link';
+import styles from './styles.less';
 
 const ListItem = List.Item;
-const ListItemMeta = List.Item.Meta;
+const ListMeta = List.Item.Meta;
 
 @connect(({ userseting: { notifyinfo, todaynotify, newNotify }, loading }) => ({
   notifyinfo,
@@ -26,8 +23,6 @@ class Mytask extends PureComponent {
     super(props);
     this.state = {
       list: [],
-      loadings: false,
-      hasMore: true,
     }
   }
 
@@ -38,14 +33,12 @@ class Mytask extends PureComponent {
     this.getNewReportNotify();
   }
 
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.newNotify != this.props.newNotify) {
       this.setState({
         list: nextProps.newNotify,
       });
     }
-
   }
 
   getTodayNotify() {
@@ -76,66 +69,34 @@ class Mytask extends PureComponent {
     });
   }
 
-  renderActivities() {
-    const { list } = this.state;
-    console.log(list)
-    return list.map(item => {
-      const events = item.message.split(/@\{([^{}]*)\}/gi).map(key => {
-        if (item[key]) {
-          return (<b style={{ color: 'dodgerblue' }}>{item[key]}</b>)
-        }
-        return (<span style={{ marginLeft: 5, marginRight: 5 }}>{key}</span>);
-      });
+  // fetchMore = () => {
+  //   const { dispatch } = this.props;
+  //   message.loading('加载更多', 2);
+  //   setTimeout(() => {
+  //     dispatch(
+  //       routerRedux.push({
+  //         pathname: '/workplatform/dynamic',
+  //       })
+  //     )
+  //   }, 2500);
+  // };
 
-      //let str = item.id;
-      return (
-        < ListItem key={item.id} >
-          <ListItemMeta
-            title={
-              <span>
-                <span className={styles.event}>{events}</span>
-                <span className={styles.datetime} title={item.operationTime}>
-                  {moment(item.operationTime).fromNow()}
-                </span>
-              </span>
-            }
-          />
-        </ListItem >
-      )
-    })
+  handleInfiniteOnLoad = () => {
+    console.log("loading...")
   }
-
-  fetchMore = () => {
-    const { dispatch } = this.props;
-    message.loading('加载更多', 2);
-    setTimeout(() => {
-      dispatch(
-        routerRedux.push({
-          pathname: '/workplatform/dynamic',
-        })
-      )
-    }, 2500);
-  };
 
   render() {
     const { loading, notifyinfo, todaynotify } = this.props;
-    const { loadings, hasMore, list } = this.state;
+    const { list } = this.state;
     const topColResponsiveProps = {
       xs: 24,
       sm: 12,
       md: 12,
       lg: 12,
-      xl: 8,
-      style: { marginBottom: 24 },
+      xl: 12,
+      style: { marginBottom: 16 },
     };
-    const BotmColResponsiveProps = {
-      xs: 40,
-      sm: 24,
-      md: 24,
-      lg: 24,
-      xl: 16,
-      style: { marginBottom: 24 },
-    };
+
     const tags = [];
     for (let i = 0; i < 50; i += 1) {
       tags.push({
@@ -143,6 +104,7 @@ class Mytask extends PureComponent {
         value: Math.floor(Math.random() * 50) + 20,
       });
     }
+
     const salesPieData = [
       {
         x: '新建报告数',
@@ -162,25 +124,19 @@ class Mytask extends PureComponent {
       },
     ];
 
-
     return (
       <div>
         <GridContent>
           <Row gutter={50}>
 
             <Col {...topColResponsiveProps}>
-              <ChartCard
+              <Card
                 bordered={false}
                 loading={loading}
                 title='任务处理'
-                action={
-                  <Tooltip title='待办任务'>
-                    <Icon type="info-circle-o" />
-                  </Tooltip>
-                }
                 style={{ minHeight: 350 }}
               >
-                <div style={{ marginTop: 50 }}>
+                <div style={{ marginTop: 35 }}>
                   <Link to={{ pathname: '/workplatform/waitcheckList' }}>
                     <b style={{ marginRight: 10, fontSize: 20, color: '#000' }}>待审核报告:</b><em style={{ marginRight: 10, fontSize: 30 }}>{notifyinfo['checkNum']}</em><span style={{ fontSize: 20, color: '#000' }}>份</span>
                   </Link>
@@ -193,7 +149,7 @@ class Mytask extends PureComponent {
                     <b style={{ marginRight: 10, fontSize: 20, color: '#000' }}>待审批报告:</b><em style={{ marginRight: 10, fontSize: 30 }}>{notifyinfo['proveNum']}</em><span style={{ fontSize: 20, color: '#000' }}>份</span>
                   </Link>
                 </div>
-              </ChartCard>
+              </Card>
             </Col>
 
             <Col {...topColResponsiveProps}>
@@ -215,6 +171,61 @@ class Mytask extends PureComponent {
               </Card>
             </Col>
 
+          </Row>
+
+          <Row gutter={50}>
+
+            <Col {...topColResponsiveProps}>
+              <Card
+                bordered={false}
+                loading={loading}
+                className={styles.activeCard}
+                title="动态"
+                style={{ minHeight: 350 }}
+              >
+                <div style={{ overflow: 'auto', padding: '8px 24px', height: 300 }}>
+                  <InfiniteScroll
+                    initialLoad={false}
+                    pageStart={0}
+                    loadMore={this.handleInfiniteOnLoad}
+                    useWindow={false}
+                  >
+                    <List
+                      dataSource={list}
+                      renderItem={item => (
+                        <ListItem key={item.id}>
+                          <ListMeta
+                            key={item.id}
+                            title={
+                              <span>
+                                <span>{
+                                  item.message.split(/@\{([^{}]*)\}/gi).map(key => {
+                                    if (item[key]) {
+                                      if (key == "reportNo") {
+                                        return (<Link to={{ pathname: '/report/handle/reportview', report: `${item[key]}` }}>{item[key]}</Link>)
+                                      }
+                                      return (<b style={{ color: 'dodgerblue' }}>{item[key]}</b>)
+                                    }
+                                    return (<span style={{ marginLeft: 5, marginRight: 5 }}>{key}</span>);
+                                  })
+                                }</span>
+                              </span>
+                            }
+                            description={
+                              <span>
+                                <span className={styles.datetime} title={item.operationTime} >
+                                  <em>{item.operationTime.slice(0, 16).replace('T', ' ')}</em>
+                                </span>
+                              </span>
+                            }
+                          />
+                        </ListItem>
+                      )}
+                    ></List>
+                  </InfiniteScroll>
+                </div>
+              </Card>
+            </Col>
 
             {/* <Col {...topColResponsiveProps}>
               <Card
@@ -227,43 +238,17 @@ class Mytask extends PureComponent {
                 //loading={loading} height={250} 
                 bordered={false}
                 bodyStyle={{ overflow: 'hidden' }}
-                style={{ minHeight: 250 }}
+                style={{ minHeight: 300 }}
               >
                 <TagCloud data={tags} />
               </Card>
             </Col> */}
-          </Row>
-
-          <Row gutter={50}>
-            <Col {...BotmColResponsiveProps}>
-              <ChartCard
-                bordered={false}
-                loading={loading}
-                className={styles.activeCard}
-                title="动态"
-                action={
-                  <Tooltip title='更多'>
-                    <Icon type="plus-circle" theme="twoTone" twoToneColor="dodgerblue" onClick={this.fetchMore} />
-                  </Tooltip>
-                }
-                style={{ minHeight: 350 }}
-              >
-                <List
-                  loading={loading}
-                  style={{ marginTop: 10 }}
-                  size="small"
-                >
-                  <div className={styles.activitiesList}>{this.renderActivities()} </div>
-                </List>
-              </ChartCard>
-
-            </Col>
 
           </Row>
+
         </GridContent>
-
         <BackTop />
-      </div>
+      </div >
     )
   }
 }

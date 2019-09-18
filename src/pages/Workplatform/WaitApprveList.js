@@ -52,6 +52,7 @@ class WaitApprveList extends PureComponent {
     componentDidMount() {
         this.fetchWaitApproveList();
     }
+    
     fetchWaitApproveList() {
         this.props.dispatch({
             type: 'userseting/fetchWaitApproveList',

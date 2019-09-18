@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Icon ,Button} from 'antd';
+import { Icon, Affix, Button } from 'antd';
 import Link from 'umi/link';
 import Debounce from 'lodash-decorators/debounce';
 import styles from './index.less';
@@ -39,12 +39,16 @@ export default class GlobalHeader extends PureComponent {
         />
 
         <div className={styles.nav}>
-          <p>快速入口：</p>
-          <Link to="/" ><Button type="link">我的工作台</Button></Link> 
-          <Link to="/report" ><Button type="link">新建报告</Button></Link> 
-          <Link to="/search" ><Button type="link">搜索报告</Button></Link> 
-          <Link to="/system/info" ><Button type="link">个人信息</Button></Link> 
-          <Link to="/company" ><Button type="link">公司信息</Button></Link> 
+          <Affix>
+            <div style={{ background: 'rgba(255,255,255,0.8)', paddingLeft: 3, borderRadius: 5, height: 65 }}>
+              <p>快速入口：</p>
+              <Link to="/" ><Button type="link">我的工作台</Button></Link>
+              <Link to="/report" ><Button type="link">新建报告</Button></Link>
+              <Link to="/search" ><Button type="link">搜索报告</Button></Link>
+              <Link to="/system/info" ><Button type="link">个人信息</Button></Link>
+              <Link to="/company" ><Button type="link">公司信息</Button></Link>
+            </div>
+          </Affix>
         </div>
         <RightContent {...this.props} />
       </div>

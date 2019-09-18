@@ -9,6 +9,7 @@ import {
     getUserNotifyInfo,
     getTodayNotify,
     getNewReportNotify,
+    getNotifyOrEvent,
     getWaitCheckList,
     getWaitApproveList,
 } from '@/services/userinfo';
@@ -21,6 +22,7 @@ export default {
         notifyinfo: {},
         todaynotify: {},
         newNotify:{},
+        NotifyEvt:{},
         waitchecklist: [],
         waitapprovelist: [],
     },
@@ -63,6 +65,21 @@ export default {
                     yield put({
                         type: 'saveList',
                         payload: { newNotify },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *fetchNotifyOrEvent(_, { call, put }) {
+            const res = yield call(getNotifyOrEvent);
+            if (res) {
+                if (res.ok) {
+                    const NotifyEvt = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { NotifyEvt },
                     });
                 } else {
                     message.error(res.errMsg);
