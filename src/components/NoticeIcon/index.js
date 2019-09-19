@@ -71,7 +71,7 @@ export default class NoticeIcon extends PureComponent {
     const NoticeBellIcon = bell || <Icon type="bell" className={styles.icon} />;
     const trigger = (
       <span className={noticeButtonClass}>
-        <Badge count={count} style={{ boxShadow: 'none' }} className={styles.badge}>
+        <Badge count={count} overflowCount={99} style={{ boxShadow: 'none' }} className={styles.badge}>
           {NoticeBellIcon}
         </Badge>
       </span>
@@ -88,10 +88,10 @@ export default class NoticeIcon extends PureComponent {
         placement="bottomRight"
         content={notificationBox}
         popupClassName={styles.popover}
-        trigger="click"
+        //trigger="click"
         arrowPointAtCenter
         popupAlign={popupAlign}
-        onVisibleChange={onPopupVisibleChange}
+        //onVisibleChange={onPopupVisibleChange}
         {...popoverProps}
       >
         {trigger}

@@ -7,6 +7,15 @@ import styles from './index.less';
 import { connect } from 'dva';
 import CountDown from '@/components/CountDown';
 
+function IndexofByKeyValue(arraytosearch, key, valuetosearch) {
+  for (var i = 0; i < arraytosearch.length; i++) {
+    if (arraytosearch[i][key] == valuetosearch) {
+      return arraytosearch[i];
+    }
+  }
+  return null;
+}
+
 const NoticeIconTab = NoticeIcon.Tab;
 
 @connect(({ userseting: { NotifyEvt }, loading }) => ({
@@ -18,7 +27,7 @@ class GlobalHeaderRight extends PureComponent {
     super(props);
     this.state = {
       data: [],
-      timer: 3000,
+      timer: 5500,
     }
   }
 
@@ -41,17 +50,49 @@ class GlobalHeaderRight extends PureComponent {
     });
   }
 
-  onItemClick = (item, tabProps) => {
-    console.log(item, tabProps);
+
+  DeleteNotifyOrEvent(id) {
+    const ids = [];
+    ids.push(id);
+    console.log(ids);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'userseting/DeleteNotifyOrEvent',
+      payload: { ids },
+    });
   }
 
-  // handleNoticeClear = type => {
-  //   const { data } = this.state;
-  //   message.success(`${type}`);
-  //   this.setState({
-  //     data:[]
-  //   })
-  // };
+  onItemClick = (item, tabProps) => {
+    const { data } = this.state;
+    data.splice(data.findIndex(item => item.id === item.id), 1);
+    const dataList = data;
+    this.setState({ data: dataList })
+    this.DeleteNotifyOrEvent(item.id);
+    if (item.operationType == 'event') {
+      const { dispatch } = this.props;
+      if (item.message.search("审批") != -1) {
+        setTimeout(() => {
+          message.success("自动提交审批详情", 1);
+          dispatch(
+            routerRedux.push({
+              pathname: '/workplatform/detailwaitApprove',
+              report: item.reportNo
+            })
+          )
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          message.success("自动提交审核详情", 1);
+          dispatch(
+            routerRedux.push({
+              pathname: '/workplatform/detailwaitCheck',
+              report: item.reportNo
+            })
+          )
+        }, 1500);
+      }
+    }
+  }
 
   fetchMore = () => {
     const { dispatch } = this.props;
@@ -103,18 +144,15 @@ class GlobalHeaderRight extends PureComponent {
 
   handleEnd = () => {
     this.setState({
-      timer: 3000,
+      timer: 5500,
     })
-    //this.getNotifyOrEvent();
+    this.getNotifyOrEvent();
   }
 
   render() {
-    const { data , timer} = this.state;
-    console.log(data)
+    const { data, timer } = this.state;
     const { account, onMenuClick, theme, } = this.props;
-
     const noticeData = this.getNoticeData(data);
-
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="userCenter">
@@ -135,10 +173,10 @@ class GlobalHeaderRight extends PureComponent {
     }
 
     const targetTime = new Date().getTime() + timer;
-    //display:'none'
+
     return (
       <div className={className}>
-        <CountDown style={{ fontSize: 20, }} target={targetTime} onEnd={this.handleEnd} />
+        <CountDown style={{ fontSize: 20, display: 'none' }} target={targetTime} onEnd={this.handleEnd} />
         <NoticeIcon
           className="notice-icon"
           count={data.length}

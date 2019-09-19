@@ -10,6 +10,7 @@ import {
     getTodayNotify,
     getNewReportNotify,
     getNotifyOrEvent,
+    getdeleteNotifyOrEvent,
     getWaitCheckList,
     getWaitApproveList,
 } from '@/services/userinfo';
@@ -81,6 +82,17 @@ export default {
                         type: 'saveList',
                         payload: { NotifyEvt },
                     });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *DeleteNotifyOrEvent({ payload }, { call, put }) {
+            const res = yield call(getdeleteNotifyOrEvent, payload);
+            if (res) {
+                if (res.ok) {
+                   // message.success("清除成功");
                 } else {
                     message.error(res.errMsg);
                 }

@@ -64,7 +64,6 @@ class WaitApprveList extends PureComponent {
             pageNum: pagination.current,
             pageSize: pagination.pageSize,
         };
-
         const { dispatch } = this.props;
         dispatch({
             type: 'userseting/fetchWaitApproveList',

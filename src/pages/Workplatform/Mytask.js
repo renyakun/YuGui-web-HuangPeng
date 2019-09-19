@@ -69,18 +69,6 @@ class Mytask extends PureComponent {
     });
   }
 
-  // fetchMore = () => {
-  //   const { dispatch } = this.props;
-  //   message.loading('加载更多', 2);
-  //   setTimeout(() => {
-  //     dispatch(
-  //       routerRedux.push({
-  //         pathname: '/workplatform/dynamic',
-  //       })
-  //     )
-  //   }, 2500);
-  // };
-
   handleInfiniteOnLoad = () => {
     console.log("loading...")
   }
@@ -180,7 +168,7 @@ class Mytask extends PureComponent {
                 bordered={false}
                 loading={loading}
                 className={styles.activeCard}
-                title="动态"
+                title="最新动态"
                 style={{ minHeight: 350 }}
               >
                 <div style={{ overflow: 'auto', padding: '8px 24px', height: 300 }}>

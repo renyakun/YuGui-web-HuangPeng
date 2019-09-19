@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import styles from './NoticeList.less';
 import Link from 'umi/link';
 
+
 export default function NoticeList({
   data = [],
   onClick,
@@ -48,11 +49,17 @@ export default function NoticeList({
                       <span>{
                         item.message.split(/@\{([^{}]*)\}/gi).map(key => {
                           if (item[key]) {
-                            if (key == "preUser") {
+                            if (item.operationType == 'event' && key == "preUser") {
                               return (<b>你</b>)
                             }
                             if (item.operationType == 'notification' && key == 'userName') {
                               return (<b>你</b>)
+                            }
+                            if (item.operationType == 'notification' && key == "reportNo") {
+                              return (<em style={{ color: 'dodgerblue' }}>{item[key]}</em>)
+                            }
+                            if (item.operationType == 'event' && key == "reportNo") {
+                              return (<em style={{ color: 'dodgerblue' }}>{item[key]}</em>)
                             }
                             return (<span style={{ color: 'dodgerblue' }}>{item[key]}</span>)
                           }
@@ -76,7 +83,7 @@ export default function NoticeList({
       </List>
       {showClear ? (
         <div className={styles.clear} onClick={onClear}>
-           {/* {locale.clear}  清空{title} */}更多
+          {/* {locale.clear}  清空{title} */}更多
         </div>
       ) : null}
     </div>

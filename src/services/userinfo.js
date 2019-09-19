@@ -13,9 +13,15 @@ export async function getNewReportNotify() {
   return request(`/report/getReportNotify`);
 }
 
-///report/getNotifyOrEvent
 export async function getNotifyOrEvent() {
   return request(`/report/getNotifyOrEvent`);
+}
+
+export async function getdeleteNotifyOrEvent(params) {
+  return request(`/report/deleteNotifyOrEvent`, {
+    method: "POST",
+    body: params,
+  });
 }
 
 export async function getWaitCheckList(params) {
