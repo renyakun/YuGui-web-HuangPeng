@@ -141,12 +141,12 @@ class DetailWaitCheck extends PureComponent {
     handleNext = (currentStep) => {
         const { trimmedDataURL } = this.state;
         if (trimmedDataURL == null) {
-            message.error('请输入电子签名', 3)
+            message.error("请确认签名")
         } else {
             if (currentStep < 1) {
                 this.forward(currentStep);
             } else {
-                this.OnCancel();
+                this.OnCancel(currentStep);
                 this.handleCommit();
             }
         }

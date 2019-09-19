@@ -76,10 +76,11 @@ class DetailWaitApproveReport extends PureComponent {
     }
 
     trim = () => {
+        message.success("签名成功")
         this.setState({
-            trimmedDataURL: this.sigPad.getTrimmedCanvas()
-                .toDataURL('image/png')
+            trimmedDataURL: this.sigPad.getTrimmedCanvas().toDataURL('image/png'),
         })
+
     }
 
     OnCancel = () => {
@@ -135,11 +136,16 @@ class DetailWaitApproveReport extends PureComponent {
     };
 
     handleNext = (currentStep) => {
-        if (currentStep < 1) {
-            this.forward(currentStep);
+        const { trimmedDataURL } = this.state;
+        if (trimmedDataURL == null) {
+            message.error("请确认签名")
         } else {
-            this.OnCancel(currentStep);
-            this.handleCommit();
+            if (currentStep < 1) {
+                this.forward(currentStep);
+            } else {
+                this.OnCancel(currentStep);
+                this.handleCommit();
+            }
         }
     };
 
@@ -157,9 +163,9 @@ class DetailWaitApproveReport extends PureComponent {
                     <h3>电子签名:</h3>
                     <div className={styles.src}>{trimmedDataURL ? <img className={styles.srcImg} src={trimmedDataURL} /> : null}</div>
                     <div style={{ display: agree ? 'none' : 'block', fontWeight: 'bolder', color: 'dodgerblue' }}>
-                        <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
+                        <div><b className={styles.Fontwg}>审批不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
                     </div>
-                    <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审核通过</div>
+                    <div style={{ display: agree ? 'block' : 'none', fontWeight: 'bolder', color: 'dodgerblue' }}>审批通过</div>
                 </div>
             ]
         }
@@ -256,7 +262,7 @@ class DetailWaitApproveReport extends PureComponent {
                 </Card>
 
                 <div style={{ display: welcome ? 'block' : 'none' }}>
-                    <Card title="提交审核" style={{ marginTop: 24 }} bordered={false}>
+                    <Card title="提交审批" style={{ marginTop: 24 }} bordered={false}>
                         <div style={{ marginBottom: 24 }}>
                             <RadioGroup onChange={this.onChange} value={agree}>
                                 <Radio value={true}>审批通过</Radio>
