@@ -104,7 +104,7 @@ class DetailWaitCheck extends PureComponent {
         this.setState({
             visible: true
         })
-        if (Signature != '') {
+        if (Signature != null ) {
             this.setState({
                 currentStep: 1,
                 trimmedDataURL: Signature
@@ -202,7 +202,7 @@ class DetailWaitCheck extends PureComponent {
         if (currentStep === 1) {
             return [
                 <Button key="back" type="primary" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
-                     重新签名
+                    重新签名
             </Button>,
                 <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
                     完成提交

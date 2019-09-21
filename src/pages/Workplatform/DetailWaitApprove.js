@@ -104,7 +104,7 @@ class DetailWaitApproveReport extends PureComponent {
         this.setState({
             visible: true
         })
-        if (Signature != null) {
+        if (Signature != null ) {
             this.setState({
                 currentStep: 1,
                 trimmedDataURL: Signature
