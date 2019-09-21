@@ -11,9 +11,10 @@ import styles from './styles.less';
 const { Step } = Steps;
 const RadioGroup = Radio.Group;
 
-@connect(({ valvereport: { valveinfo, }, loading }) => ({
+@connect(({ valvereport: { valveinfo, Signature }, loading }) => ({
     valveinfo,
-    loading: loading.effects['valvereport/getValveReportInfo'],
+    Signature,
+    loading: loading.models.valvereport,
 }))
 
 class DetailWaitCheck extends PureComponent {
@@ -27,11 +28,13 @@ class DetailWaitCheck extends PureComponent {
             reason: '',
             visible: false,
             currentStep: 0,
-            trimmedDataURL: null
+            trimmedDataURL: ""
         }
     }
+
     componentDidMount() {
         this.getReportDetailInfo();
+        this.getSignature();
     }
 
     getReportDetailInfo() {
@@ -55,6 +58,13 @@ class DetailWaitCheck extends PureComponent {
 
     }
 
+    getSignature() {
+        const { dispatch } = this.props;
+        dispatch({
+            type: 'valvereport/fetchSignature',
+        });
+    }
+
     handleInput(e) {
         this.setState({
             reason: e.target.value,
@@ -75,6 +85,7 @@ class DetailWaitCheck extends PureComponent {
     }
 
     trim = () => {
+        message.success('签名成功！')
         this.setState({
             trimmedDataURL: this.sigPad.getTrimmedCanvas()
                 .toDataURL('image/png')
@@ -89,9 +100,16 @@ class DetailWaitCheck extends PureComponent {
     };
 
     handleClick = () => {
+        const { Signature } = this.props;
         this.setState({
             visible: true
         })
+        if (Signature != '') {
+            this.setState({
+                currentStep: 1,
+                trimmedDataURL: Signature
+            })
+        }
     };
 
     async handleCommit() {
@@ -140,7 +158,7 @@ class DetailWaitCheck extends PureComponent {
 
     handleNext = (currentStep) => {
         const { trimmedDataURL } = this.state;
-        if (trimmedDataURL == null) {
+        if (trimmedDataURL == '') {
             message.error("请确认签名")
         } else {
             if (currentStep < 1) {
@@ -158,7 +176,7 @@ class DetailWaitCheck extends PureComponent {
             return [
                 <div className={styles.content}>
                     <h3>电子签名:</h3>
-                    <div className={styles.src}>{trimmedDataURL ? <img className={styles.srcImg} src={trimmedDataURL} /> : null}</div>
+                    <div className={styles.src}><img className={styles.srcImg} src={trimmedDataURL} /></div>
                     <div style={{ display: agree ? 'none' : 'block', fontWeight: 'bolder', color: 'dodgerblue' }}>
                         <div><b className={styles.Fontwg}>审核不通过</b>  <p style={{ display: 'inline-block', color: 'black' }}>理由:</p><em className={styles.Fontwg} style={{ color: 'red' }}>{reason}</em></div>
                     </div>
@@ -183,8 +201,8 @@ class DetailWaitCheck extends PureComponent {
     renderFooter = currentStep => {
         if (currentStep === 1) {
             return [
-                <Button key="back" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
-                    上一步
+                <Button key="back" type="primary" style={{ float: 'left' }} onClick={() => this.backward(currentStep)}>
+                     重新签名
             </Button>,
                 <Button key="forward" type="primary" onClick={() => this.handleNext(currentStep)}>
                     完成提交

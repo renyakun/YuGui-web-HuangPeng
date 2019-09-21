@@ -40,7 +40,7 @@ export default class GlobalHeader extends PureComponent {
 
         <div className={styles.nav}>
           <Affix>
-            <div style={{background: 'rgba(255,255,255,0.8)', paddingLeft: 3, borderRadius: 5, height: 35 }}>
+            <div style={{paddingLeft: 3, height: 35 }}>
               <p>快速入口：</p>
               <Link to="/" ><Button type="link">我的工作台</Button></Link>
               <Link to="/report" ><Button type="link">新建报告</Button></Link>

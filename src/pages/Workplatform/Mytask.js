@@ -1,11 +1,13 @@
-import { Pie, TagCloud } from '@/components/Charts';
+import { Pie, TagCloud, ChartCard, MiniBar, Field, Bar} from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
-import { BackTop, Card, Col, List, message, Row } from 'antd';
+import { BackTop, Card, Col, List, message, Row, Icon, Tooltip } from 'antd';
 import { connect } from 'dva';
 import { routerRedux } from 'dva/router';
 import React, { PureComponent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import Link from 'umi/link';
+import moment from 'moment';
+import numeral from 'numeral';
 import styles from './styles.less';
 
 const ListItem = List.Item;
@@ -85,14 +87,6 @@ class Mytask extends PureComponent {
       style: { marginBottom: 16 },
     };
 
-    const tags = [];
-    for (let i = 0; i < 50; i += 1) {
-      tags.push({
-        name: `yugui-2019-0010${i}`,
-        value: Math.floor(Math.random() * 50) + 20,
-      });
-    }
-
     const salesPieData = [
       {
         x: '新建报告数',
@@ -111,6 +105,16 @@ class Mytask extends PureComponent {
         y: todaynotify.fileReportNum,
       },
     ];
+
+    const visitData = [];
+    const beginDay = new Date().getTime();
+  
+    for (let i = 0; i < 15; i += 1) {
+      visitData.push({
+        x: moment(new Date(beginDay + 1000 * 60 * 60 * 24 * i)).format('YYYY-MM-DD'),
+        y: Math.floor(Math.random() * 100) + 10,
+      });
+    }
 
     return (
       <div>
@@ -215,22 +219,21 @@ class Mytask extends PureComponent {
               </Card>
             </Col>
 
-            {/* <Col {...topColResponsiveProps}>
-              <Card
-                title={
-                  <FormattedMessage
-                    id="app.monitor.popular-searches"
-                    defaultMessage="Popular Searches"
-                  />
+            <Col {...topColResponsiveProps}>
+              <ChartCard
+                title="报告记录"
+                action={
+                  <Tooltip title="报告记录数量">
+                    <Icon type="info-circle-o" />
+                  </Tooltip>
                 }
-                //loading={loading} height={250} 
-                bordered={false}
-                bodyStyle={{ overflow: 'hidden' }}
-                style={{ minHeight: 300 }}
+                total={numeral(8846).format('0,0')}
+                footer={<Field label="日记录数" value={numeral(1234).format('0,0')} />}
+                contentHeight={270}
               >
-                <TagCloud data={tags} />
-              </Card>
-            </Col> */}
+                <MiniBar height={200} data={visitData} />
+              </ChartCard>
+            </Col>
 
           </Row>
 

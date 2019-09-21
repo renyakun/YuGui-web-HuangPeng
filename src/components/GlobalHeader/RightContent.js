@@ -72,21 +72,25 @@ class GlobalHeaderRight extends PureComponent {
       const { dispatch } = this.props;
       if (item.message.search("审批") != -1) {
         setTimeout(() => {
-          message.success("自动提交审批详情", 1);
+          //message.success("自动提交审批详情", 1);
+          message.success("自动跳转", 1);
           dispatch(
             routerRedux.push({
-              pathname: '/workplatform/detailwaitApprove',
-              report: item.reportNo
+              // pathname: '/workplatform/detailwaitApprove',
+              // report: item.reportNo
+              pathname: '/workplatform/waitapprveList',
             })
           )
         }, 1500);
       } else {
         setTimeout(() => {
-          message.success("自动提交审核详情", 1);
+          //message.success("自动提交审核详情", 1);
+          message.success("自动跳转", 1);
           dispatch(
             routerRedux.push({
-              pathname: '/workplatform/detailwaitCheck',
-              report: item.reportNo
+              // pathname: '/workplatform/detailwaitCheck',
+              // report: item.reportNo
+              pathname: '/workplatform/waitcheckList',
             })
           )
         }, 1500);

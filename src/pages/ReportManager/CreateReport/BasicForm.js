@@ -5,6 +5,7 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'umi/locale';
 import { routerRedux } from 'dva/router';
+import { creatValveReport } from '@/services/valverserver';
 
 function IndexofByKeyValue(arraytosearch, key, valuetosearch) {
     for (var i = 0; i < arraytosearch.length; i++) {
@@ -29,6 +30,7 @@ const MyIcon = Icon.createFromIconfontCN({
 });
 
 const companyDataList = JSON.parse(localStorage.getItem('companyDataList') || '[]');
+
 
 @connect(({ valvereport, valvereport: { ReportNumber, CompanyList, autocheck }, loading }) => ({
     valvereport,
@@ -56,7 +58,7 @@ class BasicForm extends PureComponent {
 
     componentDidMount() {
         this.getReportNumber();
-        this.fetchCompanyList()
+        this.fetchCompanyList();
     }
 
     fetchCompanyList() {
@@ -75,7 +77,7 @@ class BasicForm extends PureComponent {
 
     handleSubmit = e => {
         e.preventDefault();
-        const { dispatch, form, autocheck } = this.props;
+        const { dispatch, form } = this.props;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 let checkExplain = values.checkExplain;
@@ -208,26 +210,16 @@ class BasicForm extends PureComponent {
                     delete values.psreqset;
                 }
 
-                //console.log(values)
-
                 if (values.checkResult != undefined) {
                     dispatch({
                         type: 'valvereport/createValveReport',
                         payload: values,
                     });
-                    setTimeout(() => {
-                        message.success("自动为你跳转提交审核");
-                        dispatch(
-                            routerRedux.push({
-                                pathname: '/report/handle/reportdetail',
-                                report: values.reportNo
-                            })
-                        )
-                    }, 3000);
                 }
             }
         })
     }
+
 
     handleChange = values => {
         const { dispatch } = this.props;
@@ -290,7 +282,7 @@ class BasicForm extends PureComponent {
         const { submitting, ReportNumber, autocheck } = this.props;
         let isQualified = '';
         let reason = '';
-        if (autocheck != undefined) {isQualified = autocheck.isQualified;reason = autocheck.reason;}
+        if (autocheck != undefined) { isQualified = autocheck.isQualified; reason = autocheck.reason; }
 
         const { form: { getFieldDecorator } } = this.props;
         const formItemLayout = {
@@ -505,7 +497,7 @@ class BasicForm extends PureComponent {
                         <Col span={3}>
                             {getFieldDecorator('checkMediumTemperature', {
                                 initialValue: '常温',
-                            })(<input style={{ marginLeft: 10, width: 30, border: 'none' ,background:'none'}}  disabled readOnly />)}
+                            })(<input style={{ marginLeft: 10, width: 30, border: 'none', background: 'none' }} disabled readOnly />)}
                         </Col>
                         <Col span={1}> </Col>
                         <Col span={2}>或</Col>
@@ -915,7 +907,7 @@ class BasicForm extends PureComponent {
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="报告基本信息">
-                    <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
+                    <Form onSubmit={this.handleSubmit.bind(this)} hideRequiredMark style={{ marginTop: 8 }}>
                         {formItems}
                         <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
                             <Button size="large" type="primary" htmlType="submit" loading={submitting}>

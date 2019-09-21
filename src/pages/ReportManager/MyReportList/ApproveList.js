@@ -6,7 +6,7 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import styles from './styles.less';
 
-const flag = ['录入报告', '提交审核', '审核通过', '提交审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
+const flag = ['录入报告', '待审核', '审核通过', '待审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
 const flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000'];
 
 const microapproveColumns = Object.keys(microapproveReportLabels).map(key => {

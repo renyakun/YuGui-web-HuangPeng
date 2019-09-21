@@ -24,7 +24,7 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const flag = ['录入报告', '提交审核', '审核通过', '提交审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
+const flag = ['录入报告', '待审核', '审核通过', '待审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
 const flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000', ''];
 
 @connect(({ SearchReport, SearchReport: { UserName }, loading }) => ({
@@ -297,9 +297,9 @@ class SearchReportList extends PureComponent {
             <FormItem label="状态">
               {getFieldDecorator('flag', { initialValue: '1' })(
                 <Select allowClear>
-                  <Option value="1">提交审核</Option>
+                  <Option value="1">待审核</Option>
                   <Option value="2">审核通过</Option>
-                  <Option value="3">提交审批</Option>
+                  <Option value="3">待审批</Option>
                   <Option value="4">审批通过</Option>
                   <Option value="5">报告归档</Option>
                   <Option value="12">审核不通过</Option>

@@ -53,7 +53,6 @@ export async function approveResult(params) {
   });
 }
 
-
 export async function addFileReport(params) {
   return request(`/report/addFileReport`, {
     method: "POST",
@@ -92,14 +91,15 @@ export async function getcompanyInfo() {
   return request(`/report/companyInfo`);
 }
 
-// export async function getCompanyList(params) {
-//   return request(`/report/getCompanyList?${stringify(params)}`);
-// }
-
 export async function getautoCheck(params) {
   return request(`/report/autoCheck`, {
     method: "POST",
     body: params,
   });
 }
+
+export async function getSignature() {
+  return request(`/report/user/getSignature`);
+}
+
  

@@ -1,18 +1,17 @@
-
 import md5 from '@/utils/md5';
 import { Button, Card, Form, Input, message, Popover, Progress, Select } from 'antd';
 import { connect } from 'dva';
 import React, { PureComponent } from 'react';
 import styles from './Admin.less';
+import SignatureCanvas from 'react-signature-canvas';
+
 
 const FormItem = Form.Item;
-
 const passwordStatusMap = {
     ok: <div className={styles.success}>强度：强</div>,
     pass: <div className={styles.warning}>强度：中</div>,
     poor: <div className={styles.error}>强度：太短</div>,
 };
-
 const passwordProgressMap = {
     ok: 'success',
     pass: 'normal',
@@ -32,12 +31,14 @@ class Security extends PureComponent {
         super(props);
         this.state = {
             confirmDirty: false,
+            trimmedDataURL: null
         }
     }
 
     handleSubmit = e => {
         e.preventDefault();
         const { dispatch, form } = this.props;
+        const { trimmedDataURL } = this.state;
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 for (let k in values) {
@@ -45,19 +46,26 @@ class Security extends PureComponent {
                         delete values[k];
                     }
                 }
-                this.props.dispatch({
-                    type: 'userseting/getUpdateUser',
-                    payload: {
-                        ...values,
-                        confirmPwd: md5(values.confirmPwd),
-                    },
-                });
-                setTimeout(() => {
-                    message.warning("请重新登录");
-                    dispatch({
-                        type: 'login/logout',
+                values.signature = trimmedDataURL;
+                console.log(values)
+                if (values.signature == null) {
+                    message.error("请输入电子签名")
+                } else {
+                    this.props.dispatch({
+                        type: 'userseting/getUpdateUser',
+                        payload: {
+                            ...values,
+                            confirmPwd: md5(values.confirmPwd),
+                        },
                     });
-                }, 3000);
+                    setTimeout(() => {
+                        message.warning("请重新登录");
+                        dispatch({
+                            type: 'login/logout',
+                        });
+                    }, 3000);
+                }
+
             }
         })
     }
@@ -108,9 +116,30 @@ class Security extends PureComponent {
         ) : null;
     };
 
+    sigPad = {}
+
+    clear = () => {
+        this.sigPad.clear()
+    }
+
+    trim = () => {
+        message.success("签名成功")
+        this.setState({
+            trimmedDataURL: this.sigPad.getTrimmedCanvas().toDataURL('image/png'),
+        })
+
+    }
+
+    handleclear=()=>{
+        this.setState({
+            trimmedDataURL: null,
+        })
+    }
+
     render() {
+        const { trimmedDataURL } = this.state;
         const { submitting } = this.props;
-        const {form: { getFieldDecorator, getFieldValue },} = this.props;
+        const { form: { getFieldDecorator, getFieldValue }, } = this.props;
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
@@ -165,7 +194,7 @@ class Security extends PureComponent {
                             ]
                         })(<Input.Password placeholder='' style={{ width: '100%' }} />)}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="管理员电话:" >
+                    <FormItem {...formItemLayout} label="电话:" >
                         {getFieldDecorator('phone', {
                             rules: [
                                 { required: true, message: '管理员电话不能为空' },
@@ -174,13 +203,35 @@ class Security extends PureComponent {
                             ]
                         })(<Input placeholder='' style={{ width: '100%' }} />)}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="管理员邮箱:" >
+                    <FormItem {...formItemLayout} label="邮箱:" >
                         {getFieldDecorator('email', {
                             rules: [
                                 { required: true, message: '管理员邮箱不能为空' },
                                 { pattern: new RegExp('^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$'), message: '管理员邮箱输入有误' }
                             ]
                         })(<Input placeholder='' style={{ width: '100%' }} />)}
+                    </FormItem>
+                    <FormItem {...formItemLayout} label="电子签名:" >
+                        {trimmedDataURL == null ?
+                            <div className={styles.container}>
+                                <div className={styles.sigContainer}>
+                                    <SignatureCanvas canvasProps={{ className: styles.sigPad }}
+                                        ref={(ref) => { this.sigPad = ref }} />
+                                </div>
+                                <div style={{ marginTop: 10, marginLeft: 30 }}>
+                                    <Button type="primary" onClick={this.clear} style={{ marginRight: 30 }}>重置</Button>
+                                    <Button type="primary" onClick={this.trim}>确认</Button>
+                                </div>
+                            </div> : <div className={styles.container}>
+                                <div className={styles.sigContainer}>
+                                    <img className={styles.srcImg} src={trimmedDataURL} />
+                                </div>
+                                <div style={{ marginTop: 10, marginLeft: 30 }}>
+                                    <Button type="primary" onClick={this.handleclear} style={{ marginRight: 30 }}>重置</Button>
+                                </div>
+                            </div>
+                        }
+
                     </FormItem>
                     <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
                         <Button size="large" type="primary" htmlType="submit" loading={submitting} >

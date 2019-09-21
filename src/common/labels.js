@@ -28,6 +28,7 @@ export const userInfoLabels = {
     userName: '用户名',
     phone: '电话',
     email: '邮箱',
+    signature:'电子签名',
     realName: '职位',
 };
 
@@ -51,6 +52,7 @@ export const newListLabels = {
     reportNo: '报告编号',
     createName: '创建人',
     createTime: '创建时间',
+    modifyFlag:'状态',
     actions: '操作',
 };
 
@@ -58,7 +60,7 @@ export const microcheckedReportLabels={
     reportNo: '报告编号',
     checkName: '审核人',
     checkTime: '审核时间',
-    modifyFlag:'状态',
+    modifyFlag:'进程',
     actions: '操作',
 }
 
@@ -73,7 +75,7 @@ export const microapproveReportLabels={
     reportNo: '报告编号',
     approveName: '审批人',
     approveTime: '审批时间',
-    modifyFlag:'状态',
+    modifyFlag:'进程',
     actions: '操作',
 }
 
@@ -108,7 +110,7 @@ export const searchLabels = {
     reportNo: '报告编号 ',
     reportRealName: '报告当前处理人',
     reportTime: '更新报告报告时间',
-    status: '状态',
+    status: '进程',
     actions: '操作',
 }
 

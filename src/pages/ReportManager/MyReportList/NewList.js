@@ -1,30 +1,10 @@
 import { newListLabels } from '@/common/labels';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { Card, Table } from 'antd';
+import { Card, Table, Badge } from 'antd';
 import React, { PureComponent } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import styles from './styles.less';
-
-const reportColumns = Object.keys(newListLabels).map(key => {
-    if (key === 'actions') {
-        return {
-            title: newListLabels[key],
-            render: ({ reportNo }) => (
-                <div>
-                    <Link to={{ pathname: '/report/handle/reportdetail', report: `${reportNo}` }}>
-                        提交审核
-                    </Link>
-                </div>
-            ),
-        };
-    }
-    return {
-        key,
-        title: newListLabels[key],
-        dataIndex: key,
-    };
-});
 
 @connect(({ valvereport: { newreportlist }, loading }) => ({
     newreportlist,
@@ -78,6 +58,10 @@ class NewList extends PureComponent {
 
     };
 
+    handleCl = (text) => {
+        console.log(text)
+    }
+
     render() {
         const { newreportlist, pageSize, total, current } = this.state;
         const { listLoading } = this.props;
@@ -88,6 +72,40 @@ class NewList extends PureComponent {
             total: total,
             current: current
         };
+
+        const reportColumns = Object.keys(newListLabels).map(key => {
+            if (key === 'modifyFlag') {
+                return {
+                    title: newListLabels[key],
+                    width: 100,
+                    render: (text, record) => {
+                        if (text.modifyFlag == '0') {
+                            return <Badge status="processing" text="待审核" />
+                        } else {
+                            return <Badge status="success" text="已提交" />
+                        }
+                    }
+                }
+            }
+            if (key === 'actions') {
+                return {
+                    title: newListLabels[key],
+                    render: (text, record) => (
+                        <div>
+                            <Link disabled={text.modifyFlag== "0" ? false : true} to={{ pathname: '/report/handle/reportdetail', report: `${text.reportNo}` }}>
+                                提交审核
+                            </Link>
+                        </div>
+                    ),
+                };
+            }
+            return {
+                key,
+                title: newListLabels[key],
+                dataIndex: key,
+            };
+        });
+
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="我的新建报告" loading={listLoading} >

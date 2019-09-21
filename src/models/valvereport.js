@@ -13,6 +13,7 @@ import {
     getCheckedReportList,
     getApproveReportList,
     getFileReportList,
+    getSignature
 } from '@/services/valverserver';
 
 export default {
@@ -23,11 +24,12 @@ export default {
         checkuserlist: [],
         approvedreportlist: [],
         approveuserlist: [],
-        CompanyList:{},
+        CompanyList: {},
         valveinfo: {
             reportInfo: {},
             historyInfo: {},
         },
+        Signature: null
     },
 
     effects: {
@@ -35,7 +37,14 @@ export default {
             const res = yield call(creatValveReport, payload);
             if (res) {
                 if (res.ok) {
-                    message.success('创建成功');
+                    message.success('创建成功',2);
+                    const  reportno  = res.data;
+                    yield put(
+                        routerRedux.push({
+                            pathname: '/report/handle/reportdetail',
+                            report: reportno
+                        })
+                    );
                 } else {
                     message.error(res.errMsg);
                 }
@@ -200,6 +209,21 @@ export default {
                     yield put({
                         type: 'saveList',
                         payload: { autocheck },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *fetchSignature(_, { call, put }) {
+            const res = yield call(getSignature);
+            if (res) {
+                if (res.ok) {
+                    const Signature = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { Signature },
                     });
                 } else {
                     message.error(res.errMsg);

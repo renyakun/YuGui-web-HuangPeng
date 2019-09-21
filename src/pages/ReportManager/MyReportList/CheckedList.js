@@ -6,7 +6,7 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import styles from './styles.less';
 
-const flag = ['录入报告', '提交审核', '审核通过', '提交审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
+const flag = ['录入报告', '待审核', '审核通过', '待审批', '审批通过', '报告归档', '', '', '', '', '', '', '审核不通过', '', '审批不通过'];
 const flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000'];
 
 const microcheckedColumns = Object.keys(microcheckedReportLabels).map(key => {
@@ -43,6 +43,56 @@ const microcheckedColumns = Object.keys(microcheckedReportLabels).map(key => {
         dataIndex: key,
     };
 });
+
+// const microcheckedColumns = [
+//     {
+//         title: '报告编号',
+//         dataIndex: 'reportNo',
+//         width: 200,
+//     },
+//     {
+//         title: '审批人',
+//         dataIndex: 'approveName',
+//         width: 150,
+//     },
+//     {
+//         title: '审批时间',
+//         dataIndex: 'approveTime',
+//         width: 150,
+//     },
+//     {
+//         title: '状态',
+//         dataIndex: 'modifyFlag',
+//         width: 150,
+//     },
+//     {
+//         title: '进程',
+//         dataIndex: 'modifyFlag',
+//         width: 150,
+//         // render: (text, record) => {
+//         //     if (text.modifyFlag == '12') {
+//         //         return <Tooltip placement="right" title={`理由:${record.checkReason}`}>
+//         //             <Tag color={flagcolor[text.modifyFlag]}>{flag[text.modifyFlag]}</Tag>
+//         //         </Tooltip>
+//         //     } else  {
+//         //         return <Tag color={flagcolor[text.modifyFlag]}>{flag[text.modifyFlag]}</Tag>
+//         //     }
+//         // }
+//     },
+//     {
+//         title: '操作',
+//         dataIndex: 'actions',
+//         width: 150,
+//         // render: (text, record) => {
+//         //     if (text.modifyFlag == '12') {
+//         //         return <Link to={{ pathname: '/report/handle/modifyreportdetail', report: `${record.reportNo}` }}>修改报告</Link>
+//         //     } else if (text.modifyFlag == '2'){
+//         //         return <Link to={{ pathname: '/report/handle/reportcheck', report: `${record.reportNo}` }}>提交审批</Link>
+//         //     }
+//         // }
+
+//     },
+// ];
 
 const expandedRowRender = record => {
     const checkedlist = [];
@@ -121,19 +171,20 @@ class CheckedList extends PureComponent {
             total: total,
             current: current
         };
+
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="我的审核报告" loading={listLoading}>
-                <div className={styles.tableList}>
-                    <Table
-                        dataSource={checkedreportlist}
-                        columns={microcheckedColumns}
-                        loading={listLoading}
-                        pagination={paginationProps}
-                        onChange={this.handleTableChange}
-                        rowKey="reportNo"
-                        expandedRowRender={expandedRowRender}
-                    />
+                    <div className={styles.tableList}>
+                        <Table
+                            dataSource={checkedreportlist}
+                            columns={microcheckedColumns}
+                            loading={listLoading}
+                            pagination={paginationProps}
+                            onChange={this.handleTableChange}
+                            rowKey="reportNo"
+                            expandedRowRender={expandedRowRender}
+                        />
                     </div>
                 </Card>
                 <BackTop />

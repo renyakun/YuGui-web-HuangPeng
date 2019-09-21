@@ -43,12 +43,6 @@ class ReportView extends PureComponent {
 
     }
 
-
-    // handle() {
-    //     const w = window.open('about:blank');
-    //     w.location.href = `/report/handle/reportprint`;
-    // }
-
     render() {
         const { valveinfo, valveinfo: { reportInfo, historyInfo } } = this.props;
         const reportNo = reportInfo.reportNo;
