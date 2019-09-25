@@ -51,16 +51,22 @@ Shape.registerShape('point', 'pointer', {
   },
 });
 
+const flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000', ''];
+
 @autoHeight()
 class Gauge extends React.Component {
   render() {
+    //  #F0F2F5 
     const {
       title,
       height,
       percent,
       forceFit = true,
       formatter = defaultFormatter,
-      color = '#2F9CFF',
+      //        
+      color = ['#FF0000', '#FF6347', '#EEB422', '#C0FF3E', '#458B00',],
+      //flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000', ''],
+      colors = '#2F9CFF',
       bgColor = '#F0F2F5',
     } = this.props;
     const cols = {
@@ -73,6 +79,7 @@ class Gauge extends React.Component {
       },
     };
     const data = [{ value: percent / 10 }];
+    const val = data[0].value;
     return (
       <Chart height={height} data={data} scale={cols} padding={[-16, 0, 16, 0]} forceFit={forceFit}>
         <Coord type="polar" startAngle={-1.25 * Math.PI} endAngle={0.25 * Math.PI} radius={0.8} />
@@ -95,33 +102,36 @@ class Gauge extends React.Component {
           }}
         />
         <Guide>
+
           <Line
             start={[3, 0.905]}
             end={[3, 0.85]}
             lineStyle={{
-              stroke: color,
+              stroke: colors,
               lineDash: null,
               lineWidth: 2,
-            }}
-          />
+            }} />
+
           <Line
             start={[5, 0.905]}
             end={[5, 0.85]}
             lineStyle={{
-              stroke: color,
+              stroke: colors,
               lineDash: null,
               lineWidth: 3,
             }}
           />
+
           <Line
             start={[7, 0.905]}
             end={[7, 0.85]}
             lineStyle={{
-              stroke: color,
+              stroke: colors,
               lineDash: null,
               lineWidth: 3,
             }}
           />
+
           <Arc
             zIndex={0}
             start={[0, 0.965]}
@@ -131,15 +141,51 @@ class Gauge extends React.Component {
               lineWidth: 10,
             }}
           />
-          <Arc
+          {val >= 8 && <Arc
             zIndex={1}
             start={[0, 0.965]}
-            end={[data[0].value, 0.965]}
+            end={[val, 0.965]}
             style={{
-              stroke: color,
+              stroke: color[4],
               lineWidth: 10,
             }}
-          />
+          />}
+          {val < 8 && val >= 6 && <Arc
+            zIndex={1}
+            start={[0, 0.965]}
+            end={[val, 0.965]}
+            style={{
+              stroke: color[3],
+              lineWidth: 10,
+            }}
+          />}
+          {val < 6 && val >= 4 && <Arc
+            zIndex={1}
+            start={[0, 0.965]}
+            end={[val, 0.965]}
+            style={{
+              stroke: color[2],
+              lineWidth: 10,
+            }}
+          />}
+          {val >= 2 && val < 4 && <Arc
+            zIndex={1}
+            start={[0, 0.965]}
+            end={[val, 0.965]}
+            style={{
+              stroke: color[1],
+              lineWidth: 10,
+            }}
+          />}
+          {val < 2 && <Arc
+            zIndex={1}
+            start={[0, 0.965]}
+            end={[val, 0.965]}
+            style={{
+              stroke: color[0],
+              lineWidth: 10,
+            }}
+          />}
           <Html
             position={['50%', '95%']}
             html={() => `
@@ -156,7 +202,7 @@ class Gauge extends React.Component {
           type="point"
           position="value*1"
           shape="pointer"
-          color={color}
+          color={colors}
           active={false}
         />
       </Chart>

@@ -5,6 +5,10 @@ export async function getUserNotifyInfo() {
   return request(`/report/getUserNotifyInfo`);
 }
 
+export async function getPassRate() {
+  return request(`/report/getPassRate`);
+}
+
 export async function getTodayNotify() {
   return request(`/report/getTodayNotify`);
 }

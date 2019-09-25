@@ -1,4 +1,4 @@
-import { Button, Dropdown, Icon, Menu, Spin, Tag, message } from 'antd';
+import { Button, Dropdown, Icon, Menu, Spin, Tooltip, message } from 'antd';
 import React, { PureComponent } from 'react';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import NoticeIcon from '../NoticeIcon';
@@ -6,15 +6,7 @@ import { routerRedux } from 'dva/router';
 import styles from './index.less';
 import { connect } from 'dva';
 import CountDown from '@/components/CountDown';
-
-function IndexofByKeyValue(arraytosearch, key, valuetosearch) {
-  for (var i = 0; i < arraytosearch.length; i++) {
-    if (arraytosearch[i][key] == valuetosearch) {
-      return arraytosearch[i];
-    }
-  }
-  return null;
-}
+import Link from 'umi/link';
 
 const NoticeIconTab = NoticeIcon.Tab;
 
@@ -54,7 +46,6 @@ class GlobalHeaderRight extends PureComponent {
   DeleteNotifyOrEvent(id) {
     const ids = [];
     ids.push(id);
-    console.log(ids);
     const { dispatch } = this.props;
     dispatch({
       type: 'userseting/DeleteNotifyOrEvent',
@@ -179,14 +170,14 @@ class GlobalHeaderRight extends PureComponent {
     const targetTime = new Date().getTime() + timer;
 
     return (
-      <div className={className}>
-        <CountDown style={{ fontSize: 20, display: 'none' }} target={targetTime} onEnd={this.handleEnd} />
+      <div className={className} >
+        <CountDown style={{ color: '#fff', fontSize: 1 }} target={targetTime} onEnd={this.handleEnd} />
+        
         <NoticeIcon
           className="notice-icon"
           count={data.length}
           onItemClick={this.onItemClick}
           onClear={this.fetchMore}
-          style={{ marginRight: 30 }}
         >
           <NoticeIconTab
             list={noticeData.notification}
@@ -202,6 +193,11 @@ class GlobalHeaderRight extends PureComponent {
           />
         </NoticeIcon>
 
+
+
+        {/* <Tooltip title="使用文档" >
+          <Link to={{ pathname: '/' }}><Icon type="question-circle" theme="filled" /></Link>
+        </Tooltip> */}
         {account ? (
           <Dropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>

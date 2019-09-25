@@ -11,6 +11,7 @@ import {
     getNewReportNotify,
     getNotifyOrEvent,
     getdeleteNotifyOrEvent,
+    getPassRate,
     getWaitCheckList,
     getWaitApproveList,
 } from '@/services/userinfo';
@@ -137,6 +138,21 @@ export default {
                     yield put({
                         type: 'saveList',
                         payload: { info },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *fetchPassRate(_, { call, put }) {
+            const res = yield call(getPassRate);
+            if (res) {
+                if (res.ok) {
+                    const PassRate= res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { PassRate  },
                     });
                 } else {
                     message.error(res.errMsg);

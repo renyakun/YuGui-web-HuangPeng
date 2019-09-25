@@ -12,7 +12,7 @@ export default {
     rules: [
       {
         required: true,
-        message: 'Please enter username!',
+        message: '请输入用户名!',
       },
     ],
   },
@@ -26,37 +26,7 @@ export default {
     rules: [
       {
         required: true,
-        message: 'Please enter password!',
-      },
-    ],
-  },
-  Mobile: {
-    props: {
-      size: 'large',
-      prefix: <Icon type="mobile" className={styles.prefixIcon} />,
-      placeholder: 'mobile number',
-    },
-    rules: [
-      {
-        required: true,
-        message: 'Please enter mobile number!',
-      },
-      {
-        pattern: /^1\d{10}$/,
-        message: 'Wrong mobile number format!',
-      },
-    ],
-  },
-  Captcha: {
-    props: {
-      size: 'large',
-      prefix: <Icon type="mail" className={styles.prefixIcon} />,
-      placeholder: 'captcha',
-    },
-    rules: [
-      {
-        required: true,
-        message: 'Please enter Captcha!',
+        message: '请输入密码!',
       },
     ],
   },

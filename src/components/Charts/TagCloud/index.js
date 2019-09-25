@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Chart, Geom, Coord, Shape } from 'bizcharts';
+import { Chart, Geom, Coord, Shape , Tooltip,} from 'bizcharts';
 import DataSet from '@antv/data-set';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
@@ -84,7 +84,7 @@ class TagCloud extends Component {
   @Bind()
   @Debounce(500)
   renderChart(nextProps) {
-     const colors = ['#1890FF', '#41D9C7', '#2FC25B', '#FACC14', '#9AE65C'];
+    const colors = ['#1890FF', '#41D9C7', '#2FC25B', '#FACC14', '#9AE65C'];
     const { data, height } = nextProps || this.props;
 
     if (data.length < 1 || !this.root) {
@@ -158,8 +158,9 @@ class TagCloud extends Component {
               y: { nice: false },
             }}
           >
+             <Tooltip showTitle={false} />
             <Coord reflect="y" />
-            <Geom type="point" position="x*y" color="text" shape="cloud" />
+            <Geom type="point" position="x*y"  shape="cloud" color="text" />
           </Chart>
         )}
       </div>
@@ -168,3 +169,13 @@ class TagCloud extends Component {
 }
 
 export default TagCloud;
+
+
+
+
+
+
+
+
+
+

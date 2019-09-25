@@ -1,22 +1,20 @@
-import { Pie, TagCloud, ChartCard, MiniBar, Field, Bar} from '@/components/Charts';
+import { Gauge, Pie } from '@/components/Charts';
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
-import { BackTop, Card, Col, List, message, Row, Icon, Tooltip } from 'antd';
+import { BackTop, Card, Col, List, Row } from 'antd';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import React, { PureComponent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import Link from 'umi/link';
-import moment from 'moment';
-import numeral from 'numeral';
 import styles from './styles.less';
 
 const ListItem = List.Item;
 const ListMeta = List.Item.Meta;
 
-@connect(({ userseting: { notifyinfo, todaynotify, newNotify }, loading }) => ({
+@connect(({ userseting: { notifyinfo, todaynotify, newNotify, PassRate }, loading }) => ({
   notifyinfo,
   todaynotify,
   newNotify,
+  PassRate,
   loading: loading.models.userseting,
 }))
 
@@ -33,6 +31,7 @@ class Mytask extends PureComponent {
     this.getActivities();
     this.getTodayNotify();
     this.getNewReportNotify();
+    this.getPassRate();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,6 +46,13 @@ class Mytask extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'userseting/fetchTodayNotify',
+    });
+  }
+
+  getPassRate() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'userseting/fetchPassRate',
     });
   }
 
@@ -76,7 +82,7 @@ class Mytask extends PureComponent {
   }
 
   render() {
-    const { loading, notifyinfo, todaynotify } = this.props;
+    const { loading, notifyinfo, todaynotify, PassRate } = this.props;
     const { list } = this.state;
     const topColResponsiveProps = {
       xs: 24,
@@ -105,16 +111,6 @@ class Mytask extends PureComponent {
         y: todaynotify.fileReportNum,
       },
     ];
-
-    const visitData = [];
-    const beginDay = new Date().getTime();
-  
-    for (let i = 0; i < 15; i += 1) {
-      visitData.push({
-        x: moment(new Date(beginDay + 1000 * 60 * 60 * 24 * i)).format('YYYY-MM-DD'),
-        y: Math.floor(Math.random() * 100) + 10,
-      });
-    }
 
     return (
       <div>
@@ -220,19 +216,19 @@ class Mytask extends PureComponent {
             </Col>
 
             <Col {...topColResponsiveProps}>
-              <ChartCard
-                title="报告记录"
-                action={
-                  <Tooltip title="报告记录数量">
-                    <Icon type="info-circle-o" />
-                  </Tooltip>
-                }
-                total={numeral(8846).format('0,0')}
-                footer={<Field label="日记录数" value={numeral(1234).format('0,0')} />}
-                contentHeight={270}
+              <Card
+                title="今日报告通过率"
+                loading={loading}
+                bordered={false}
+                contentHeight={350}
               >
-                <MiniBar height={200} data={visitData} />
-              </ChartCard>
+                {/* percent={PassRate != undefined ? PassRate['checkPassRate'] : 100} */}
+                <div style={{ position: 'relative', height: 300 }}>
+                  <div style={{ position: 'relative', top: '15%', left: '-25%' }} ><Gauge title="审核通过率" height={180} percent={PassRate != undefined ? Math.ceil(PassRate['checkPassRate']) : 100} /></div>
+                  <div style={{ position: 'relative', top: '-45%', left: '25%' }} ><Gauge title="审批通过率" height={180} percent={PassRate != undefined ? Math.ceil(PassRate['approvePassRate']) : 100} /></div>
+                </div>
+              </Card>
+
             </Col>
 
           </Row>
