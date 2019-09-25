@@ -51,21 +51,17 @@ Shape.registerShape('point', 'pointer', {
   },
 });
 
-const flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000', ''];
 
 @autoHeight()
 class Gauge extends React.Component {
   render() {
-    //  #F0F2F5 
     const {
       title,
       height,
       percent,
       forceFit = true,
-      formatter = defaultFormatter,
-      //        
+      formatter = defaultFormatter,     
       color = ['#FF0000', '#FF6347', '#EEB422', '#C0FF3E', '#458B00',],
-      //flagcolor = ['#FF7F50', '#79CDCD', '#3CB371', '#8470FF', '#218868', '#CD00CD', '', '', '', '', '', '', '#FF6347', '', '#FF0000', ''],
       colors = '#2F9CFF',
       bgColor = '#F0F2F5',
     } = this.props;
