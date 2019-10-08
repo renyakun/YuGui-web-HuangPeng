@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import styles from './styles.less';
 
+
+
 class ReportInfo extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
   render() {
     const { valveinfo: { reportInfo, historyInfo } } = this.props;
     let checkExplain = '';
@@ -27,12 +28,13 @@ class ReportInfo extends PureComponent {
       approveTime = approveTime.slice(0, 26) + '&emsp;<b>月</b>&emsp;' + approveTime.slice(26) + '&emsp;<b>日</b>';
     }
 
+
     return (
       <div>
         <p>
-          <span>文件编号：<b style={{ color: 'dodgerblue' }}>GTXJ-B-F01-B/0</b></span>
+          <span style={{float:'left' }}>文件编号：<b style={{ color: 'dodgerblue' }}>GTXJ-B-F01-B/0</b></span>
           &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-        <span>报告编号：<b style={{ color: 'dodgerblue' }}>{reportInfo.reportNo}</b></span>
+        ·<span style={{ float:'right' }}>报告编号：<b style={{ color: 'dodgerblue' }}>{reportInfo.reportNo}</b></span>
         </p>
         <h2>
           <center>广西壮族自治区特种设备检验研究院安全阀校验报告</center>
@@ -58,7 +60,7 @@ class ReportInfo extends PureComponent {
               <td>{reportInfo.telephone}</td>
             </tr>
             <tr>
-              <th>设备代码/出厂编号</th>
+              <th>安全阀出厂编号</th>
               <td>{reportInfo.deviceNo}</td>
               <th>安装位置</th>
               <td>{reportInfo.installLocation}</td>
@@ -115,7 +117,7 @@ class ReportInfo extends PureComponent {
             </tr>
             <tr>
               <td colSpan={2}>
-                <b>校验:</b>{reportInfo.checkSignature != null ? <img src={reportInfo.checkSignature} className={styles.nameIMg} /> : null} <br />
+                <b>校验:</b>{reportInfo.checkSignatureUrl != null ? <img src={reportInfo.checkSignatureUrl} className={styles.nameIMg} /> : null} <br />
                 <b>日期：</b><div className={styles.Check} dangerouslySetInnerHTML={{ __html: `${checkTime}` }} />
               </td>
               <td colSpan={2} rowSpan={2}>
@@ -127,7 +129,7 @@ class ReportInfo extends PureComponent {
             </tr>
             <tr>
               <td colSpan={2}>
-                <b>审批:</b>{reportInfo.approveSignature != null ? <img src={reportInfo.approveSignature} className={styles.nameIMg} /> : null}<br />
+                <b>审批:</b>{reportInfo.approveSignatureUrl != null ? <img src={reportInfo.approveSignatureUrl} className={styles.nameIMg} /> : null}<br />
                 <b>日期：</b><div className={styles.Check} dangerouslySetInnerHTML={{ __html: `${approveTime}` }} />
               </td>
             </tr>

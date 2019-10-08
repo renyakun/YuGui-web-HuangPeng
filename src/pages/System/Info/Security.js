@@ -47,7 +47,6 @@ class Security extends PureComponent {
                     }
                 }
                 values.signature = trimmedDataURL;
-                console.log(values)
                 if (values.signature == null) {
                     message.error("请输入电子签名")
                 } else {

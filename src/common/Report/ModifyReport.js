@@ -85,8 +85,6 @@ class ModifyReport extends PureComponent {
                     delete values.pssealt;
                 }
 
-                console.log(values)
-
                 dispatch({
                     type: 'valvereport/updateReport',
                     payload: values,
@@ -116,7 +114,7 @@ class ModifyReport extends PureComponent {
                 sm: { span: 20, offset: 4 },
             },
         };
-        const plainOptions = ['解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
+        const plainOptions = ['外观检查、清理、校验','解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
 
         let workPressure = '';
         let requireSettingPressure= '';
@@ -178,11 +176,11 @@ class ModifyReport extends PureComponent {
                         ],
                     })(<Input placeholder='联系电话' style={{ width: '80%' }} />)}
                 </FormItem>
-                <FormItem {...formItemLayout} label={"设备代码/出厂编号"}>
+                <FormItem {...formItemLayout} label={"安全阀出厂编号"}>
                     {getFieldDecorator('deviceNo', {
                         initialValue: reportInformation.deviceNo,
                         rules: [
-                            { required: true, message: '请输入设备代码/出厂编号', }
+                            { required: true, message: '请输入安全阀出厂编号', }
                         ],
                     })(<Input placeholder='' style={{ width: '80%' }} />)}
                 </FormItem>

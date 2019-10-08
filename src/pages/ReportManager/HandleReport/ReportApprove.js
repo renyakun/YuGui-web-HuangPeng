@@ -25,6 +25,7 @@ class ReportDetail extends PureComponent {
         this.state = {
             welcome: true,
             reportNo: '',
+            disabled: false
         }
     }
     componentDidMount() {
@@ -53,6 +54,9 @@ class ReportDetail extends PureComponent {
     }
 
     async handleCommit() {
+        this.setState({
+            disabled: true
+        })
         const { reportNo } = this.state;
         const res = await addFileReport({ reportNo });
         if (res) {
@@ -79,7 +83,7 @@ class ReportDetail extends PureComponent {
 
 
     render() {
-        const { welcome, } = this.state;
+        const { welcome, disabled } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
         let flag = 0;
         if (historyInfo) {
@@ -159,7 +163,7 @@ class ReportDetail extends PureComponent {
                             type="primary"
                             onClick={this.handleCommit.bind(this)}
                             loading={loading}
-                            
+                            disabled={disabled}
                         >
                             提交
                         </Button>

@@ -1,11 +1,9 @@
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import { BackTop, Button, Card, Checkbox, Form, Icon, Input, Select, AutoComplete, message, DatePicker, Row, Col, InputNumber } from 'antd';
+import { AutoComplete, BackTop, Button, Card, Checkbox, Col, DatePicker, Form, Icon, Input, InputNumber, Row, Select } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { FormattedMessage } from 'umi/locale';
-import { routerRedux } from 'dva/router';
-import { creatValveReport } from '@/services/valverserver';
 
 function IndexofByKeyValue(arraytosearch, key, valuetosearch) {
     for (var i = 0; i < arraytosearch.length; i++) {
@@ -17,20 +15,14 @@ function IndexofByKeyValue(arraytosearch, key, valuetosearch) {
 }
 
 const { Option } = Select;
-const { Search, TextArea } = Input;
+const { TextArea } = Input;
 const FormItem = Form.Item;
 const InputGroup = Input.Group;
 const CheckboxGroup = Checkbox.Group;
-const plainOptions = ['解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
+const plainOptions = ['外观检查、清理、校验', '解体、清洗、校验', '研磨阀芯', '研磨阀座', '更换弹簧', '更换阀芯'];
 const nominalOptions = ['10', '15', '20', '25', '32', '40', '50', '65', '80', '100', '125', '150', '200', '225', '275', '300', '350', '400'];
 const channelOptions = ['6', '9', '10', '15', '20', '25', '32', '40', '50', '65', '80', '100', '125', '150', '200', '225', '250', '275', '300', '350'];
-
-const MyIcon = Icon.createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/font_1395005_5c71h7sg1e.css',
-});
-
 const companyDataList = JSON.parse(localStorage.getItem('companyDataList') || '[]');
-
 
 @connect(({ valvereport, valvereport: { ReportNumber, CompanyList, autocheck }, loading }) => ({
     valvereport,
@@ -220,7 +212,6 @@ class BasicForm extends PureComponent {
         })
     }
 
-
     handleChange = values => {
         const { dispatch } = this.props;
         const params = {
@@ -271,19 +262,17 @@ class BasicForm extends PureComponent {
     }
 
     OnChange = (value) => {
-        console.log(value)
         this.setState({
             iconaf: value
         })
     }
 
     render() {
-        const { companyDataSource, companyAddress, companyContacts, telephone, iconaf } = this.state;
+        const { companyDataSource, companyAddress, companyContacts, telephone, } = this.state;
         const { submitting, ReportNumber, autocheck } = this.props;
         let isQualified = '';
         let reason = '';
         if (autocheck != undefined) { isQualified = autocheck.isQualified; reason = autocheck.reason; }
-
         const { form: { getFieldDecorator } } = this.props;
         const formItemLayout = {
             labelCol: {
@@ -302,9 +291,6 @@ class BasicForm extends PureComponent {
                 sm: { span: 10, offset: 7 },
             },
         };
-        const addIcon = (iconaf == '合格' || autocheck == '合格' ? <Icon type="check" style={{ color: 'green' }} /> : <Icon type="close" style={{ color: 'red' }} />
-        )
-
         const formItems = (
             <div>
                 <FormItem {...formItemLayout} label="报告编号:" >
@@ -903,7 +889,7 @@ class BasicForm extends PureComponent {
                 </FormItem>
             </div>
         )
-        {/* addonAfter={addIcon} onChange={this.OnChange} */ }
+
         return (
             <PageHeaderWrapper>
                 <Card bordered={false} title="报告基本信息">

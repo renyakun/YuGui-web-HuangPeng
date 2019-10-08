@@ -219,7 +219,7 @@ class DetailWaitApproveReport extends PureComponent {
 
     render() {
         const { welcome, agree, reason, visible, currentStep } = this.state;
-        const { valveinfo: { reportInfo, historyInfo, }, loading } = this.props;
+        const { valveinfo: { reportInfo, historyInfo,Signature }, loading } = this.props;
         let flag = 0;
         if (historyInfo) { const { modifyFlag } = historyInfo; flag = modifyFlag; }
         const popoverContent = (

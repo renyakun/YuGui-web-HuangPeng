@@ -95,6 +95,7 @@ export default {
   'menu.report.reportview':'查看报告',
   'menu.report.reportapprove':'报告详情',
   'menu.report.reportprint':'报告打印',
+  'menu.usermanual':'帮助中心',
   'menu.info':'个人信息',
   'menu.search':'搜索报告',
   'menu.company':'公司信息',

@@ -13,7 +13,9 @@ import {
     getCheckedReportList,
     getApproveReportList,
     getFileReportList,
-    getSignature
+    getSignature,
+    getApproveSignature,
+    getCheckSignature,
 } from '@/services/valverserver';
 
 export default {
@@ -70,6 +72,40 @@ export default {
                     yield put({
                         type: 'saveList',
                         payload: { ReportNumber },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *fetchApproveSignature({ payload }, { call, put }) {
+            const params = {};
+            params.reportNo = payload;
+            const res = yield call(getApproveSignature, params);
+            if (res) {
+                if (res.ok) {
+                    const ApproveSignature = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { ApproveSignature },
+                    });
+                } else {
+                    message.error(res.errMsg);
+                }
+            }
+        },
+
+        *fetchCheckSignature({ payload }, { call, put }) {
+            const params = {};
+            params.reportNo = payload;
+            const res = yield call(getCheckSignature, params);
+            if (res) {
+                if (res.ok) {
+                    const CheckSignature = res.data;
+                    yield put({
+                        type: 'saveList',
+                        payload: { CheckSignature },
                     });
                 } else {
                     message.error(res.errMsg);
@@ -199,7 +235,6 @@ export default {
                 }
             }
         },
-
 
         *fetchAutoCheck({ payload }, { call, put }) {
             const res = yield call(getautoCheck, payload);

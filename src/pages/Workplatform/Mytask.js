@@ -77,10 +77,6 @@ class Mytask extends PureComponent {
     });
   }
 
-  handleInfiniteOnLoad = () => {
-    console.log("loading...")
-  }
-
   render() {
     const { loading, notifyinfo, todaynotify, PassRate } = this.props;
     const { list } = this.state;
@@ -175,7 +171,6 @@ class Mytask extends PureComponent {
                   <InfiniteScroll
                     initialLoad={false}
                     pageStart={0}
-                    loadMore={this.handleInfiniteOnLoad}
                     useWindow={false}
                   >
                     <List

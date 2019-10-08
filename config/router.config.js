@@ -183,6 +183,14 @@ export default [
         component: './CorporateManageMent/Corporation',
       },
 
+      //UserManual
+      {
+        path: '/usermanual',
+        name: 'usermanual',
+        hideInMenu: 'true',
+        component: './UserManual',
+      },
+
       // exception
       {
         name: 'exception',

@@ -208,7 +208,6 @@ class SearchReportList extends PureComponent {
       this.setState({
         formValues: values,
       });
-      console.log(fieldsValue)
       dispatch({
         type: 'SearchReport/fetchSearchList',
         payload: values,

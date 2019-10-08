@@ -28,7 +28,7 @@ class DetailWaitCheck extends PureComponent {
             reason: '',
             visible: false,
             currentStep: 0,
-            trimmedDataURL: ""
+            trimmedDataURL: "",
         }
     }
 

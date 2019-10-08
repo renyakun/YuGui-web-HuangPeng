@@ -5,10 +5,11 @@ import { BackTop, Button, Card } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import ReportInfo from './ReportInfo';
 
-
-@connect(({ valvereport: { valveinfo }, loading }) => ({
+@connect(({ valvereport: { valveinfo, ApproveSignature, CheckSignature }, loading }) => ({
     valveinfo,
-    loading: loading.effects['valvereport/getValveReportInfo'],
+    ApproveSignature,
+    CheckSignature,
+    loading: loading.models.valvereport,
 }))
 
 class ReportView extends PureComponent {
@@ -40,12 +41,20 @@ class ReportView extends PureComponent {
             type: 'valvereport/getValveReportInfo',
             payload: reportno,
         });
-
+        // dispatch({
+        //     type: 'valvereport/fetchApproveSignature',
+        //     payload: reportno,
+        // });
+        // dispatch({
+        //     type: 'valvereport/fetchCheckSignature',
+        //     payload: reportno,
+        // });
     }
 
     render() {
-        const { valveinfo, valveinfo: { reportInfo, historyInfo } } = this.props;
+        const { valveinfo, valveinfo: { reportInfo, historyInfo }, ApproveSignature, CheckSignature, } = this.props;
         const reportNo = reportInfo.reportNo;
+        
         return (
             <PageHeaderWrapper>
                 {historyInfo.modifyFlag == '5' ?
@@ -88,6 +97,7 @@ class ReportView extends PureComponent {
                         <ReportInfo valveinfo={valveinfo} />
                     </Card>
                 </div>
+
                 <BackTop />
             </PageHeaderWrapper>
         )

@@ -29,6 +29,7 @@ class ModifyReportCheck extends PureComponent {
             userName: '',
             reportNo: '',
             reportInformation: [],
+            disabled: false
         }
     }
 
@@ -74,6 +75,9 @@ class ModifyReportCheck extends PureComponent {
     }
 
     async handleCommit() {
+        this.setState({
+            disabled: true
+        })
         // const { checkuser, reportNo } = this.state;
         const { userName, reportNo } = this.state;
         //let userName = checkuser
@@ -122,7 +126,7 @@ class ModifyReportCheck extends PureComponent {
     }
 
     render() {
-        const { welcome, checkuser, userName, visible, reportInformation, } = this.state;
+        const { welcome, checkuser, userName, visible, reportInformation,disabled } = this.state;
         const { valveinfo: { reportInfo, historyInfo, }, checkuserlist, loading, } = this.props;
 
         let flag = 0;
@@ -202,6 +206,7 @@ class ModifyReportCheck extends PureComponent {
                                 type="primary"
                                 onClick={this.handleCommit.bind(this)}
                                 loading={loading}
+                                disabled={disabled}
                             >
                                 提交
                             </Button>

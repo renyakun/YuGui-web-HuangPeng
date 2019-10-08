@@ -42,9 +42,8 @@ class GlobalHeaderRight extends PureComponent {
     });
   }
 
-
   DeleteNotifyOrEvent(id) {
-    const ids = [];
+    let ids = [];
     ids.push(id);
     const { dispatch } = this.props;
     dispatch({
@@ -89,42 +88,30 @@ class GlobalHeaderRight extends PureComponent {
     }
   }
 
-  fetchMore = () => {
-    const { dispatch } = this.props;
-    message.loading('加载更多', 2);
+  onClear = () => {
+    const { NotifyEvt, dispatch } = this.props;
+    let ids = [];
+    NotifyEvt.map((item) => {
+      ids.push(item.id);
+    })
+    dispatch({
+      type: 'userseting/DeleteNotifyOrEvent',
+      payload: { ids },
+    });
     setTimeout(() => {
-      dispatch(
-        routerRedux.push({
-          pathname: '/',
-        })
-      )
-    }, 2500);
+      this.getNotifyOrEvent();
+    }, 10);
   }
 
   getNoticeData(notices) {
     if (notices.length === 0) {
       return {};
     }
-
     const newNotices = notices.map(notice => {
       const newNotice = { ...notice };
-      // transform id to item key
       if (newNotice.id) {
         newNotice.key = newNotice.id;
       }
-      // if (newNotice.extra && newNotice.status) {
-      //   const color = {
-      //     todo: '',
-      //     processing: 'blue',
-      //     urgent: 'red',
-      //     doing: 'gold',
-      //   }[newNotice.status];
-      //   newNotice.extra = (
-      //     <Tag color={color} style={{ marginRight: 0 }}>
-      //       {newNotice.extra}
-      //     </Tag>
-      //   );
-      // }
       return newNotice;
     });
 
@@ -171,13 +158,18 @@ class GlobalHeaderRight extends PureComponent {
 
     return (
       <div className={className} >
-        <CountDown style={{ color: '#fff', fontSize: 1 }} target={targetTime} onEnd={this.handleEnd} />
-        
+
+        <Tooltip title="帮助中心" >
+          <Link to={{ pathname: '/usermanual' }}><Icon type="question-circle" theme="filled" /></Link>
+        </Tooltip>
+
+        <CountDown style={{ color: '#fff' }} target={targetTime} onEnd={this.handleEnd} />
+
         <NoticeIcon
           className="notice-icon"
           count={data.length}
           onItemClick={this.onItemClick}
-          onClear={this.fetchMore}
+          onClear={this.onClear}
         >
           <NoticeIconTab
             list={noticeData.notification}
@@ -193,11 +185,6 @@ class GlobalHeaderRight extends PureComponent {
           />
         </NoticeIcon>
 
-
-
-        {/* <Tooltip title="使用文档" >
-          <Link to={{ pathname: '/' }}><Icon type="question-circle" theme="filled" /></Link>
-        </Tooltip> */}
         {account ? (
           <Dropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>

@@ -58,10 +58,6 @@ class NewList extends PureComponent {
 
     };
 
-    handleCl = (text) => {
-        console.log(text)
-    }
-
     render() {
         const { newreportlist, pageSize, total, current } = this.state;
         const { listLoading } = this.props;

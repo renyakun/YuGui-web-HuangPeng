@@ -87,6 +87,14 @@ export async function getcreateReportNumber() {
   return request(`/report/createReportNumber`);
 }
 
+export async function getApproveSignature(params) {
+  return request(`/report/getApproveSignature?${stringify(params)}`);
+}
+
+export async function getCheckSignature(params) {
+  return request(`/report/getCheckSignature?${stringify(params)}`);
+}
+
 export async function getcompanyInfo() {
   return request(`/report/companyInfo`);
 }

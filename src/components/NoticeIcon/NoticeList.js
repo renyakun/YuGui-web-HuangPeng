@@ -83,7 +83,7 @@ export default function NoticeList({
       </List>
       {showClear ? (
         <div className={styles.clear} onClick={onClear}>
-          {/* {locale.clear}  清空{title} */}更多
+           清空所有消息
         </div>
       ) : null}
     </div>
